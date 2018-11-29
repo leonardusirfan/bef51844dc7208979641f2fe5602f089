@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#fff"
+    app:cardCornerRadius="@dimen/padding10">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="@dimen/padding15"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.AppCompatRatingBar
+            android:id="@+id/rating_barang"
+            android:theme="@style/AppRatingBar.Blue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:numStars="5"
+            android:stepSize="1"/>
+
+        <EditText
+            android:id="@+id/txt_ulasan"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:textSize="@dimen/text18"
+            android:padding="@dimen/padding10"
+            android:hint="Tulis ulasan disini"
+            android:gravity="top|start"
+            android:layout_margin="@dimen/padding10"
+            android:background="@drawable/style_rectangle_rounded_bordered_white_bold"/>
+
+        <Button
+            android:id="@+id/btn_kirim"
+            android:layout_width="@dimen/popup_button_width"
+            android:layout_height="@dimen/popup_button_height"
+            android:layout_margin="@dimen/padding15"
+            android:text="Kirim"
+            android:layout_gravity="center"
+            android:textColor="#fff"
+            android:textStyle="bold"
+            android:textSize="@dimen/text18"
+            android:padding="@dimen/padding20"
+            android:background="@drawable/style_rectangle_rounded_blue"/>
+
+    </LinearLayout>
+
+</android.support.design.card.MaterialCardView>

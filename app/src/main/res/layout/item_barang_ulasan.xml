@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="@dimen/padding10">
+
+        <ImageView
+            android:id="@+id/img_pengulas"
+            android:layout_width="@dimen/profile_size"
+            android:padding="@dimen/padding10"
+            android:src="@color/colorPrimaryDark"
+            android:scaleType="centerCrop"
+            android:layout_height="@dimen/profile_size" />
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.75"
+            android:padding="@dimen/padding10"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/txt_nama"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLength="20"
+                android:maxLines="1"
+                android:textSize="@dimen/text14"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <android.support.v7.widget.AppCompatRatingBar
+                android:id="@+id/rate_barang"
+                style="@style/Base.Widget.AppCompat.RatingBar.Small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:isIndicator="true"
+                android:theme="@style/AppRatingBar.Blue"
+                android:numStars="5"
+                android:layout_marginTop="@dimen/padding5"
+                app:layout_constraintStart_toStartOf="@+id/txt_nama"
+                app:layout_constraintTop_toBottomOf="@+id/txt_nama" />
+
+            <TextView
+                android:id="@+id/txt_tanggal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/padding10"
+                android:layout_toEndOf="@id/txt_nama"
+                android:textSize="@dimen/text10"
+                app:layout_constraintBottom_toBottomOf="@+id/txt_nama"
+                app:layout_constraintStart_toEndOf="@+id/txt_nama"
+                app:layout_constraintTop_toTopOf="@+id/txt_nama" />
+
+            <TextView
+                android:id="@+id/txt_ulasan"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/txt_nama"
+                android:textSize="@dimen/text14"
+                android:layout_marginTop="@dimen/padding5"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/rate_barang" />
+
+            <TextView
+                android:id="@+id/txt_balas"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/padding20"
+                android:text="Balas Ulasan"
+                android:textColor="@color/orange"
+                android:textSize="@dimen/text12"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/txt_ulasan" />
+        </android.support.constraint.ConstraintLayout>
+
+    </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_balasan"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </android.support.v7.widget.RecyclerView>
+
+    <include layout="@layout/view_divider"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/padding2"
+        android:layout_marginTop="@dimen/padding10"
+        android:layout_marginBottom="@dimen/padding10"/>
+
+</LinearLayout>

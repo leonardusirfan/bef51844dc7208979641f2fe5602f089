@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#fff"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/layout_user"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/img_user"
+            android:layout_width="@dimen/profile_size_small"
+            android:layout_height="@dimen/profile_size_small"
+            android:layout_margin="@dimen/padding20" />
+
+        <TextView
+            android:id="@+id/txt_user"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/img_user"
+            android:layout_alignTop="@id/img_user"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textSize="@dimen/text16"
+            android:textStyle="bold"
+            android:layout_gravity="center"
+            android:layout_marginStart="@dimen/padding5"/>
+
+        <TextView
+            android:id="@+id/txt_detail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/img_user"
+            android:layout_below="@id/txt_user"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textSize="@dimen/text10"
+            android:layout_gravity="center"
+            android:layout_marginStart="@dimen/padding5"
+            android:layout_marginBottom="@dimen/padding2"/>
+
+        <TextView
+            android:id="@+id/txt_tanggal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/img_user"
+            android:layout_below="@id/txt_detail"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textSize="@dimen/text10"
+            android:layout_marginStart="@dimen/padding5"
+            android:layout_gravity="center" />
+
+    </RelativeLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_barang"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/padding20"
+        android:paddingEnd="@dimen/padding20"
+        android:clipToPadding="false" />
+
+    <LinearLayout
+        android:id="@+id/btn_lihat_semua"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:padding="@dimen/padding10"
+        android:layout_marginTop="@dimen/padding10"
+        android:layout_marginBottom="@dimen/padding10">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Lihat Semua"
+            android:textColor="#c1c1c1"
+            android:textSize="@dimen/text12"/>
+
+        <ImageView
+            android:layout_width="@dimen/favorit_size"
+            android:layout_height="match_parent"
+            android:padding="@dimen/padding2"
+            android:layout_marginStart="@dimen/padding5"
+            android:tint="#c1c1c1"
+            android:src="@drawable/next" />
+    </LinearLayout>
+
+    <include layout="@layout/view_divider_gap"/>
+
+</LinearLayout>

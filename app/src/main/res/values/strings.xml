@@ -1,0 +1,40 @@
+<resources>
+    <string name="app_name">Selby</string>
+    <string name="artis">Artis</string>
+    <string name="barang">Barang</string>
+    <string name="favorit">Favorit</string>
+    <string name="lihat">LIHAT</string>
+    <string name="nama">Nama</string>
+    <string name="ttl">Tempat, tanggal lahir</string>
+    <string name="tinggi">Tinggi badan</string>
+    <string name="lihat_produk">Lihat Produk</string>
+    <string name="lorem_ipsum">"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."</string>
+
+    <string name="facebook_app_id">330921904309199</string>
+    <string name="fb_login_protocol_scheme">fb330921904309199</string>
+
+    <string name="error_database">Tidak dapat menyambungkan ke database</string>
+    <string name="error_json">Kesalahan database</string>
+
+    <string name="keranjang_kosong">"Keranjang anda masih kosong"</string>
+    <string name="foto_artis_kosong">"Foto artis kosong"</string>
+    <string name="kegiatan_artis_kosong">"Kegiatan artis kosong"</string>
+
+    <string name="user">User</string>
+    <string name="bid">Bid</string>
+    <string name="bid_awal">"Bid/Harga Awal"</string>
+
+    <string name="follow">"Berlangganan"</string>
+    <string name="unfollow">"Berhenti Berlangganan"</string>
+
+    <string-array name="satuan_berat">
+        <item>gram</item>
+        <item>kilogram</item>
+        <item>ton</item>
+    </string-array>
+
+    <string-array name="item_kondisi">
+        <item>Baru</item>
+        <item>Bekas</item>
+    </string-array>
+</resources>

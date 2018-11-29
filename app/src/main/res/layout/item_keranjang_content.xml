@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layout_item"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/padding10">
+
+    <CheckBox
+        android:id="@+id/cb_item"
+        android:theme="@style/CheckboxStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/padding10"
+        android:layout_marginStart="@dimen/padding5"
+        android:layout_marginEnd="@dimen/padding5"
+        android:gravity="center_vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/txt_nama"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/padding10"
+        android:layout_marginLeft="@dimen/padding10"
+        android:layout_marginEnd="@dimen/padding10"
+        android:layout_marginRight="@dimen/padding10"
+        android:ellipsize="end"
+        android:gravity="center_vertical"
+        android:maxLines="1"
+        android:textSize="@dimen/text14"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/img_item"
+        app:layout_constraintTop_toTopOf="@+id/img_item" />
+
+    <ImageView
+        android:id="@+id/img_item"
+        android:layout_width="@dimen/image_height"
+        android:layout_height="@dimen/image_height"
+        android:layout_marginStart="@dimen/padding10"
+        android:layout_marginLeft="@dimen/padding10"
+        app:layout_constraintStart_toEndOf="@+id/cb_item"
+        app:layout_constraintTop_toTopOf="@+id/cb_item"
+        app:srcCompat="@android:color/darker_gray" />
+
+    <TextView
+        android:id="@+id/txt_harga"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/padding10"
+        android:textSize="@dimen/text14"
+        app:layout_constraintEnd_toEndOf="@+id/txt_nama"
+        app:layout_constraintStart_toStartOf="@+id/txt_nama"
+        app:layout_constraintTop_toBottomOf="@+id/txt_nama" />
+
+    <ImageView
+        android:id="@+id/btn_hapus"
+        android:layout_width="@dimen/image_height_small"
+        android:layout_height="@dimen/image_height_small"
+        android:layout_marginTop="@dimen/padding10"
+        android:layout_marginBottom="@dimen/padding10"
+        android:src="@drawable/garbage"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/txt_harga"
+        app:layout_constraintTop_toBottomOf="@+id/txt_harga" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/padding15"
+        android:layout_marginLeft="@dimen/padding15"
+        android:layout_marginTop="@dimen/padding10"
+        android:layout_marginBottom="@dimen/padding10"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/img_item"
+        app:layout_constraintTop_toBottomOf="@+id/txt_harga">
+
+        <TextView
+            android:id="@+id/txt_minus"
+            android:layout_width="@dimen/item_keranjang_size"
+            android:layout_height="@dimen/item_keranjang_size"
+            android:layout_weight="1"
+            android:background="@drawable/style_rectangle_rounded_bordered_white"
+            android:gravity="center"
+            android:text="-"
+            android:textSize="@dimen/text14" />
+
+        <TextView
+            android:id="@+id/txt_jumlah"
+            android:layout_width="@dimen/item_keranjang_size"
+            android:layout_height="@dimen/item_keranjang_size"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="0"
+            android:textSize="@dimen/text14" />
+
+        <TextView
+            android:id="@+id/txt_plus"
+            android:layout_width="@dimen/item_keranjang_size"
+            android:layout_height="@dimen/item_keranjang_size"
+            android:layout_weight="1"
+            android:background="@drawable/style_rectangle_rounded_bordered_white"
+            android:gravity="center"
+            android:text="+"
+            android:textSize="@dimen/text14" />
+    </LinearLayout>
+
+
+</android.support.constraint.ConstraintLayout>
+

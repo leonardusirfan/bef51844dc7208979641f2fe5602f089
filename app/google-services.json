@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "324438410986",
+    "firebase_url": "https://selby-a2a1d.firebaseio.com",
+    "project_id": "selby-a2a1d",
+    "storage_bucket": "selby-a2a1d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:324438410986:android:d4b58848da3bea21",
+        "android_client_info": {
+          "package_name": "id.net.gmedia.selby"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "324438410986-0n6lckjcokl5at0969hvcedarm0h64ur.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "id.net.gmedia.selby",
+            "certificate_hash": "358c87ff64a743f6273cc7101f5755d490d1f98c"
+          }
+        },
+        {
+          "client_id": "324438410986-q07j3uqru0dk1qj9flk82s0gr4pbkfvc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD9rbbYqfrVtAihS6t7OONWymgG5HH0DgU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "324438410986-q07j3uqru0dk1qj9flk82s0gr4pbkfvc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

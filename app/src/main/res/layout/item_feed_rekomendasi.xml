@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#fff"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Rekomendasi Artis"
+        android:layout_margin="@dimen/padding20">
+
+    </TextView>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_artis"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/padding20"
+        android:paddingEnd="@dimen/padding20"
+        android:clipToPadding="false"
+        android:layout_marginBottom="@dimen/padding20"/>
+
+    <include layout="@layout/view_divider_gap"/>
+
+</LinearLayout>

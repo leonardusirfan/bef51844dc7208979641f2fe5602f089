@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#fff"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/layout_user"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/img_user"
+            android:layout_width="@dimen/profile_size_small"
+            android:layout_height="@dimen/profile_size_small"
+            android:layout_margin="@dimen/padding20" />
+
+        <TextView
+            android:id="@+id/txt_user"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/img_user"
+            android:layout_alignTop="@id/img_user"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textSize="@dimen/text16"
+            android:textStyle="bold"
+            android:layout_gravity="center"
+            android:layout_marginStart="@dimen/padding5"/>
+
+        <TextView
+            android:id="@+id/txt_detail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/img_user"
+            android:layout_below="@id/txt_user"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textSize="@dimen/text10"
+            android:layout_gravity="center"
+            android:layout_marginStart="@dimen/padding5"
+            android:layout_marginBottom="@dimen/padding2"/>
+
+        <TextView
+            android:id="@+id/txt_tanggal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/img_user"
+            android:layout_below="@id/txt_detail"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textSize="@dimen/text10"
+            android:layout_marginStart="@dimen/padding5"
+            android:layout_gravity="center" />
+
+    </RelativeLayout>
+
+    <android.support.design.card.MaterialCardView
+        android:id="@+id/layout_barang"
+        android:layout_width="@dimen/barang_item_width_small"
+        android:layout_height="@dimen/barang_item_height_small"
+        android:layout_margin="@dimen/padding5"
+        app:cardCornerRadius="@dimen/padding5"
+        app:strokeWidth=".5dp"
+        app:cardElevation="0dp"
+        app:strokeColor="#c4c4c4"
+        android:layout_gravity="center">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/img_barang"
+                android:contentDescription="@string/barang"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="0.7"
+                android:scaleType="centerCrop"/>
+
+            <TextView
+                android:id="@+id/txt_barang"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="0.3"
+                android:padding="@dimen/padding10"
+                android:maxLines="2"
+                android:ellipsize="end"
+                android:textStyle="bold"
+                android:textSize="@dimen/text10" />
+
+        </LinearLayout>
+    </android.support.design.card.MaterialCardView>
+
+    <LinearLayout
+        android:id="@+id/btn_lihat_semua"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:padding="@dimen/padding10"
+        android:layout_marginTop="@dimen/padding10"
+        android:layout_marginBottom="@dimen/padding10">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Lihat Semua"
+            android:textColor="#c1c1c1"
+            android:textSize="@dimen/text12"/>
+
+        <ImageView
+            android:layout_width="@dimen/favorit_size"
+            android:layout_height="match_parent"
+            android:padding="@dimen/padding2"
+            android:layout_marginStart="@dimen/padding5"
+            android:tint="#c1c1c1"
+            android:src="@drawable/next" />
+    </LinearLayout>
+
+    <include layout="@layout/view_divider_gap"/>
+
+</LinearLayout>

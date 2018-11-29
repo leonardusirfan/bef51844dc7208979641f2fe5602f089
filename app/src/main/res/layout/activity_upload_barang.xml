@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:layout_collapseMode="pin"
+        android:background="@color/blue"
+        app:titleTextColor="#fff"
+        android:theme="@style/AppTheme.ActionBar"
+        android:elevation="0dp"/>
+
+    <ScrollView
+        android:layout_below="@id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/padding20"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Nama Barang"
+                android:padding="@dimen/padding5"
+                style="@style/Input"/>
+
+            <EditText
+                android:id="@+id/txt_nama"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/dark_grey"
+                android:textCursorDrawable="@null"
+                android:textSize="@dimen/text16" />
+
+            <TextView
+                android:id="@+id/lbl_harga"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Harga Barang"
+                android:padding="@dimen/padding5"
+                style="@style/Input" />
+
+            <EditText
+                android:id="@+id/txt_harga"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/dark_grey"
+                android:textCursorDrawable="@null"
+                android:textSize="@dimen/text16"
+                android:inputType="number" />
+
+            <TextView
+                android:id="@+id/lbl_harga_normal"
+                android:padding="@dimen/padding5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Harga Normal (Opsional)"
+                android:visibility="gone"
+                style="@style/Input" />
+
+            <EditText
+                android:id="@+id/txt_harga_normal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/dark_grey"
+                android:textCursorDrawable="@null"
+                android:textSize="@dimen/text16"
+                android:visibility="gone"
+                android:inputType="number" />
+
+            <TextView
+                android:id="@+id/lbl_selesai_lelang"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/padding5"
+                android:text="Waktu Selesai Lelang"
+                android:visibility="gone"
+                style="@style/Input" />
+
+            <TextView
+                android:id="@+id/txt_selesai_lelang"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/dark_grey"
+                android:textCursorDrawable="@null"
+                android:textSize="@dimen/text16"
+                android:visibility="gone"
+                android:textColor="#000"
+                android:paddingTop="@dimen/padding10"
+                android:paddingBottom="@dimen/padding10"
+                android:text="-" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/padding5"
+                android:text="Berat Barang"
+                style="@style/Input"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/txt_berat"
+                    android:layout_width="0dp"
+                    android:layout_weight="0.5"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/dark_grey"
+                    android:textCursorDrawable="@null"
+                    android:textSize="@dimen/text16"
+                    android:inputType="number"/>
+
+                <Spinner
+                    android:id="@+id/spn_satuan_berat"
+                    android:layout_width="0dp"
+                    android:layout_weight="0.5"
+                    android:layout_height="match_parent"
+                    android:backgroundTint="@color/dark_grey"
+                    android:textSize="@dimen/text16"
+                    android:entries="@array/satuan_berat"/>
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Ukuran"
+                android:padding="@dimen/padding5"
+                style="@style/Input"/>
+
+            <EditText
+                android:id="@+id/txt_ukuran"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/dark_grey"
+                android:textCursorDrawable="@null"
+                android:textSize="@dimen/text16"
+                android:inputType="number"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Kondisi"
+                android:padding="@dimen/padding5"
+                style="@style/Input"/>
+
+            <Spinner
+                android:id="@+id/spn_kondisi"
+                android:layout_width="match_parent"
+                android:paddingTop="@dimen/padding10"
+                android:paddingBottom="@dimen/padding10"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/dark_grey"
+                android:textSize="@dimen/text16"
+                android:entries="@array/item_kondisi"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Kategori"
+                android:padding="@dimen/padding5"
+                style="@style/Input"/>
+
+            <Spinner
+                android:id="@+id/spn_kategori"
+                android:layout_width="match_parent"
+                android:paddingTop="@dimen/padding10"
+                android:paddingBottom="@dimen/padding10"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/dark_grey"
+                android:textSize="@dimen/text16" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Brand"
+                android:padding="@dimen/padding5"
+                style="@style/Input"/>
+
+            <Spinner
+                android:id="@+id/spn_brand"
+                android:layout_width="match_parent"
+                android:paddingTop="@dimen/padding10"
+                android:paddingBottom="@dimen/padding10"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/dark_grey"
+                android:textSize="@dimen/text16" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Deskripsi Barang"
+                android:padding="@dimen/padding5"
+                style="@style/Input"/>
+
+            <EditText
+                android:id="@+id/txt_deskripsi"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/dark_grey"
+                android:textCursorDrawable="@null"
+                android:textSize="@dimen/text16" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/padding10"
+                android:textCursorDrawable="@null"
+                android:text="Foto"
+                android:padding="@dimen/padding5"
+                style="@style/Input"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_foto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:src="@color/dark_grey"
+                android:layout_marginTop="@dimen/padding10"/>
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>

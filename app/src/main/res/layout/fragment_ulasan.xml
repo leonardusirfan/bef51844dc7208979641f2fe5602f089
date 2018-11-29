@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/floating_size"
+    android:paddingTop="@dimen/padding10"
+    android:paddingStart="@dimen/padding10"
+    android:paddingEnd="@dimen/padding10">
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:baselineAligned="false"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.3"
+            android:layout_gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/txt_rating_barang"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="0.0"
+                android:gravity="center"
+                android:textColor="@color/blue"
+                android:textSize="@dimen/text50"
+                android:textStyle="bold" />
+
+            <android.support.v7.widget.AppCompatRatingBar
+                android:id="@+id/rate_produk"
+                style="@style/Base.Widget.AppCompat.RatingBar.Small"
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:theme="@style/AppRatingBar.Blue"
+                android:numStars="5"
+                android:rating="0"
+                android:isIndicator="true"/>
+
+            <TextView
+                android:id="@+id/txt_jumlah_ulasan"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="0 Ulasan"
+                android:gravity="center"
+                android:textSize="@dimen/text12"
+                android:textStyle="bold"
+                android:padding="@dimen/padding5"/>
+
+        </LinearLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_rating"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.7" />
+
+    </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_ulasan"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clipToPadding="false"
+        android:paddingTop="@dimen/padding10"
+        android:paddingBottom="@dimen/padding10"
+        android:layout_below="@id/linearLayout2">
+
+    </android.support.v7.widget.RecyclerView>
+
+    <GridLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingStart="@dimen/padding10"
+        android:paddingTop="@dimen/padding15"
+        android:paddingEnd="@dimen/padding10"
+        android:paddingBottom="@dimen/padding15"
+        android:layout_below="@id/linearLayout"
+        android:rowCount="2"
+        android:columnCount="3">
+
+        <Button
+            android:layout_height="30dp"
+            android:layout_marginTop="@dimen/padding5"
+            android:layout_marginStart="@dimen/padding10"
+            android:layout_columnWeight="1"
+            android:background="@drawable/style_rectangle_rounded_bordered_white"
+            android:text="Semua"
+            android:textSize="@dimen/text8" />
+
+        <Button
+            android:layout_columnWeight="1"
+            android:layout_height="30dp"
+            android:layout_marginTop="@dimen/padding5"
+            android:layout_marginStart="@dimen/padding10"
+            android:background="@drawable/style_rectangle_rounded_bordered_white"
+            android:text="Bintang 1"
+            android:textSize="@dimen/text8" />
+
+        <Button
+            android:layout_columnWeight="1"
+            android:layout_height="30dp"
+            android:layout_marginTop="@dimen/padding5"
+            android:layout_marginStart="@dimen/padding10"
+            android:layout_marginEnd="@dimen/padding10"
+            android:layout_marginBottom="@dimen/padding5"
+            android:background="@drawable/style_rectangle_rounded_bordered_white"
+            android:text="Bintang 2"
+            android:textSize="@dimen/text8" />
+
+        <Button
+            android:layout_columnWeight="1"
+            android:layout_height="30dp"
+            android:layout_marginStart="@dimen/padding10"
+            android:layout_marginTop="@dimen/padding10"
+            android:background="@drawable/style_rectangle_rounded_bordered_white"
+            android:text="Bintang 3"
+            android:textSize="@dimen/text8" />
+
+        <Button
+            android:layout_columnWeight="1"
+            android:layout_height="30dp"
+            android:layout_marginStart="@dimen/padding10"
+            android:layout_marginTop="@dimen/padding10"
+            android:layout_marginBottom="@dimen/padding5"
+            android:background="@drawable/style_rectangle_rounded_bordered_white"
+            android:text="Bintang 4"
+            android:textSize="@dimen/text8" />
+
+        <Button
+            android:layout_columnWeight="1"
+            android:layout_height="30dp"
+            android:layout_marginStart="@dimen/padding10"
+            android:layout_marginEnd="@dimen/padding10"
+            android:layout_marginTop="@dimen/padding10"
+            android:layout_marginBottom="@dimen/padding5"
+            android:background="@drawable/style_rectangle_rounded_bordered_white"
+            android:text="Bintang 5"
+            android:textSize="@dimen/text8" />
+
+    </GridLayout>
+</RelativeLayout>

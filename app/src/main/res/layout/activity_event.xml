@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".Artis.EventActivity"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:layout_collapseMode="pin"
+            android:background="#ffffff"
+            android:elevation="@dimen/padding5"/>
+
+        <android.support.design.widget.CoordinatorLayout
+            android:id="@+id/layout_tablayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/toolbar">
+
+            <android.support.design.widget.AppBarLayout
+                android:id="@+id/appbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:elevation="0dp"
+                android:background="@android:color/transparent">
+
+                <android.support.design.widget.CollapsingToolbarLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:scrollbarFadeDuration="1000"
+                    app:scrimAnimationDuration="1000"
+                    android:background="@color/grey"
+                    app:layout_scrollFlags="scroll|enterAlways">
+
+                    <android.support.design.widget.TabLayout
+                        android:id="@+id/tab_event"
+                        android:layout_width="match_parent"
+                        android:layout_height="?attr/actionBarSize"
+                        app:tabMode="fixed"
+                        app:tabGravity="fill"
+                        app:tabTextColor="#000"
+                        app:tabSelectedTextColor="@color/orange"
+                        app:tabIndicatorHeight="0dp">
+
+                        <android.support.design.widget.TabItem
+                            android:id="@+id/tab_carousel"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:text="Kegiatan" />
+
+                        <android.support.design.widget.TabItem
+                            android:id="@+id/tab_thumbnail"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:text="Galeri" />
+                    </android.support.design.widget.TabLayout>
+                </android.support.design.widget.CollapsingToolbarLayout>
+
+            </android.support.design.widget.AppBarLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/layout_tablayout"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+                <ProgressBar
+                    android:id="@+id/bar_loading"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:visibility="invisible"/>
+
+                <FrameLayout
+                    android:id="@+id/frame_event"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+            </FrameLayout>
+        </android.support.design.widget.CoordinatorLayout>
+    </RelativeLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/layout_overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#AA000000"
+        android:clickable="true"
+        android:focusable="true"
+        android:padding="@dimen/padding10"
+        android:visibility="invisible">
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/layout_galeri_selected"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="@dimen/padding5"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/btn_next"
+            app:layout_constraintStart_toEndOf="@+id/btn_previous"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/img_galeri_selected"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/artis" />
+
+        </android.support.v7.widget.CardView>
+
+        <Button
+            android:id="@+id/btn_next"
+            android:layout_width="@dimen/small_button_size"
+            android:layout_height="@dimen/small_button_size"
+            android:layout_marginEnd="@dimen/padding10"
+            android:background="@drawable/next"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/btn_previous"
+            android:layout_width="@dimen/small_button_size"
+            android:layout_height="@dimen/small_button_size"
+            android:background="@drawable/previous"
+            android:layout_marginStart="@dimen/padding10"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </android.support.constraint.ConstraintLayout>
+
+</FrameLayout>

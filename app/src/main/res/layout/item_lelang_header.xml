@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/lelang_item_header_width"
+    android:layout_height="@dimen/lelang_item_height"
+    android:layout_margin="@dimen/padding10"
+    android:background="@android:color/transparent">
+
+    <TextView
+        android:id="@+id/txt_deskripsi"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="Lelang Hari Ini"
+        android:textColor="#fff"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:textSize="@dimen/text20"/>
+
+</LinearLayout>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/lelang_item_header_width"
+    android:layout_height="@dimen/lelang_item_header_width"
+    android:layout_margin="@dimen/padding5">
+
+    <ImageView
+        android:id="@+id/img_artis"
+        android:contentDescription="@null"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop" />
+
+    <ImageView
+        android:id="@+id/img_overlay"
+        android:contentDescription="@null"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="#fff"
+        android:alpha="0.75"/>
+
+    <ProgressBar
+        android:id="@+id/bar_loading"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"/>
+
+</FrameLayout>

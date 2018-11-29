@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Home.HomeActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:layout_collapseMode="pin"
+            android:background="@color/blue"
+            app:titleTextColor="#fff"
+            android:elevation="0dp"/>
+
+        <android.support.design.widget.CoordinatorLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/toolbar">
+
+            <android.support.design.widget.AppBarLayout
+                android:id="@+id/appbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:elevation="0dp"
+                android:background="@android:color/transparent">
+
+                <android.support.design.widget.CollapsingToolbarLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:scrollbarFadeDuration="1000"
+                    app:scrimAnimationDuration="1000"
+                    app:layout_scrollFlags="scroll|enterAlways">
+
+                    <android.support.design.widget.TabLayout
+                        android:id="@+id/tab_home"
+                        android:layout_width="match_parent"
+                        android:layout_height="?attr/actionBarSize"
+                        app:tabMode="fixed"
+                        app:tabGravity="fill"
+                        android:background="@color/grey"
+                        app:tabIndicatorHeight="0dp">
+
+                    </android.support.design.widget.TabLayout>
+                </android.support.design.widget.CollapsingToolbarLayout>
+
+            </android.support.design.widget.AppBarLayout>
+
+            <FrameLayout
+                android:id="@+id/frame_home"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+
+            <ProgressBar
+                android:id="@+id/progress_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:visibility="invisible"/>
+
+        </android.support.design.widget.CoordinatorLayout>
+
+        <rjsv.floatingmenu.floatingmenubutton.FloatingMenuButton
+            android:id="@+id/fab_post"
+            android:layout_width="@dimen/floating_size"
+            android:layout_height="@dimen/floating_size"
+            android:scaleType="centerInside"
+            app:animationType="radial"
+            app:dispositionEndAngle="360"
+            app:dispositionStartAngle="0"
+            app:subActionButtonRadius="150"
+            android:background="@drawable/plus"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            app:anchored="true"
+            android:visibility="gone"
+            android:layout_margin="@dimen/padding20">
+
+            <rjsv.floatingmenu.floatingmenubutton.subbutton.FloatingSubButton
+                android:id="@+id/sub_kegiatan"
+                android:layout_width="@dimen/floating_sub_size"
+                android:layout_height="@dimen/floating_sub_size"
+                android:background="@drawable/kegiatan" />
+
+            <rjsv.floatingmenu.floatingmenubutton.subbutton.FloatingSubButton
+                android:id="@+id/sub_gambar"
+                android:layout_width="@dimen/floating_sub_size"
+                android:layout_height="@dimen/floating_sub_size"
+                android:background="@drawable/foto" />
+
+            <rjsv.floatingmenu.floatingmenubutton.subbutton.FloatingSubButton
+                android:id="@+id/sub_barang"
+                android:layout_width="@dimen/floating_sub_size"
+                android:layout_height="@dimen/floating_sub_size"
+                android:background="@drawable/barang" />
+
+        </rjsv.floatingmenu.floatingmenubutton.FloatingMenuButton>
+    </RelativeLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/layout_overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#AA000000"
+        android:clickable="true"
+        android:focusable="true"
+        android:padding="@dimen/padding10"
+        android:visibility="invisible">
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/layout_galeri_selected"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="@dimen/padding5"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/btn_next"
+            app:layout_constraintStart_toEndOf="@+id/btn_previous"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/img_galeri_selected"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/artis" />
+
+        </android.support.v7.widget.CardView>
+
+        <Button
+            android:id="@+id/btn_next"
+            android:layout_width="@dimen/small_button_size"
+            android:layout_height="@dimen/small_button_size"
+            android:layout_marginEnd="@dimen/padding10"
+            android:background="@drawable/next"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/btn_previous"
+            android:layout_width="@dimen/small_button_size"
+            android:layout_height="@dimen/small_button_size"
+            android:background="@drawable/previous"
+            android:layout_marginStart="@dimen/padding10"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </android.support.constraint.ConstraintLayout>
+</FrameLayout>

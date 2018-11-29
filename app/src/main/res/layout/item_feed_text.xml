@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#fff"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/layout_user"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/img_user"
+            android:layout_width="@dimen/profile_size_small"
+            android:layout_height="@dimen/profile_size_small"
+            android:layout_margin="@dimen/padding20" />
+
+        <TextView
+            android:id="@+id/txt_user"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/img_user"
+            android:layout_alignTop="@id/img_user"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textSize="@dimen/text16"
+            android:textStyle="bold"
+            android:layout_gravity="center"
+            android:layout_marginStart="@dimen/padding5"/>
+
+        <TextView
+            android:id="@+id/txt_detail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/img_user"
+            android:layout_below="@id/txt_user"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textSize="@dimen/text10"
+            android:layout_gravity="center"
+            android:layout_marginStart="@dimen/padding5"
+            android:layout_marginBottom="@dimen/padding2"/>
+
+        <TextView
+            android:id="@+id/txt_tanggal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/img_user"
+            android:layout_below="@id/txt_detail"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textSize="@dimen/text10"
+            android:layout_marginStart="@dimen/padding5"
+            android:layout_gravity="center" />
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/txt_status"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/padding20"
+        android:layout_marginEnd="@dimen/padding20"
+        android:layout_marginBottom="@dimen/padding20"
+        android:text="@string/lorem_ipsum"/>
+
+    <include layout="@layout/view_divider_gap"/>
+
+</LinearLayout>
