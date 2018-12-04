@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -13,7 +11,6 @@ import android.support.v7.widget.AppCompatRatingBar;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,6 +35,7 @@ import id.net.gmedia.selby.R;
 import id.net.gmedia.selby.Model.UlasanModel;
 import id.net.gmedia.selby.Util.ApiVolleyManager;
 import id.net.gmedia.selby.Util.Converter;
+import id.net.gmedia.selby.Util.DialogFactory;
 
 public class FragmentUlasan extends Fragment {
 
@@ -176,53 +174,41 @@ public class FragmentUlasan extends Fragment {
 
     public void bukaDialogReview(){
         //Buka dialog
-        if(dialogReview == null){
-            DisplayMetrics metrics = getResources().getDisplayMetrics();
+        dialogReview = DialogFactory.getInstance().createDialog(activity, R.layout.popup_review, 90, 60);
 
-            int device_TotalWidth = metrics.widthPixels;
-            int device_TotalHeight = metrics.heightPixels;
+        final AppCompatRatingBar dialog_rating_barang = dialogReview.findViewById(R.id.rating_barang);
+        final EditText dialog_txt_ulasan = dialogReview.findViewById(R.id.txt_ulasan);
+        Button btn_kirim = dialogReview.findViewById(R.id.btn_kirim);
 
-            dialogReview = new Dialog(activity, R.style.PopupTheme);
-            dialogReview.setContentView(R.layout.popup_review);
-            if(dialogReview.getWindow() != null){
-                dialogReview.getWindow().setLayout(device_TotalWidth * 90 / 100 , device_TotalHeight * 60 / 100); // set here your value
-                dialogReview.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            }
-
-            final AppCompatRatingBar dialog_rating_barang = dialogReview.findViewById(R.id.rating_barang);
-            final EditText dialog_txt_ulasan = dialogReview.findViewById(R.id.txt_ulasan);
-            Button btn_kirim = dialogReview.findViewById(R.id.btn_kirim);
-
-            btn_kirim.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(dialog_txt_ulasan.getText().toString().equals("")){
-                        Toast.makeText(activity, "Isi ulasan terlebih dahulu", Toast.LENGTH_SHORT).show();
-                    }
-                    else if(dialog_rating_barang.getRating() == 0){
-                        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-                        builder.setTitle("Anda tidak memberi rating");
-                        builder.setMessage("Yakin ingin memberi rating kosong?");
-                        builder.setPositiveButton("Ya", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                kirimUlasan(dialog_rating_barang.getRating(), dialog_txt_ulasan.getText().toString());
-                            }
-                        });
-                        builder.setNegativeButton("Tidak", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.cancel();
-                            }
-                        });
-                        builder.create().show();
-                    }
-                    else{
-                        kirimUlasan(dialog_rating_barang.getRating(), dialog_txt_ulasan.getText().toString());
-                    }
+        btn_kirim.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(dialog_txt_ulasan.getText().toString().equals("")){
+                    Toast.makeText(activity, "Isi ulasan terlebih dahulu", Toast.LENGTH_SHORT).show();
                 }
-            });
-        }
+                else if(dialog_rating_barang.getRating() == 0){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+                    builder.setTitle("Anda tidak memberi rating");
+                    builder.setMessage("Yakin ingin memberi rating kosong?");
+                    builder.setPositiveButton("Ya", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            kirimUlasan(dialog_rating_barang.getRating(), dialog_txt_ulasan.getText().toString());
+                        }
+                    });
+                    builder.setNegativeButton("Tidak", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+                    builder.create().show();
+                }
+                else{
+                    kirimUlasan(dialog_rating_barang.getRating(), dialog_txt_ulasan.getText().toString());
+                }
+            }
+        });
 
         dialogReview.show();
     }
@@ -280,18 +266,7 @@ public class FragmentUlasan extends Fragment {
 
     public void balasUlasan(final String id_ulasan){
         //Buka dialog balas ulasan
-        DisplayMetrics metrics = getResources().getDisplayMetrics();
-
-        int device_TotalWidth = metrics.widthPixels;
-        int device_TotalHeight = metrics.heightPixels;
-
-        dialogBalas = new Dialog(activity, R.style.PopupTheme);
-        dialogBalas.setContentView(R.layout.popup_review_balas);
-        if(dialogBalas.getWindow() != null){
-            dialogBalas.getWindow().setLayout(device_TotalWidth * 90 / 100 , device_TotalHeight * 60 / 100); // set here your value
-            dialogBalas.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        }
-
+        dialogBalas = DialogFactory.getInstance().createDialog(activity, R.layout.popup_review_balas, 90, 60);
         final EditText dialog_txt_ulasan = dialogBalas.findViewById(R.id.txt_ulasan);
         Button btn_kirim = dialogBalas.findViewById(R.id.btn_kirim);
 

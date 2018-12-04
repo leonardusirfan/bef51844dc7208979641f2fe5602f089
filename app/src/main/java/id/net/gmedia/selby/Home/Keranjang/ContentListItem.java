@@ -8,9 +8,9 @@ public class ContentListItem extends BaseListItem {
     private int jumlah;
     private boolean selected;
 
-    public ContentListItem(BarangModel item){
+    public ContentListItem(BarangModel item, int jumlah){
         this.item = item;
-        jumlah = 1;
+        this.jumlah = jumlah;
     }
 
     public BarangModel getItem() {

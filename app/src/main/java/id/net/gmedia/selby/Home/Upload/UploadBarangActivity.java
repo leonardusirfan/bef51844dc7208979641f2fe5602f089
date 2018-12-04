@@ -5,15 +5,12 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -45,6 +42,7 @@ import id.net.gmedia.selby.Model.UploadModel;
 import id.net.gmedia.selby.R;
 import id.net.gmedia.selby.Util.ApiVolleyManager;
 import id.net.gmedia.selby.Util.Converter;
+import id.net.gmedia.selby.Util.DialogFactory;
 
 public class UploadBarangActivity extends AppCompatActivity {
 
@@ -223,19 +221,8 @@ public class UploadBarangActivity extends AppCompatActivity {
     }
 
     private void initDialog(){
-        //Inisialisasi Dialog, dan menentukan jenis barang yang diinput (reguler atau lelang)
-        DisplayMetrics metrics = getResources().getDisplayMetrics();
-
-        int device_TotalWidth = metrics.widthPixels;
-        int device_TotalHeight = metrics.heightPixels;
-
-        dialog = new Dialog(this, R.style.PopupTheme);
-        dialog.setContentView(R.layout.popup_tambah_barang);
+        dialog = DialogFactory.getInstance().createDialog(this, R.layout.popup_tambah_barang, 70, 45);
         dialog.setCancelable(false);
-        if(dialog.getWindow() != null){
-            dialog.getWindow().setLayout(device_TotalWidth * 70 / 100 , device_TotalHeight * 45 / 100); // set here your value
-            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        }
 
         TextView txt_cancel = dialog.findViewById(R.id.txt_cancel);
         Button btn_reguler, btn_lelang;

@@ -1,88 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<android.support.design.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/blue"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#fff"
+    app:cardCornerRadius="@dimen/padding10">
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="@dimen/padding15"
-        android:gravity="center"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/dark_grey"
-            android:layout_margin="@dimen/padding10"
-            android:padding="@dimen/padding5">
+            android:layout_height="match_parent"
+            android:padding="@dimen/padding15"
+            android:gravity="center"
+            android:orientation="vertical">
 
             <TextView
-                android:id="@+id/txt_kurang"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="-"
-                android:textSize="@dimen/text24"
-                android:textColor="#000"
-                android:textStyle="bold"
-                android:paddingTop="@dimen/padding10"
-                android:paddingBottom="@dimen/padding10"
-                android:paddingStart="@dimen/padding20"
-                android:paddingEnd="@dimen/padding20"
+                android:layout_margin="@dimen/padding10"
+                android:text="Jumlah barang yang ingin anda beli"
                 android:gravity="center"
-                android:background="@color/dark_grey"/>
+                android:textSize="@dimen/text16"/>
 
-            <TextView
-                android:id="@+id/txt_jumlah"
-                android:layout_width="0dp"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.5"
-                android:textSize="@dimen/text24"
-                android:text="1"
+                android:layout_margin="@dimen/padding10"
                 android:gravity="center"
+                android:padding="@dimen/padding5">
+
+                <TextView
+                    android:id="@+id/txt_kurang"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="-"
+                    android:textSize="@dimen/text24"
+                    android:textColor="#000"
+                    android:textStyle="bold"
+                    android:paddingTop="@dimen/padding10"
+                    android:paddingBottom="@dimen/padding10"
+                    android:paddingStart="@dimen/padding20"
+                    android:paddingEnd="@dimen/padding20"
+                    android:gravity="center"
+                    android:background="@drawable/style_rectangle_rounded_bordered_white_bold"/>
+
+                <TextView
+                    android:id="@+id/txt_jumlah"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text24"
+                    android:layout_weight="0.5"
+                    android:text="1"
+                    android:gravity="center"
+                    android:textStyle="bold"
+                    android:padding="@dimen/padding10"
+                    android:background="#fff"/>
+
+                <TextView
+                    android:id="@+id/txt_tambah"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="+"
+                    android:textSize="@dimen/text24"
+                    android:textColor="#000"
+                    android:textStyle="bold"
+                    android:paddingTop="@dimen/padding10"
+                    android:paddingBottom="@dimen/padding10"
+                    android:paddingStart="@dimen/padding20"
+                    android:paddingEnd="@dimen/padding20"
+                    android:gravity="center"
+                    android:background="@drawable/style_rectangle_rounded_bordered_white_bold"/>
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btn_tambah"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/padding15"
+                android:text="TAMBAH"
+                android:layout_gravity="center"
+                android:textColor="#fff"
                 android:textStyle="bold"
+                android:textSize="@dimen/text20"
                 android:padding="@dimen/padding10"
-                android:background="#fff"/>
+                android:background="@drawable/style_rectangle_rounded_blue"/>
 
-            <TextView
-                android:id="@+id/txt_tambah"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="+"
-                android:textSize="@dimen/text24"
-                android:textColor="#000"
-                android:textStyle="bold"
-                android:paddingTop="@dimen/padding10"
-                android:paddingBottom="@dimen/padding10"
-                android:paddingStart="@dimen/padding20"
-                android:paddingEnd="@dimen/padding20"
-                android:gravity="center"
-                android:background="@color/dark_grey"/>
         </LinearLayout>
 
-        <Button
-            android:id="@+id/btn_tambah"
+        <ProgressBar
+            android:id="@+id/bar_loading"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/padding15"
-            android:text="TAMBAH"
-            android:layout_gravity="center"
-            android:textColor="#fff"
-            android:textStyle="bold"
-            android:textSize="@dimen/text20"
-            android:padding="@dimen/padding20"
-            android:background="#000"/>
+            android:focusable="true"
+            android:visibility="invisible"
+            android:layout_gravity="center_vertical"/>
 
-    </LinearLayout>
+    </FrameLayout>
 
-    <ProgressBar
-        android:id="@+id/bar_loading"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:focusable="true"
-        android:visibility="invisible"
-        android:layout_gravity="center_vertical"/>
-
-</FrameLayout>
+</android.support.design.card.MaterialCardView>

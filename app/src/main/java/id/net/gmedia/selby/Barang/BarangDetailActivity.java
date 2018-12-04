@@ -2,6 +2,8 @@ package id.net.gmedia.selby.Barang;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.TabLayout;
@@ -9,7 +11,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
@@ -23,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.Priority;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -33,12 +35,15 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import id.net.gmedia.selby.Home.HomeActivity;
 import id.net.gmedia.selby.Util.AppSharedPreferences;
 import id.net.gmedia.selby.Util.Constant;
 import id.net.gmedia.selby.LoginActivity;
 import id.net.gmedia.selby.R;
 import id.net.gmedia.selby.Util.ApiVolleyManager;
 import id.net.gmedia.selby.Util.Converter;
+import id.net.gmedia.selby.Util.CountDrawable;
+import id.net.gmedia.selby.Util.DialogFactory;
 import id.net.gmedia.selby.Util.ImageContainer;
 import id.net.gmedia.selby.Util.ImageSliderAdapter;
 import id.net.gmedia.selby.Util.ImageSliderViewPager;
@@ -191,7 +196,6 @@ public class BarangDetailActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(String result) {
                         try{
-                            System.out.println(result);
                             JSONObject jsonresult = new JSONObject(result);
                             int status = jsonresult.getJSONObject("metadata").getInt("status");
                             String message = jsonresult.getJSONObject("metadata").getString("message");
@@ -310,7 +314,7 @@ public class BarangDetailActivity extends AppCompatActivity {
                             if(!barang.getJSONObject("penjual").getString("uid").equals(FirebaseAuth.getInstance().getUid())){
                                 layout_pelapak.setVisibility(View.VISIBLE);
                             }
-                            Glide.with(BarangDetailActivity.this).load(barang.getJSONObject("penjual").getString("image")).apply(new RequestOptions().circleCrop()).thumbnail(0.1f).into((ImageView)findViewById(R.id.img_artis));
+                            Glide.with(BarangDetailActivity.this).load(barang.getJSONObject("penjual").getString("image")).apply(new RequestOptions().circleCrop().priority(Priority.LOW)).thumbnail(0.1f).into((ImageView)findViewById(R.id.img_artis));
                             follow = barang.getJSONObject("penjual").getInt("followed") == 1;
                             if(follow){
                                 btn_follow.setText(R.string.unfollow);
@@ -353,16 +357,7 @@ public class BarangDetailActivity extends AppCompatActivity {
 
     private void tambahKeranjang(){
         //Memunculkan dialog dan menambahkan barang ke keranjang
-        DisplayMetrics metrics = getResources().getDisplayMetrics();
-
-        int device_TotalWidth = metrics.widthPixels;
-        int device_TotalHeight = metrics.heightPixels;
-
-        final Dialog dialog = new Dialog(BarangDetailActivity.this, R.style.PopupTheme);
-        dialog.setContentView(R.layout.popup_tambah);
-        if(dialog.getWindow() != null){
-            dialog.getWindow().setLayout(device_TotalWidth * 80 / 100 , device_TotalHeight * 50 / 100); // set here your value
-        }
+        final Dialog dialog = DialogFactory.getInstance().createDialog(BarangDetailActivity.this, R.layout.popup_tambah, 70, 45);
 
         Button btn_tambah = dialog.findViewById(R.id.btn_tambah);
         TextView txt_kurang, txt_tambah;
@@ -529,10 +524,39 @@ public class BarangDetailActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        //setCount(String.valueOf(1));
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    /*public void setCount(String count) {
+        MenuItem menuItem = menu.findItem(R.id.action_keranjang);
+        LayerDrawable icon = (LayerDrawable) menuItem.getIcon();
+
+        CountDrawable badge;
+
+        // Reuse drawable if possible
+        Drawable reuse = icon.findDrawableByLayerId(R.id.ic_group_count);
+        if (reuse instanceof CountDrawable) {
+            badge = (CountDrawable) reuse;
+        } else {
+            badge = new CountDrawable(this, R.dimen.text12, R.color.orange);
+        }
+
+        badge.setCount(count);
+        icon.mutate();
+        icon.setDrawableByLayerId(R.id.ic_group_count, badge);
+    }*/
+
+    @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
         switch (item.getItemId()){
             case R.id.action_keranjang:
-                System.out.println("Keranjang");
+                Intent i = new Intent(this, HomeActivity.class);
+                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                i.putExtra("start", 3);
+                startActivity(i);
                 return true;
             case R.id.action_favorit:
                 if(!favorit){
@@ -550,9 +574,21 @@ public class BarangDetailActivity extends AppCompatActivity {
                                     String message = jsonresult.getJSONObject("metadata").getString("message");
 
                                     if(status == 200){
-                                        Toast.makeText(BarangDetailActivity.this, "Barang berhasil ditambah", Toast.LENGTH_SHORT).show();
+                                        //Toast.makeText(BarangDetailActivity.this, "Barang berhasil ditambah", Toast.LENGTH_SHORT).show();
+                                        final Dialog dialog = DialogFactory.getInstance().createDialog(BarangDetailActivity.this, R.layout.popup_message, 65, 30);
+                                        TextView txt_pesan = dialog.findViewById(R.id.txt_pesan);
+                                        dialog.findViewById(R.id.img_close).setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                dialog.dismiss();
+                                            }
+                                        });
+
+                                        //img_pesan.setImageResource(R.drawable.lovepink);
                                         favorit = true;
                                         item.setIcon(R.drawable.ic_favorit_isi);
+                                        txt_pesan.setText(R.string.tambah_favorit);
+                                        dialog.show();
                                     }
                                     else if(status == 401){
                                         startActivity(new Intent(BarangDetailActivity.this, LoginActivity.class));

@@ -2,15 +2,12 @@ package id.net.gmedia.selby.Barang;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,13 +30,13 @@ import id.net.gmedia.selby.Model.UlasanModel;
 import id.net.gmedia.selby.Util.ApiVolleyManager;
 import id.net.gmedia.selby.Util.Constant;
 import id.net.gmedia.selby.Util.Converter;
+import id.net.gmedia.selby.Util.DialogFactory;
 
 
 public class FragmentDiskusiBarang extends Fragment {
 
     //Variabel penampung activity
     private Activity activity;
-    private boolean needLoad = true;
 
     //Variabel penampung id barang
     private String id = "";
@@ -76,18 +73,7 @@ public class FragmentDiskusiBarang extends Fragment {
 
     public void tambahDiskusi(){
         //Buka dialog tambah diskusi
-        DisplayMetrics metrics = getResources().getDisplayMetrics();
-
-        int device_TotalWidth = metrics.widthPixels;
-        int device_TotalHeight = metrics.heightPixels;
-
-        dialogDiskusi = new Dialog(activity, R.style.PopupTheme);
-        dialogDiskusi.setContentView(R.layout.popup_review_balas);
-        if(dialogDiskusi.getWindow() != null){
-            dialogDiskusi.getWindow().setLayout(device_TotalWidth * 90 / 100 , device_TotalHeight * 60 / 100); // set here your value
-            dialogDiskusi.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        }
-
+        dialogDiskusi = DialogFactory.getInstance().createDialog(activity, R.layout.popup_review_balas, 90, 60);
         final EditText dialog_txt_ulasan = dialogDiskusi.findViewById(R.id.txt_ulasan);
         Button btn_kirim = dialogDiskusi.findViewById(R.id.btn_kirim);
 
@@ -155,18 +141,7 @@ public class FragmentDiskusiBarang extends Fragment {
 
     public void balasDiskusi(final String id_diskusi){
         //Buka dialog balas diskusi
-        DisplayMetrics metrics = getResources().getDisplayMetrics();
-
-        int device_TotalWidth = metrics.widthPixels;
-        int device_TotalHeight = metrics.heightPixels;
-
-        dialogBalas = new Dialog(activity, R.style.PopupTheme);
-        dialogBalas.setContentView(R.layout.popup_review_balas);
-        if(dialogBalas.getWindow() != null){
-            dialogBalas.getWindow().setLayout(device_TotalWidth * 90 / 100 , device_TotalHeight * 60 / 100); // set here your value
-            dialogBalas.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        }
-
+        dialogBalas = DialogFactory.getInstance().createDialog(activity, R.layout.popup_review_balas, 90, 60);
         final EditText dialog_txt_ulasan = dialogBalas.findViewById(R.id.txt_ulasan);
         Button btn_kirim = dialogBalas.findViewById(R.id.btn_kirim);
 

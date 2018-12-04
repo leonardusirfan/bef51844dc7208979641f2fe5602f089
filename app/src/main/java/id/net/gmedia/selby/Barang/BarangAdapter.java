@@ -5,7 +5,6 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,6 +32,7 @@ import id.net.gmedia.selby.Model.BarangModel;
 import id.net.gmedia.selby.R;
 import id.net.gmedia.selby.Util.ApiVolleyManager;
 import id.net.gmedia.selby.Util.Converter;
+import id.net.gmedia.selby.Util.DialogFactory;
 
 public class BarangAdapter extends RecyclerView.Adapter<BarangAdapter.BarangViewHolder> {
 
@@ -68,16 +68,7 @@ public class BarangAdapter extends RecyclerView.Adapter<BarangAdapter.BarangView
         barangViewHolder.btn_keranjang.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DisplayMetrics metrics = activity.getResources().getDisplayMetrics();
-
-                int device_TotalWidth = metrics.widthPixels;
-                int device_TotalHeight = metrics.heightPixels;
-
-                final Dialog dialog = new Dialog(activity, R.style.PopupTheme);
-                dialog.setContentView(R.layout.popup_tambah);
-                if(dialog.getWindow() != null){
-                    dialog.getWindow().setLayout(device_TotalWidth * 80 / 100 , device_TotalHeight * 50 / 100); // set here your value
-                }
+                final Dialog dialog = DialogFactory.getInstance().createDialog(activity, R.layout.popup_tambah, 70, 45);
 
                 Button btn_tambah = dialog.findViewById(R.id.btn_tambah);
                 TextView txt_kurang, txt_tambah;
@@ -177,9 +168,19 @@ public class BarangAdapter extends RecyclerView.Adapter<BarangAdapter.BarangView
                                     String message = jsonresult.getJSONObject("metadata").getString("message");
 
                                     if(status == 200){
-                                        Toast.makeText(activity, "Barang berhasil ditambahkan", Toast.LENGTH_SHORT).show();
+                                        //Toast.makeText(activity, "Barang berhasil ditambah", Toast.LENGTH_SHORT).show();
+                                        final Dialog dialog = DialogFactory.getInstance().createDialog(activity, R.layout.popup_message, 65, 30);
+                                        TextView txt_pesan = dialog.findViewById(R.id.txt_pesan);
+                                        dialog.findViewById(R.id.img_close).setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                dialog.dismiss();
+                                            }
+                                        });
                                         barang.setFavorit(true);
                                         barangViewHolder.img_favorit.setImageResource(R.drawable.lovepink);
+                                        txt_pesan.setText(R.string.tambah_favorit);
+                                        dialog.show();
                                     }
                                     else if(status == 401){
                                         activity.startActivity(new Intent(activity, LoginActivity.class));

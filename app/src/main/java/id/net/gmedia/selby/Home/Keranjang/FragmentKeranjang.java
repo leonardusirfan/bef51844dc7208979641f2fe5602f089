@@ -263,19 +263,20 @@ public class FragmentKeranjang extends Fragment {
                             List<BarangModel> barang = new ArrayList<>();
 
                             for(int j = 0; j < listBarang.length(); j++){
-                                barang.add(new BarangModel(listBarang.getJSONObject(j).getString("id"),listBarang.getJSONObject(j).getString("barang"), listBarang.getJSONObject(j).getString("image"),listBarang.getJSONObject(j).getDouble("harga")));
+                                BarangModel barangbelanja = new BarangModel(listBarang.getJSONObject(j).getString("id"),listBarang.getJSONObject(j).getString("barang"), listBarang.getJSONObject(j).getString("image"),listBarang.getJSONObject(j).getDouble("harga"));
+                                barangbelanja.setJumlah(listBarang.getJSONObject(j).getInt("jumlah"));
+                                barang.add(barangbelanja);
                             }
 
                             listKeranjang.put(pelapak, barang);
                         }
 
                         for (ArtisModel p : listKeranjang.keySet()) {
-                            System.out.println("artis " + p.getNama());
                             HeaderListItem header = new HeaderListItem(p);
                             listItem.add(header);
 
                             for (BarangModel i : Objects.requireNonNull(listKeranjang.get(p))) {
-                                ContentListItem item = new ContentListItem(i);
+                                ContentListItem item = new ContentListItem(i, i.getJumlah());
                                 listItem.add(item);
                             }
 

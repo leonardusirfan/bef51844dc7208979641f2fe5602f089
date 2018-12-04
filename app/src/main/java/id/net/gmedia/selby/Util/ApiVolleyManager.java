@@ -16,6 +16,7 @@ import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class ApiVolleyManager {
     public static int METHOD_GET = Request.Method.GET;
@@ -62,7 +63,7 @@ public class ApiVolleyManager {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
                 for(String key : header.keySet()){
-                    params.put(key, header.get(key));
+                    params.put(key, Objects.requireNonNull(header.get(key)));
                 }
                 return params;
             }

@@ -6,7 +6,7 @@
 
     <item
         android:id="@+id/action_keranjang"
-        android:icon="@drawable/ic_keranjang"
+        android:icon="@drawable/style_badge"
         android:orderInCategory="300"
         android:title="Keranjang"
         app:showAsAction="ifRoom" />

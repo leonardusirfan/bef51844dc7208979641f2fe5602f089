@@ -10,6 +10,8 @@ public class BarangModel {
     private double harga = 0;
     private boolean favorit = false;
 
+    private int jumlah = 0;
+
     public BarangModel(String id, String nama, String url){
         this.id = id;
         this.nama = nama;
@@ -29,6 +31,14 @@ public class BarangModel {
         this.url = url;
         this.harga = harga;
         this.favorit = favorit;
+    }
+
+    public void setJumlah(int jumlah) {
+        this.jumlah = jumlah;
+    }
+
+    public int getJumlah() {
+        return jumlah;
     }
 
     public String getId() {

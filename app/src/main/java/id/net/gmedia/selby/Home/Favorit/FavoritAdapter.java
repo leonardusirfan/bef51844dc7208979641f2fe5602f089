@@ -32,6 +32,7 @@ import id.net.gmedia.selby.Model.BarangModel;
 import id.net.gmedia.selby.R;
 import id.net.gmedia.selby.Util.ApiVolleyManager;
 import id.net.gmedia.selby.Util.Converter;
+import id.net.gmedia.selby.Util.DialogFactory;
 
 public class FavoritAdapter extends RecyclerView.Adapter<FavoritAdapter.FavoritViewHolder> {
 
@@ -61,16 +62,7 @@ public class FavoritAdapter extends RecyclerView.Adapter<FavoritAdapter.FavoritV
         favoritViewHolder.btn_keranjang.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DisplayMetrics metrics = activity.getResources().getDisplayMetrics();
-
-                int device_TotalWidth = metrics.widthPixels;
-                int device_TotalHeight = metrics.heightPixels;
-
-                final Dialog dialog = new Dialog(activity, R.style.PopupTheme);
-                dialog.setContentView(R.layout.popup_tambah);
-                if(dialog.getWindow() != null){
-                    dialog.getWindow().setLayout(device_TotalWidth * 80 / 100 , device_TotalHeight * 50 / 100); // set here your value
-                }
+                final Dialog dialog = DialogFactory.getInstance().createDialog(activity, R.layout.popup_tambah, 70, 45);
 
                 Button btn_tambah = dialog.findViewById(R.id.btn_tambah);
                 TextView txt_kurang, txt_tambah;

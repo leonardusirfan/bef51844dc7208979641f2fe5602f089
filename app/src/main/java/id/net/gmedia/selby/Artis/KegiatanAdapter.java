@@ -11,7 +11,6 @@ import java.util.List;
 
 import id.net.gmedia.selby.Model.KegiatanModel;
 import id.net.gmedia.selby.R;
-import id.net.gmedia.selby.Util.Constant;
 import id.net.gmedia.selby.Util.Converter;
 
 public class KegiatanAdapter extends RecyclerView.Adapter<KegiatanAdapter.KegiatanViewHolder> {

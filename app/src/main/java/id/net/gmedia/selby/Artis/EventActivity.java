@@ -21,6 +21,7 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.gson.Gson;
+import com.otaliastudios.zoom.ZoomLayout;
 
 import java.util.Objects;
 
@@ -40,6 +41,7 @@ public class EventActivity extends AppCompatActivity {
     private ImageView img_galeri_selected;
     private ConstraintLayout layout_overlay;
     private CardView layout_galeri_selected;
+    private ZoomLayout layout_zoom;
 
     //Variabel UI galeri (animasi, foto tampil)
     private Animation anim_popin, anim_popout;
@@ -92,6 +94,7 @@ public class EventActivity extends AppCompatActivity {
         btn_previous = findViewById(R.id.btn_previous);
         layout_galeri_selected = findViewById(R.id.layout_galeri_selected);
         img_galeri_selected = findViewById(R.id.img_galeri_selected);
+        layout_zoom = findViewById(R.id.layout_zoom);
 
         //Inisialisasi popup detail foto galeri
         DisplayMetrics displayMetrics = new DisplayMetrics();
@@ -123,6 +126,7 @@ public class EventActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 layout_galeri_selected.startAnimation(anim_popout);
+                //img_galeri_selected.startAnimation(anim_popout);
             }
         });
 
@@ -192,10 +196,12 @@ public class EventActivity extends AppCompatActivity {
         //Fungsi untuk menampilkan foto secara popup
         selectedImage = position;
         Glide.with(this).load(fragmentGaleri.listImage.get(selectedImage)).apply(new RequestOptions().override(imgWidth, imgHeight)).into(img_galeri_selected);
+        layout_zoom.zoomTo(1, false);
         layout_overlay.setVisibility(View.VISIBLE);
         detail = true;
 
         layout_galeri_selected.startAnimation(anim_popin);
+        //img_galeri_selected.startAnimation(anim_popin);
     }
 
 
@@ -218,6 +224,7 @@ public class EventActivity extends AppCompatActivity {
         else{
             //jika sedang tampil popup foto galeri, maka tutup popup terlebih dahulu
             layout_galeri_selected.startAnimation(anim_popout);
+            //img_galeri_selected.startAnimation(anim_popout);
         }
     }
 

@@ -116,7 +116,6 @@ public class KeranjangAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
             Glide.with(context).load(item.getItem().getUrl()).transition(DrawableTransitionOptions.withCrossFade()).thumbnail(0.3f).into((viewholder.img_item));
 
-            viewholder.txt_jumlah.setText(String.valueOf(item.getJumlah()));
             viewholder.txt_plus.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

@@ -38,6 +38,7 @@ import id.net.gmedia.selby.LoginActivity;
 import id.net.gmedia.selby.R;
 import id.net.gmedia.selby.Util.ApiVolleyManager;
 import id.net.gmedia.selby.Util.Converter;
+import id.net.gmedia.selby.Util.DialogFactory;
 import id.net.gmedia.selby.Util.ImageContainer;
 import id.net.gmedia.selby.Util.ImageSliderAdapter;
 import id.net.gmedia.selby.Util.ImageSliderViewPager;
@@ -306,17 +307,7 @@ public class LelangDetailActivity extends AppCompatActivity {
 
     private void bid(){
         //Menampilkan dialog bid
-        DisplayMetrics metrics = getResources().getDisplayMetrics();
-
-        int device_TotalWidth = metrics.widthPixels;
-        int device_TotalHeight = metrics.heightPixels;
-
-        final Dialog dialog = new Dialog(LelangDetailActivity.this, R.style.PopupTheme);
-        dialog.setContentView(R.layout.popup_bid);
-        if(dialog.getWindow() != null){
-            dialog.getWindow().setLayout(device_TotalWidth * 80 / 100 , device_TotalHeight * 50 / 100); // set here your value
-        }
-
+        final Dialog dialog = DialogFactory.getInstance().createDialog(LelangDetailActivity.this, R.layout.popup_bid, 75, 45);
         final TextView txt_bid = dialog.findViewById(R.id.txt_bid);
         Button btn_bid = dialog.findViewById(R.id.btn_bid);
 

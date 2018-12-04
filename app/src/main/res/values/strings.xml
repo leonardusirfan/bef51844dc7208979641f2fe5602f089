@@ -19,6 +19,7 @@
     <string name="keranjang_kosong">"Keranjang anda masih kosong"</string>
     <string name="foto_artis_kosong">"Foto artis kosong"</string>
     <string name="kegiatan_artis_kosong">"Kegiatan artis kosong"</string>
+    <string name="tambah_favorit">"Barang ditambahkan ke favorit"</string>
 
     <string name="user">User</string>
     <string name="bid">Bid</string>

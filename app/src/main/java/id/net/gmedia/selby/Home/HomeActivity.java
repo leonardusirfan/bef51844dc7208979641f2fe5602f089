@@ -29,6 +29,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.fxn.pix.Pix;
 import com.google.gson.Gson;
+import com.otaliastudios.zoom.ZoomLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,6 +83,7 @@ public class HomeActivity extends AppCompatActivity {
     private ImageView img_galeri_selected;
     private ConstraintLayout layout_overlay;
     private CardView layout_galeri_selected;
+    private ZoomLayout layout_zoom;
 
     //Variabel UI galeri (animasi, foto tampil)
     private Animation anim_popin, anim_popout;
@@ -111,6 +113,7 @@ public class HomeActivity extends AppCompatActivity {
         btn_previous = findViewById(R.id.btn_previous);
         layout_galeri_selected = findViewById(R.id.layout_galeri_selected);
         img_galeri_selected = findViewById(R.id.img_galeri_selected);
+        layout_zoom = findViewById(R.id.layout_zoom);
 
         int start_page = getIntent().getIntExtra("start", 0);
 
@@ -292,13 +295,14 @@ public class HomeActivity extends AppCompatActivity {
             case 1:
                 Objects.requireNonNull(tab_home.getTabAt(1)).select();
                 break;
+            case 3:
+                Objects.requireNonNull(tab_home.getTabAt(3)).select();
+                break;
             case 4:
                 Objects.requireNonNull(tab_home.getTabAt(4)).select();
                 break;
                 default:loadFragment(fragmentArtis);
         }
-
-
     }
 
     private void loadFragment(Fragment fragment){
@@ -317,6 +321,7 @@ public class HomeActivity extends AppCompatActivity {
 
         selectedImage = position;
         Glide.with(this).load(listImage.get(selectedImage)).apply(new RequestOptions().override(imgWidth, imgHeight)).into(img_galeri_selected);
+        layout_zoom.zoomTo(1, false);
         layout_overlay.setVisibility(View.VISIBLE);
         detail = true;
 

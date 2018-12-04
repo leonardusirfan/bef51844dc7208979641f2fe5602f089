@@ -23,10 +23,6 @@ public class FragmentDetailBarang extends Fragment {
 
         //Mengisi tampilan dengan data dari activity
         if(getArguments() != null){
-            System.out.println(getArguments().getString("kategori"));
-            System.out.println(getArguments().getString("berat"));
-            System.out.println(getArguments().getString("merk"));
-
             txt_deskripsi.setText(getArguments().getString("deskripsi"));
             txt_kategori.setText(getArguments().getString("kategori"));
             txt_berat.setText(getArguments().getString("berat"));
