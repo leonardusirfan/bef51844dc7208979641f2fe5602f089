@@ -6,14 +6,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".Home.Upload.UploadKegiatanActivity">
+    android:background="#fff"
+    tools:context=".Upload.UploadKegiatanActivity">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         app:layout_collapseMode="pin"
-        android:background="@color/blue"
+        android:background="@color/gold"
         app:titleTextColor="#fff"
         android:theme="@style/AppTheme.ActionBar"
         android:elevation="0dp"/>
@@ -23,7 +24,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#fff"
-        android:hint="Judul"
+        android:hint="@string/upload_kegiatan_judul"
         android:padding="@dimen/padding10"
         android:textAlignment="center"
         android:textSize="@dimen/text16" />
@@ -50,7 +51,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#fff"
-            android:hint="Tempat"
+            android:hint="@string/upload_kegiatan_tempat"
             android:padding="@dimen/padding10"
             android:textSize="@dimen/text16" />
 
@@ -78,7 +79,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#fff"
-            android:hint="Tanggal"
+            android:hint="@string/upload_kegiatan_waktu"
             android:padding="@dimen/padding10"
             android:textSize="@dimen/text16" />
 
@@ -106,7 +107,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#fff"
-            android:hint="Deskripsi"
+            android:hint="@string/upload_kegiatan_deskripsi"
             android:padding="@dimen/padding10"
             android:textSize="@dimen/text16" />
     </LinearLayout>

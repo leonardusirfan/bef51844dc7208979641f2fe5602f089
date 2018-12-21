@@ -2,7 +2,6 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -14,94 +13,86 @@
         android:elevation="@dimen/padding5"
         android:layout_alignParentTop="true"/>
 
-    <ScrollView
+    <android.support.constraint.ConstraintLayout
         android:id="@+id/layout_header"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_above="@id/txt_info_bid"
-        android:layout_below="@id/toolbar"
-        tools:context=".Barang.ActivityBidList">
-
-        <android.support.constraint.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+        android:layout_below="@id/toolbar">
 
 
-            <TextView
-                android:id="@+id/textView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/padding20"
-                android:layout_marginStart="@dimen/padding10"
-                android:layout_marginTop="@dimen/padding10"
-                android:text="Bid List"
-                android:textColor="#000"
-                android:textSize="@dimen/text20"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+        <!--<TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/padding20"
+            android:layout_marginStart="@dimen/padding10"
+            android:layout_marginTop="@dimen/padding10"
+            android:text="Bid List"
+            android:textColor="#000"
+            android:textSize="@dimen/text20"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />-->
 
-            <android.support.design.card.MaterialCardView
-                android:id="@+id/layout_rv_bid_list"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/padding10"
-                android:layout_marginStart="@dimen/padding10"
-                android:layout_marginBottom="@dimen/padding10"
-                android:layout_marginTop="@dimen/padding20"
-                app:cardElevation="0dp"
-                app:layout_constraintEnd_toStartOf="@+id/guideline4"
-                app:layout_constraintStart_toStartOf="@+id/guideline2"
-                app:layout_constraintTop_toBottomOf="@+id/textView"
-                app:strokeColor="#cecece"
-                app:strokeWidth="@dimen/padding1">
+        <android.support.design.card.MaterialCardView
+            android:id="@+id/layout_rv_bid_list"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/padding10"
+            android:layout_marginTop="@dimen/padding20"
+            android:layout_marginEnd="@dimen/padding10"
+            app:cardElevation="0dp"
+            app:layout_constraintEnd_toStartOf="@+id/guideline4"
+            app:layout_constraintStart_toStartOf="@+id/guideline2"
+            app:layout_constraintTop_toTopOf="parent"
+            app:strokeColor="#cecece"
+            app:strokeWidth="@dimen/padding1">
 
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/rv_bid"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-            </android.support.design.card.MaterialCardView>
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_bid"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </android.support.design.card.MaterialCardView>
 
-            <ImageView
-                android:id="@+id/imageView"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_marginEnd="@dimen/padding10"
-                app:layout_constraintBottom_toBottomOf="@+id/textView"
-                app:layout_constraintDimensionRatio="1:1"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/textView"
-                app:srcCompat="@drawable/akun" />
+        <!--<ImageView
+            android:id="@+id/imageView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginEnd="@dimen/padding10"
+            app:layout_constraintBottom_toBottomOf="@+id/textView"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/textView"
+            app:srcCompat="@drawable/akun" />
 
-            <TextView
-                android:id="@+id/txt_jumlah_bid"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="@dimen/padding10"
-                android:textColor="@color/orange"
-                android:textSize="@dimen/text20"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="@+id/textView"
-                app:layout_constraintEnd_toStartOf="@+id/imageView"
-                app:layout_constraintTop_toTopOf="@+id/textView" />
+        <TextView
+            android:id="@+id/txt_jumlah_bid"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/padding10"
+            android:textColor="@color/orange"
+            android:textSize="@dimen/text20"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/textView"
+            app:layout_constraintEnd_toStartOf="@+id/imageView"
+            app:layout_constraintTop_toTopOf="@+id/textView" />-->
 
-            <android.support.constraint.Guideline
-                android:id="@+id/guideline2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.1" />
+        <android.support.constraint.Guideline
+            android:id="@+id/guideline2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.1" />
 
-            <android.support.constraint.Guideline
-                android:id="@+id/guideline4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintGuide_percent=".9" />
+        <android.support.constraint.Guideline
+            android:id="@+id/guideline4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent=".9" />
 
-        </android.support.constraint.ConstraintLayout>
-
-    </ScrollView>
+    </android.support.constraint.ConstraintLayout>
 
     <TextView
         android:id="@+id/txt_info_bid"
@@ -136,7 +127,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:padding="@dimen/padding10"
-                android:text="First"
+                android:text="@string/pertama"
                 android:textColor="#8fc5e9"
                 android:textSize="@dimen/text12"
                 android:textStyle="bold" />
@@ -153,7 +144,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:padding="@dimen/padding10"
-                android:text="Previous"
+                android:text="@string/sebelumnya"
                 android:textColor="#8fc5e9"
                 android:textSize="@dimen/text12"
                 android:textStyle="bold" />
@@ -170,7 +161,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:padding="@dimen/padding10"
-                android:text="Next"
+                android:text="@string/selanjutnya"
                 android:textColor="#8fc5e9"
                 android:textSize="@dimen/text12"
                 android:textStyle="bold" />
@@ -187,7 +178,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:padding="@dimen/padding10"
-                android:text="Last"
+                android:text="@string/terakhir"
                 android:textColor="#8fc5e9"
                 android:textSize="@dimen/text12"
                 android:textStyle="bold" />

@@ -2,6 +2,8 @@ package id.net.gmedia.selby.Barang;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.CountDownTimer;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -10,7 +12,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
@@ -32,6 +33,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
+import id.net.gmedia.selby.Barang.Adapter.DetailBarangViewPagerAdapter;
+import id.net.gmedia.selby.Barang.Fragment.FragmentDetailBarang;
+import id.net.gmedia.selby.Barang.Fragment.FragmentDiskusiBarang;
+import id.net.gmedia.selby.Barang.Fragment.FragmentUlasan;
 import id.net.gmedia.selby.Util.AppSharedPreferences;
 import id.net.gmedia.selby.Util.Constant;
 import id.net.gmedia.selby.LoginActivity;
@@ -73,7 +78,7 @@ public class LelangDetailActivity extends AppCompatActivity {
     private FloatingMenuButton fab_tambah;
     private CollapsingToolbarLayout collapsingToolbar;
     private Toolbar toolbar;
-    private ImageView btn_chat;
+    private Button btn_chat;
     private LinearLayout layout_pelapak;
 
     private DetailBarangViewPagerAdapter adapter;
@@ -87,7 +92,7 @@ public class LelangDetailActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_lelang_detail);
+        setContentView(R.layout.activity_detail_lelang);
 
         //Inisialisasi UI
         collapsingToolbar = findViewById(R.id.main_collapsing);
@@ -228,7 +233,7 @@ public class LelangDetailActivity extends AppCompatActivity {
                                 Glide.with(LelangDetailActivity.this).load(lelang.getJSONObject("penjual").getString("image")).apply(new RequestOptions().circleCrop()).thumbnail(0.1f).into((ImageView)findViewById(R.id.img_artis));
                                 follow = lelang.getJSONObject("penjual").getInt("followed") == 1;
                                 if(follow){
-                                    btn_follow.setText(R.string.unfollow);
+                                    btn_follow.setText(R.string.penjual_unfollow);
                                 }
 
                                 ImageContainer imageContainer = new ImageContainer();
@@ -307,7 +312,7 @@ public class LelangDetailActivity extends AppCompatActivity {
 
     private void bid(){
         //Menampilkan dialog bid
-        final Dialog dialog = DialogFactory.getInstance().createDialog(LelangDetailActivity.this, R.layout.popup_bid, 75, 45);
+        final Dialog dialog = DialogFactory.getInstance().createDialog(LelangDetailActivity.this, R.layout.popup_lelang_bid, 75, 45);
         final TextView txt_bid = dialog.findViewById(R.id.txt_bid);
         Button btn_bid = dialog.findViewById(R.id.btn_bid);
 
@@ -396,9 +401,11 @@ public class LelangDetailActivity extends AppCompatActivity {
                             txt_title.setText(nama_barang);
                         }
                         isShow = true;
+                        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                     } else if (isShow) {
                         txt_title.setText("");
                         isShow = false;
+                        getSupportActionBar().setBackgroundDrawable(getDrawable(R.drawable.style_rectangle_gradient_black));
                     }
                 }
             });
@@ -423,11 +430,11 @@ public class LelangDetailActivity extends AppCompatActivity {
                         if(status == 200){
                             if(follow){
                                 Toast.makeText(LelangDetailActivity.this, "Berhenti Follow berhasil", Toast.LENGTH_SHORT).show();
-                                btn_follow.setText(R.string.follow);
+                                btn_follow.setText(R.string.penjual_follow);
                             }
                             else{
                                 Toast.makeText(LelangDetailActivity.this, "Follow berhasil", Toast.LENGTH_SHORT).show();
-                                btn_follow.setText(R.string.unfollow);
+                                btn_follow.setText(R.string.penjual_unfollow);
                             }
 
                             follow = !follow;
@@ -457,7 +464,7 @@ public class LelangDetailActivity extends AppCompatActivity {
 
     private void setupViewPager(final ViewPager viewPager) {
         //Inisialisasi View Pager dan Fragment Detail barang, Ulasan, dan Diskusi Barang
-        adapter = new DetailBarangViewPagerAdapter(getSupportFragmentManager());
+        adapter = new DetailBarangViewPagerAdapter(this, getSupportFragmentManager());
 
         Bundle bundle;
         bundle = new Bundle();
@@ -487,7 +494,7 @@ public class LelangDetailActivity extends AppCompatActivity {
 
     private void initSlider(){
         //Inisialisasi Slider
-        ImageSliderAdapter sliderAdapter = new ImageSliderAdapter(this, sliderView, listImage, false);
+        ImageSliderAdapter sliderAdapter = new ImageSliderAdapter(this, sliderView, listImage, true);
         sliderView.setAdapter(sliderAdapter);
         indicator.setViewPager(sliderView);
 

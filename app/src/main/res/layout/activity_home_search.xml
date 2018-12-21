@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ebeaeb"
+    tools:context=".Home.SearchActivity">
+
+    <RelativeLayout
+        android:id="@+id/layout_search"
+        android:transitionName="search"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#f4f4f4"
+        android:elevation="@dimen/padding10"
+        android:padding="@dimen/padding5">
+
+        <EditText
+            android:id="@+id/txt_search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/padding10"
+            android:background="@android:color/transparent"
+            android:hint="@string/cari_artis"
+            android:layout_centerHorizontal="true"
+            android:padding="@dimen/padding5"
+            android:textSize="@dimen/text12" />
+
+        <ImageView
+            android:layout_width="@dimen/favorit_size"
+            android:layout_height="@dimen/favorit_size"
+            android:padding="@dimen/padding2"
+            android:layout_marginEnd="@dimen/padding10"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/search" />
+
+    </RelativeLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_artis"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:padding="@dimen/padding15"
+        android:clipToPadding="false"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/layout_search">
+
+    </android.support.v7.widget.RecyclerView>
+
+    <ProgressBar
+        android:id="@+id/pb_artis"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/rv_artis" />
+
+</android.support.constraint.ConstraintLayout>

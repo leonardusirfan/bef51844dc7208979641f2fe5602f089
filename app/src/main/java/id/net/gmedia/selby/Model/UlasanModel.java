@@ -10,7 +10,7 @@ public class UlasanModel{
     private String ulasan;
     private Date tanggal;
 
-    private String url = "";
+    private String url;
     private float rating = 0;
     private List<UlasanModel> listBalasan = new ArrayList<>();
 

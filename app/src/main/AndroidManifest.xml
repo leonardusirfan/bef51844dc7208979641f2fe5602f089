@@ -15,9 +15,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".Home.HomeActivity"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".LauncherActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.SplashScreen">
@@ -31,7 +28,7 @@
             android:name=".Artis.ArtisDetailActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".Barang.BarangActivity"
+            android:name=".Artis.BarangArtisActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".Barang.BarangDetailActivity"
@@ -87,10 +84,18 @@
             </intent-filter>
         </service>
 
-        <activity android:name=".Home.Upload.UploadKegiatanActivity" />
-        <activity android:name=".Home.Upload.UploadGambarActivity" />
-        <activity android:name=".Home.Upload.UploadBarangActivity" />
-        <activity android:name=".Home.Akun.EditProfilActivity"></activity>
+        <activity android:name=".Upload.UploadKegiatanActivity" />
+        <activity android:name=".Upload.UploadGambarActivity" />
+        <activity android:name=".Upload.UploadBarangActivity" />
+        <activity android:name=".Akun.EditProfilActivity" />
+        <activity android:name=".Home.HomeActivity" />
+        <activity
+            android:name=".Home.SearchActivity"
+            android:windowSoftInputMode="stateVisible" />
+        <activity android:name=".Home.ArtisActivity" />
+        <activity android:name=".Home.BarangActivity" />
+        <activity android:name=".Home.LelangActivity" />
+        <activity android:name=".Barang.MerchandiseDetailActivity" />
     </application>
 
 </manifest>

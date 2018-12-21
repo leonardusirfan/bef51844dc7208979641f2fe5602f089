@@ -13,6 +13,7 @@
 
         <ImageView
             android:id="@+id/img_user"
+            android:contentDescription="@string/user"
             android:layout_width="@dimen/profile_size_small"
             android:layout_height="@dimen/profile_size_small"
             android:layout_margin="@dimen/padding20" />

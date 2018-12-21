@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent">
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:contentDescription="@null"
+        android:layout_width="@dimen/popup_icon_size"
+        android:layout_height="@dimen/popup_icon_size"
+        android:elevation="@dimen/padding10"
+        android:src="@drawable/popup_barang"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <android.support.design.card.MaterialCardView
+        android:id="@+id/materialCardView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/popup_icon_padding"
+        android:background="#fff"
+        android:elevation="@dimen/padding5"
+        app:cardCornerRadius="@dimen/padding10"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:elevation="@dimen/padding10"
+            android:paddingTop="@dimen/popup_icon_padding">
+
+            <TextView
+                android:id="@+id/textView5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/padding10"
+                android:gravity="center"
+                android:padding="@dimen/padding5"
+                android:text="@string/upload_barang_tambah_barang"
+                android:textSize="@dimen/text20"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@+id/btn_preloved"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <Button
+                android:id="@+id/btn_preloved"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/button_height"
+                android:layout_gravity="center"
+                android:layout_marginStart="@dimen/padding35"
+                android:layout_marginEnd="@dimen/padding35"
+                android:layout_weight="1"
+                android:background="@drawable/style_fullrounded_light_blue_rectangle"
+                android:padding="@dimen/padding10"
+                android:text="@string/preloved"
+                android:textColor="#fff"
+                android:textSize="@dimen/text12"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@+id/btn_merchandise"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView5" />
+
+            <Button
+                android:id="@+id/btn_merchandise"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/button_height"
+                android:layout_gravity="center"
+                android:layout_marginStart="@dimen/padding35"
+                android:layout_marginEnd="@dimen/padding35"
+                android:layout_weight="1"
+                android:background="@drawable/style_fullrounded_blue_rectangle"
+                android:padding="@dimen/padding10"
+                android:text="@string/merchandise"
+                android:textColor="#fff"
+                android:textSize="@dimen/text12"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@+id/btn_lelang"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/btn_preloved" />
+
+            <Button
+                android:id="@+id/btn_lelang"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/button_height"
+                android:layout_gravity="center"
+                android:layout_marginStart="@dimen/padding35"
+                android:layout_marginEnd="@dimen/padding35"
+                android:layout_weight="1"
+                android:background="@drawable/style_fullrounded_dark_blue_rectangle"
+                android:padding="@dimen/padding10"
+                android:text="@string/lelang"
+                android:textColor="#fff"
+                android:textSize="@dimen/text12"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@+id/layout_merchandise"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/btn_merchandise" />
+
+            <LinearLayout
+                android:id="@+id/layout_merchandise"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/button_height"
+                android:gravity="center"
+                android:background="#999999"
+                android:padding="@dimen/padding15"
+                app:layout_constraintBottom_toBottomOf="parent">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/merchandise_belum_punya"
+                    android:textColor="#fff"
+                    android:textSize="@dimen/text10" />
+
+                <TextView
+                    android:id="@+id/txt_pesan"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/merchandise_pesan_disini"
+                    android:textStyle="bold"
+                    android:textColor="#fff"
+                    android:textSize="@dimen/text10" />
+
+            </LinearLayout>
+
+        </android.support.constraint.ConstraintLayout>
+
+
+    </android.support.design.card.MaterialCardView>
+
+</android.support.constraint.ConstraintLayout>

@@ -3,7 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Home.Keranjang.FragmentKeranjang">
+    android:background="#fff"
+    tools:context=".Keranjang.FragmentKeranjang"
+    android:paddingBottom="?android:attr/actionBarSize">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -28,7 +30,7 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:text="Pilih Semua"
+                android:text="@string/pilih_semua"
                 android:paddingLeft="@dimen/padding5"
                 android:paddingRight="@dimen/padding5"
                 android:textSize="@dimen/text14"
@@ -40,7 +42,7 @@
                 android:id="@+id/txt_hapus"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:text="Hapus"
+                android:text="@string/hapus"
                 android:textColor="@color/orange"
                 android:textSize="@dimen/text14"
                 android:textStyle="bold"
@@ -76,32 +78,31 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/text14"
-                    android:text="Subtotal"/>
+                    android:text="@string/subtotal"/>
 
                 <TextView
                     android:id="@+id/txt_subtotal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/text16"
-                    android:textStyle="bold"
-                    android:text="Rp 100.000"/>
+                    android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/text14"
-                    android:text="Belum termasuk ongkir"/>
+                    android:text="@string/keranjang_tanpa_ongkir"/>
 
             </LinearLayout>
 
             <Button
                 android:id="@+id/btn_bayar"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/small_button_size"
                 android:layout_weight="0.5"
-                android:background="@color/dark_grey"
+                android:background="@drawable/style_fullrounded_gray_rectangle"
                 android:textColor="#fff"
-                android:text="Bayar"
+                android:text="@string/transaksi_bayar"
                 android:textSize="@dimen/text14"
                 android:layout_gravity="center_vertical"
                 android:layout_margin="@dimen/padding10"/>

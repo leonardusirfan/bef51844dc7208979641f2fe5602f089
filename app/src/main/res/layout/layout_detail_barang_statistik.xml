@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:baselineAligned="false"
+    android:orientation="horizontal"
+    android:background="#E5E4E4"
+    android:padding="@dimen/padding5"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:padding="@dimen/padding5">
+
+        <ImageView
+            android:layout_width="@dimen/circle_indicator_layout_size"
+            android:layout_height="@dimen/circle_indicator_layout_size"
+            android:layout_gravity="center"
+            android:src="@drawable/dilihat"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/barang_dilihat"
+            android:textSize="@dimen/text12" />
+
+        <TextView
+            android:id="@+id/txt_dilihat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="@dimen/text14"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <include
+        layout="@layout/view_divider"
+        android:layout_width="1dp"
+        android:layout_height="match_parent" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:padding="@dimen/padding5">
+
+        <ImageView
+            android:layout_width="@dimen/circle_indicator_layout_size"
+            android:layout_height="@dimen/circle_indicator_layout_size"
+            android:layout_gravity="center"
+            android:src="@drawable/terkirim"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/barang_terkirim"
+            android:textSize="@dimen/text12" />
+
+        <TextView
+            android:id="@+id/txt_terkirim"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="@dimen/text14"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <include
+        layout="@layout/view_divider"
+        android:layout_width="1dp"
+        android:layout_height="match_parent" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:padding="@dimen/padding5">
+
+        <ImageView
+            android:layout_width="@dimen/circle_indicator_layout_size"
+            android:layout_height="@dimen/circle_indicator_layout_size"
+            android:layout_gravity="center"
+            android:src="@drawable/kondisi"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/barang_kondisi"
+            android:textSize="@dimen/text12" />
+
+        <TextView
+            android:id="@+id/txt_kondisi"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="@dimen/text14"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <include
+        layout="@layout/view_divider"
+        android:layout_width="1dp"
+        android:layout_height="match_parent" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:padding="@dimen/padding5">
+
+        <ImageView
+            android:layout_width="@dimen/circle_indicator_layout_size"
+            android:layout_height="@dimen/circle_indicator_layout_size"
+            android:layout_gravity="center"
+            android:src="@drawable/asuransi"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/barang_asuransi"
+            android:textSize="@dimen/text12" />
+
+        <TextView
+            android:id="@+id/txt_asuransi"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/app_name"
+            android:textSize="@dimen/text14"
+            android:textStyle="bold" />
+    </LinearLayout>
+</LinearLayout>

@@ -28,7 +28,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Nama Profil"
+                android:text="@string/profil_nama"
                 android:padding="@dimen/padding5"
                 style="@style/Input"/>
 
@@ -43,7 +43,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Alamat"
+                android:text="@string/profil_alamat"
                 android:padding="@dimen/padding5"
                 style="@style/Input" />
 
@@ -58,7 +58,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="No telepon"
+                android:text="@string/profil_no_telepon"
                 android:padding="@dimen/padding5"
                 style="@style/Input" />
 

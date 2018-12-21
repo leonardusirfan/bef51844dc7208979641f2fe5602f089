@@ -7,15 +7,16 @@
         android:id="@+id/btn_load"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
+        android:gravity="center"
+        android:layout_gravity="center"
         android:layout_marginLeft="@dimen/padding20"
         android:layout_marginRight="@dimen/padding20"
-        android:text="Lihat lebih banyak"
-        android:textColor="@color/orange"
+        android:text="@string/lihat_lebih_banyak"
+        android:textColor="@color/gold"
         android:textStyle="bold" />
 
     <ProgressBar
-        android:id="@+id/progress_load"
+        android:id="@+id/pb_load"
         android:layout_width="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_height="wrap_content"

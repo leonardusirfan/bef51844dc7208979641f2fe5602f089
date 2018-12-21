@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent">
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:contentDescription="@null"
+        android:layout_width="@dimen/popup_icon_size"
+        android:layout_height="@dimen/popup_icon_size"
+        android:elevation="@dimen/padding10"
+        android:src="@drawable/popup_lelang"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <android.support.design.card.MaterialCardView
+        android:id="@+id/materialCardView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/popup_icon_padding"
+        android:background="#fff"
+        android:elevation="@dimen/padding5"
+        app:cardCornerRadius="@dimen/padding10"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:elevation="@dimen/padding10"
+            android:paddingTop="@dimen/popup_icon_padding">
+
+            <TextView
+                android:id="@+id/lbl_tulis"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/rating_barang"
+                android:layout_centerInParent="true"
+                android:layout_marginTop="@dimen/padding10"
+                android:text="@string/lelang_tulis_penawaran"
+                android:textSize="@dimen/text12"
+                app:layout_constraintBottom_toTopOf="@+id/layout_bid"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="spread" />
+
+            <LinearLayout
+                android:id="@+id/layout_bid"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/padding35"
+                android:layout_marginEnd="@dimen/padding35"
+                android:layout_marginBottom="@dimen/padding15"
+                app:layout_constraintBottom_toTopOf="@+id/btn_bid"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/lbl_tulis" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/rp"
+                    android:padding="@dimen/padding10"
+                    android:textSize="@dimen/text24"
+                    android:textStyle="bold"/>
+
+                <EditText
+                    android:id="@+id/txt_bid"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text24"
+                    android:textStyle="bold"
+                    android:maxLines="1"
+                    android:inputType="number"
+                    android:theme="@style/EditText.Grey"
+                    android:textColor="@color/very_dark_grey" />
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btn_bid"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/button_height"
+                android:layout_alignParentBottom="true"
+                android:background="#2a7de2"
+                android:padding="@dimen/padding5"
+                android:text="@string/lelang_bid"
+                android:textAllCaps="false"
+                android:textColor="#fff"
+                android:textSize="@dimen/text14"
+                app:layout_constraintBottom_toBottomOf="parent" />
+
+        </android.support.constraint.ConstraintLayout>
+
+
+    </android.support.design.card.MaterialCardView>
+
+</android.support.constraint.ConstraintLayout>

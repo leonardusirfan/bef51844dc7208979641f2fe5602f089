@@ -262,7 +262,6 @@ public class LoginActivity extends AppCompatActivity {
                             AppSharedPreferences.setLoggedIn(LoginActivity.this, true);
                             boolean penjual = json.getJSONObject("response").getString("penjual").equals("1");
                             AppSharedPreferences.setStatusPref(LoginActivity.this, penjual);
-                            System.out.println("Penjual : " + penjual);
                             Intent i = new Intent(LoginActivity.this, HomeActivity.class);
                             i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);

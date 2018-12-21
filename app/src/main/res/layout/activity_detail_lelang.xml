@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Barang.LelangDetailActivity"
+    android:fitsSystemWindows="true"
+    android:focusableInTouchMode="true">
+
+    <android.support.design.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/btn_bid">
+
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/main_appbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:expanded="true"
+            android:fitsSystemWindows="true">
+
+            <android.support.design.widget.CollapsingToolbarLayout
+                android:id="@+id/main_collapsing"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed"
+                app:expandedTitleTextAppearance="@android:color/transparent"
+                android:fitsSystemWindows="true"
+                app:contentScrim="@color/grey"
+                android:background="@color/grey">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <id.net.gmedia.selby.Util.ImageSliderViewPager
+                        android:id="@+id/pager"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/image_item_height" />
+
+                    <me.relex.circleindicator.CircleIndicator
+                        android:id="@+id/indicator"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/circle_indicator_layout_size"
+                        app:ci_drawable="@drawable/custom_indicator_selected"
+                        app:ci_drawable_unselected="@drawable/custom_indicator_unselected"
+                        app:ci_height="@dimen/circle_indicator_size"
+                        app:ci_width="@dimen/circle_indicator_size"
+                        android:layout_alignBottom="@+id/pager"
+                        android:layout_alignStart="@id/pager"
+                        android:layout_marginStart="@dimen/padding20"
+                        android:layout_marginBottom="@dimen/padding20"/>
+                </RelativeLayout>
+
+                <android.support.v7.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    app:popupTheme="@style/AppTheme.PopupOverlay"
+                    android:background="@drawable/style_rectangle_gradient_black"
+                    app:layout_collapseMode="pin">
+
+                    <TextView
+                        android:id="@+id/txt_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical"
+                        android:textSize="@dimen/text14"
+                        android:textColor="#000"
+                        android:textStyle="bold"
+                        android:maxLines="1"
+                        android:ellipsize="end"/>
+
+                </android.support.v7.widget.Toolbar>
+            </android.support.design.widget.CollapsingToolbarLayout>
+        </android.support.design.widget.AppBarLayout>
+
+        <android.support.v4.widget.NestedScrollView
+            android:id="@+id/act_detail_barang_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/act_detail_barang_footer"
+            android:layout_alignParentTop="true"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/padding20">
+
+                    <TextView
+                        android:id="@+id/txt_nama"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#000000"
+                        android:textSize="@dimen/text20"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/padding20"
+                        android:text="@string/lelang_bid_awal"
+                        android:textColor="#000000"
+                        android:textSize="@dimen/text16" />
+
+                    <TextView
+                        android:id="@+id/txt_harga"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#000"
+                        android:textSize="@dimen/text24"
+                        android:textStyle="bold" />
+
+                    <include
+                        layout="@layout/view_divider"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="@dimen/padding10"
+                        android:layout_marginBottom="@dimen/padding10" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/lelang_waktu"
+                        android:textColor="#000000"
+                        android:textSize="@dimen/text16" />
+
+                    <TextView
+                        android:id="@+id/txt_waktu"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/gold"
+                        android:textSize="@dimen/text24"
+                        android:textStyle="bold" />
+
+                    <include
+                        layout="@layout/view_divider"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="@dimen/padding10"
+                        android:layout_marginBottom="@dimen/padding10" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/lelang_penawaran_saat_ini"
+                        android:textColor="#000000"
+                        android:textSize="@dimen/text16" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="@dimen/padding5">
+
+                        <TextView
+                            android:id="@+id/txt_bid"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_weight="1"
+                            android:textColor="#000"
+                            android:textSize="@dimen/text24"
+                            android:textStyle="bold" />
+
+                        <Button
+                            android:id="@+id/btn_list_bid"
+                            android:layout_width="wrap_content"
+                            android:layout_height="@dimen/detail_barang_button_height"
+                            android:paddingStart="@dimen/padding20"
+                            android:paddingEnd="@dimen/padding20"
+                            android:text="@string/lelang_list_bid"
+                            android:textAllCaps="false"
+                            android:background="@drawable/style_fullrounded_gold_rectangle"
+                            android:textColor="#fff"
+                            android:textSize="@dimen/text10" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <include layout="@layout/view_divider"
+                    android:layout_margin="@dimen/padding10"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/padding1"/>
+
+                <include layout="@layout/layout_detail_barang_penjual"/>
+
+                <include layout="@layout/layout_detail_barang_statistik"/>
+
+                <android.support.design.widget.TabLayout
+                    android:id="@+id/tabs"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:tabIndicatorColor="@color/gold"
+                    app:tabSelectedTextColor="#000000"
+                    app:tabTextAppearance="@style/MyCustomTabText"
+                    app:tabTextColor="#70605f5f"
+                    app:tabGravity="fill"
+                    app:tabMode="fixed">
+
+                </android.support.design.widget.TabLayout>
+
+                <id.net.gmedia.selby.Util.HeightAnimatedViewPager
+                    android:id="@+id/viewPager"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/act_detail_barang_rv_terkait"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                </android.support.v7.widget.RecyclerView>
+            </LinearLayout>
+
+        </android.support.v4.widget.NestedScrollView>
+    </android.support.design.widget.CoordinatorLayout>
+
+    <rjsv.floatingmenu.floatingmenubutton.FloatingMenuButton
+        android:id="@+id/fab_tambah"
+        android:layout_width="@dimen/floating_size"
+        android:layout_height="@dimen/floating_size"
+        android:layout_above="@id/btn_bid"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="@dimen/padding20"
+        app:anchored="true"
+        android:visibility="gone"
+        android:background="@drawable/plus"/>
+
+    <Button
+        android:id="@+id/btn_bid"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:textColor="#fff"
+        android:textAllCaps="false"
+        android:background="@color/gold"
+        android:text="@string/lelang_ajukan_bid"/>
+</RelativeLayout>

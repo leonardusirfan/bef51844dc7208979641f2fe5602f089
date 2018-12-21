@@ -20,6 +20,7 @@
         android:layout_height="wrap_content">
 
         <ImageView
+            android:contentDescription="@string/lokasi"
             android:layout_width="@dimen/icon_width"
             android:layout_height="@dimen/icon_height"
             android:src="@drawable/location"
@@ -43,6 +44,7 @@
         android:layout_marginBottom="@dimen/padding10">
 
         <ImageView
+            android:contentDescription="@string/waktu"
             android:layout_width="@dimen/icon_width"
             android:layout_height="@dimen/icon_height"
             android:src="@drawable/calender"

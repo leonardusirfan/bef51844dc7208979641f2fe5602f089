@@ -2,7 +2,6 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
@@ -11,10 +10,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="@dimen/padding10">
+        android:paddingStart="@dimen/padding10"
+        android:paddingEnd="@dimen/padding10">
 
         <ImageView
             android:id="@+id/img_pengulas"
+            android:contentDescription="@string/user"
             android:layout_width="@dimen/profile_size"
             android:padding="@dimen/padding10"
             android:src="@color/colorPrimaryDark"
@@ -46,7 +47,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:isIndicator="true"
-                android:theme="@style/AppRatingBar.Blue"
+                android:theme="@style/AppRatingBar.Orange"
                 android:numStars="5"
                 android:layout_marginTop="@dimen/padding5"
                 app:layout_constraintStart_toStartOf="@+id/txt_nama"
@@ -79,7 +80,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/padding20"
-                android:text="Balas Ulasan"
+                android:text="@string/barang_balas_ulasan"
                 android:textColor="@color/orange"
                 android:textSize="@dimen/text12"
                 android:textStyle="bold"

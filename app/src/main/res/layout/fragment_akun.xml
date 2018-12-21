@@ -2,9 +2,9 @@
 <android.support.v4.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:paddingBottom="?android:attr/actionBarSize">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -28,11 +28,13 @@
 
             <ImageView
                 android:id="@+id/img_akun"
+                android:contentDescription="@string/user"
                 android:padding="@dimen/padding10"
                 android:layout_width="@dimen/profile_size"
                 android:layout_height="match_parent" />
 
             <LinearLayout
+                android:id="@+id/layout_edit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -56,9 +58,8 @@
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/text16"
                     android:textColor="#fff"
-                    android:text="Edit Profil"
+                    android:text="@string/profil_edit"
                     android:ellipsize="end"
-                    android:visibility="gone"
                     android:gravity="center_vertical"/>
 
             </LinearLayout>
@@ -77,7 +78,7 @@
                 android:layout_toStartOf="@id/txt_lihat_semua"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:text="Berlangganan : 0"
+                android:text="@string/profil_berlangganan"
                 android:textSize="@dimen/text14"
                 android:textStyle="bold" />
 
@@ -85,7 +86,7 @@
                 android:id="@+id/txt_lihat_semua"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="lihat semua"
+                android:text="@string/lihat_semua"
                 android:layout_alignParentEnd="true"
                 android:textColor="@color/orange"
                 android:textStyle="bold"
@@ -100,7 +101,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Alamat"
+                android:text="@string/profil_alamat"
                 android:paddingStart="@dimen/padding10"
                 android:paddingEnd="@dimen/padding10"
                 android:paddingTop="@dimen/padding5"
@@ -139,7 +140,7 @@
                 android:paddingTop="@dimen/padding5"
                 android:paddingEnd="@dimen/padding10"
                 android:paddingBottom="@dimen/padding5"
-                android:text="Pembayaran"
+                android:text="@string/profil_pembayaran"
                 android:textSize="@dimen/text18"
                 android:textStyle="bold" />
 
@@ -151,7 +152,6 @@
                 android:paddingTop="@dimen/padding5"
                 android:paddingEnd="@dimen/padding10"
                 android:paddingBottom="@dimen/padding5"
-                android:text="Bank BCA"
                 android:textSize="@dimen/text14" />
 
             <include
@@ -176,7 +176,6 @@
                 android:paddingTop="@dimen/padding5"
                 android:paddingEnd="@dimen/padding10"
                 android:paddingBottom="@dimen/padding5"
-                android:text="Rekening BCA"
                 android:textSize="@dimen/text18"
                 android:textStyle="bold" />
 
@@ -188,7 +187,6 @@
                 android:paddingTop="@dimen/padding5"
                 android:paddingEnd="@dimen/padding10"
                 android:paddingBottom="@dimen/padding5"
-                android:text="0987654567898"
                 android:textSize="@dimen/text14" />
 
             <include
@@ -208,7 +206,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Telepon"
+                android:text="@string/profil_telepon"
                 android:paddingStart="@dimen/padding10"
                 android:paddingEnd="@dimen/padding10"
                 android:paddingTop="@dimen/padding5"
@@ -242,7 +240,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Email"
+                android:text="@string/profil_email"
                 android:paddingStart="@dimen/padding10"
                 android:paddingEnd="@dimen/padding10"
                 android:paddingTop="@dimen/padding5"
@@ -268,7 +266,7 @@
                 android:background="#6c6c6c"/>
         </LinearLayout>
 
-        <LinearLayout
+       <!-- <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone"
@@ -292,7 +290,6 @@
                 android:paddingEnd="@dimen/padding10"
                 android:paddingTop="@dimen/padding5"
                 android:paddingBottom="@dimen/padding5"
-                android:text="**********"
                 android:textSize="@dimen/text14"/>
 
             <include layout="@layout/view_divider"
@@ -301,7 +298,7 @@
                 android:layout_marginTop="@dimen/padding10"
                 android:layout_marginBottom="@dimen/padding5"
                 android:background="#6c6c6c"/>
-        </LinearLayout>
+        </LinearLayout>-->
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -316,7 +313,7 @@
                 android:layout_height="wrap_content"
                 android:padding="@dimen/padding10"
                 android:textColor="@color/orange"
-                android:text="Logout"
+                android:text="@string/profil_logout"
                 android:textStyle="bold"
                 android:textSize="@dimen/text18"/>
         </LinearLayout>

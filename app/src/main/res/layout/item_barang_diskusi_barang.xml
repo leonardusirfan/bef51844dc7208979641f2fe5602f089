@@ -10,10 +10,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="@dimen/padding10">
+        android:paddingStart="@dimen/padding10"
+        android:paddingEnd="@dimen/padding10">
 
         <ImageView
             android:id="@+id/img_pengulas"
+            android:contentDescription="@string/user"
             android:layout_width="@dimen/profile_size"
             android:padding="@dimen/padding10"
             android:src="@color/colorPrimaryDark"
@@ -34,7 +36,6 @@
                 android:ellipsize="end"
                 android:maxLength="20"
                 android:maxLines="1"
-                android:text="aaaaaaaaaaaaaaaaaaaa"
                 android:textSize="@dimen/text14"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
@@ -46,7 +47,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/padding10"
                 android:layout_toEndOf="@id/txt_nama"
-                android:text="12 Okt 2018"
                 android:textSize="@dimen/text10"
                 app:layout_constraintBottom_toBottomOf="@+id/txt_nama"
                 app:layout_constraintStart_toEndOf="@+id/txt_nama"
@@ -68,7 +68,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/padding20"
-                android:text="Balas Diskusi"
+                android:text="@string/barang_balas_diskusi"
                 android:textColor="@color/orange"
                 android:textSize="@dimen/text12"
                 android:textStyle="bold"

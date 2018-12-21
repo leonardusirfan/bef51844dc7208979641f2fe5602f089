@@ -32,7 +32,6 @@ import org.json.JSONObject;
 
 import id.net.gmedia.selby.Util.Constant;
 import id.net.gmedia.selby.Model.ArtisModel;
-import id.net.gmedia.selby.Barang.BarangActivity;
 import id.net.gmedia.selby.R;
 import id.net.gmedia.selby.Util.ApiVolleyManager;
 
@@ -139,7 +138,7 @@ public class ArtisDetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Gson gson = new Gson();
-                Intent i = new Intent(ArtisDetailActivity.this, BarangActivity.class);
+                Intent i = new Intent(ArtisDetailActivity.this, BarangArtisActivity.class);
                 i.putExtra("artis", gson.toJson(artis));
                 startActivity(i);
                 overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
@@ -179,7 +178,6 @@ public class ArtisDetailActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(String result) {
                         try{
-                            System.out.println("ARTIS : " + result);
                             JSONObject jsonresult = new JSONObject(result);
                             int status = jsonresult.getJSONObject("metadata").getInt("status");
                             String message = jsonresult.getJSONObject("metadata").getString("message");

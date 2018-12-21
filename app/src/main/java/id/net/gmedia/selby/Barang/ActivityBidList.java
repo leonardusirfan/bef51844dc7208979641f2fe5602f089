@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import id.net.gmedia.selby.Barang.Adapter.BidAdapter;
 import id.net.gmedia.selby.Model.BidModel;
 import id.net.gmedia.selby.R;
 import id.net.gmedia.selby.Util.ApiVolleyManager;
@@ -45,7 +46,8 @@ public class ActivityBidList extends AppCompatActivity {
     private RecyclerView rv_bid;
 
     //Variabel UI
-    TextView txt_info_bid, txt_jumlah_bid;
+    TextView txt_info_bid;
+    //TextView txt_jumlah_bid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +67,7 @@ public class ActivityBidList extends AppCompatActivity {
 
         //Inisialisasi UI
         TextView txt_first, txt_next, txt_previous, txt_last;
-        txt_jumlah_bid = findViewById(R.id.txt_jumlah_bid);
+        //txt_jumlah_bid = findViewById(R.id.txt_jumlah_bid);
         txt_info_bid = findViewById(R.id.txt_info_bid);
         txt_first = findViewById(R.id.txt_first);
         txt_next = findViewById(R.id.txt_next);
@@ -144,7 +146,7 @@ public class ActivityBidList extends AppCompatActivity {
                         if(status == 200){
                             ArrayList<BidModel> allBid = new ArrayList<>();
                             total = jsonresult.getJSONObject("response").getInt("total_records");
-                            txt_jumlah_bid.setText(String.valueOf(total));
+                            //txt_jumlah_bid.setText(String.valueOf(total));
                             JSONArray arraybid = jsonresult.getJSONObject("response").getJSONArray("bid");
 
                             for(int i = 0; i < arraybid.length(); i++){

@@ -9,7 +9,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="@dimen/padding10">
+        android:paddingStart="@dimen/padding10"
+        android:paddingEnd="@dimen/padding10"
+        android:paddingTop="@dimen/padding2"
+        android:paddingBottom="@dimen/padding2">
 
         <View
             android:layout_weight="0.35"
@@ -30,7 +33,6 @@
                 android:ellipsize="end"
                 android:maxLength="20"
                 android:maxLines="1"
-                android:text="aaaaaaaaaaaaaaaaaaaa"
                 android:textSize="@dimen/text14"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
@@ -42,7 +44,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/padding10"
                 android:layout_toEndOf="@id/txt_nama"
-                android:text="12 Okt 2018"
                 android:textSize="@dimen/text10"
                 app:layout_constraintBottom_toBottomOf="@+id/txt_nama"
                 app:layout_constraintStart_toEndOf="@+id/txt_nama"

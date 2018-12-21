@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/action_home"
+        android:icon="@drawable/home"
+        android:orderInCategory="1"
+        android:title="@string/menu_home" />
+    <item
+        android:id="@+id/action_feed"
+        android:orderInCategory="2"
+        android:title="@string/menu_feed"
+        android:icon="@drawable/feed" />
+    <item
+        android:id="@+id/action_favorit"
+        android:orderInCategory="3"
+        android:title="@string/menu_favorit"
+        android:icon="@drawable/loveline" />
+    <item
+        android:id="@+id/action_keranjang"
+        android:orderInCategory="4"
+        android:title="@string/menu_keranjang"
+        android:icon="@drawable/cart" />
+    <item
+        android:id="@+id/action_akun"
+        android:orderInCategory="5"
+        android:title="@string/menu_akun"
+        android:icon="@drawable/akun" />
+
+</menu>

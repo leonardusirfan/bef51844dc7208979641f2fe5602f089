@@ -25,6 +25,8 @@ import com.otaliastudios.zoom.ZoomLayout;
 
 import java.util.Objects;
 
+import id.net.gmedia.selby.Artis.Fragment.FragmentGaleri;
+import id.net.gmedia.selby.Artis.Fragment.FragmentKegiatan;
 import id.net.gmedia.selby.Model.ArtisModel;
 import id.net.gmedia.selby.R;
 

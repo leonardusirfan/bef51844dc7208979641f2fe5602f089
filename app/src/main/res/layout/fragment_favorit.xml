@@ -3,14 +3,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Home.Favorit.FragmentFavorit">
+    tools:context=".Favorit.FragmentFavorit">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_favorit"
-        android:padding="@dimen/padding20"
         android:clipToPadding="false"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:paddingTop="@dimen/padding10"
+        android:paddingStart="@dimen/padding20"
+        android:paddingEnd="@dimen/padding20"
+        android:paddingBottom="?android:attr/actionBarSize">
 
     </android.support.v7.widget.RecyclerView>
 

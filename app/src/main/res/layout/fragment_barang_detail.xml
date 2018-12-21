@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/padding10"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/barang_spesifikasi"
+        android:textStyle="bold"
+        android:textColor="#000000"
+        android:layout_marginBottom="@dimen/padding10"
+        android:layout_marginTop="@dimen/padding20"
+        android:textSize="@dimen/text20"/>
+
+    <android.support.v7.widget.GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        app:columnCount="2"
+        app:rowCount="3">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/barang_kategori"
+            android:textColor="#000000"
+            android:textSize="@dimen/text14" />
+
+        <TextView
+            android:id="@+id/txt_kategori"
+            android:layout_height="wrap_content"
+            android:textColor="#000000"
+            android:textSize="@dimen/text14" />
+
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="@string/barang_berat"
+            android:textColor="#000000"
+            android:textSize="@dimen/text14" />
+
+        <TextView
+            android:id="@+id/txt_berat"
+            android:layout_height="wrap_content"
+            android:textColor="#000000"
+            android:textSize="@dimen/text14" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:text="@string/barang_merk"
+            android:layout_height="wrap_content"
+            android:textColor="#000000"
+            android:textSize="@dimen/text14" />
+
+        <TextView
+            android:id="@+id/txt_merk"
+            android:layout_height="wrap_content"
+            android:textColor="#000000"
+            android:textSize="@dimen/text14" />
+    </android.support.v7.widget.GridLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/barang_deskripsi"
+        android:textStyle="bold"
+        android:textColor="#000000"
+        android:layout_marginBottom="@dimen/padding10"
+        android:layout_marginTop="@dimen/padding20"
+        android:textSize="@dimen/text20"/>
+
+    <TextView
+        android:id="@+id/txt_deskripsi"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#000000"
+        android:textSize="@dimen/text14"
+        android:layout_marginBottom="@dimen/padding20"/>
+</LinearLayout>

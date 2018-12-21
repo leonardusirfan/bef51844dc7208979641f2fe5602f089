@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         app:layout_collapseMode="pin"
-        android:background="@color/blue"
+        android:background="@color/gold"
         app:titleTextColor="#fff"
         android:theme="@style/AppTheme.ActionBar"
         android:elevation="0dp"/>
@@ -28,7 +28,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Nama Barang"
+                android:text="@string/upload_barang_nama"
                 android:padding="@dimen/padding5"
                 style="@style/Input"/>
 
@@ -44,7 +44,7 @@
                 android:id="@+id/lbl_harga"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Harga Barang"
+                android:text="@string/upload_barang_harga"
                 android:padding="@dimen/padding5"
                 style="@style/Input" />
 
@@ -62,7 +62,7 @@
                 android:padding="@dimen/padding5"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Harga Normal (Opsional)"
+                android:text="@string/upload_barang_harga_normal"
                 android:visibility="gone"
                 style="@style/Input" />
 
@@ -81,7 +81,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/padding5"
-                android:text="Waktu Selesai Lelang"
+                android:text="@string/lelang_waktu"
                 android:visibility="gone"
                 style="@style/Input" />
 
@@ -96,13 +96,13 @@
                 android:textColor="#000"
                 android:paddingTop="@dimen/padding10"
                 android:paddingBottom="@dimen/padding10"
-                android:text="-" />
+                android:text="@string/minus" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/padding5"
-                android:text="Berat Barang"
+                android:text="@string/upload_barang_berat"
                 style="@style/Input"/>
 
             <LinearLayout
@@ -133,7 +133,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Ukuran"
+                android:text="@string/upload_barang_ukuran"
                 android:padding="@dimen/padding5"
                 style="@style/Input"/>
 
@@ -149,7 +149,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Kondisi"
+                android:text="@string/barang_kondisi"
                 android:padding="@dimen/padding5"
                 style="@style/Input"/>
 
@@ -166,7 +166,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Kategori"
+                android:text="@string/upload_barang_kategori"
                 android:padding="@dimen/padding5"
                 style="@style/Input"/>
 
@@ -182,7 +182,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Brand"
+                android:text="@string/upload_barang_merk"
                 android:padding="@dimen/padding5"
                 style="@style/Input"/>
 
@@ -198,7 +198,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Deskripsi Barang"
+                android:text="@string/upload_barang_deskripsi"
                 android:padding="@dimen/padding5"
                 style="@style/Input"/>
 
@@ -215,7 +215,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/padding10"
                 android:textCursorDrawable="@null"
-                android:text="Foto"
+                android:text="@string/upload_barang_foto"
                 android:padding="@dimen/padding5"
                 style="@style/Input"/>
 

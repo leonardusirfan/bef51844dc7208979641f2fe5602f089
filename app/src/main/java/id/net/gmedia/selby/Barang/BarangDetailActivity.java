@@ -2,8 +2,8 @@ package id.net.gmedia.selby.Barang;
 
 import android.app.Dialog;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.LayerDrawable;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.TabLayout;
@@ -19,7 +19,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,6 +34,10 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import id.net.gmedia.selby.Barang.Adapter.DetailBarangViewPagerAdapter;
+import id.net.gmedia.selby.Barang.Fragment.FragmentDetailBarang;
+import id.net.gmedia.selby.Barang.Fragment.FragmentDiskusiBarang;
+import id.net.gmedia.selby.Barang.Fragment.FragmentUlasan;
 import id.net.gmedia.selby.Home.HomeActivity;
 import id.net.gmedia.selby.Util.AppSharedPreferences;
 import id.net.gmedia.selby.Util.Constant;
@@ -42,7 +45,6 @@ import id.net.gmedia.selby.LoginActivity;
 import id.net.gmedia.selby.R;
 import id.net.gmedia.selby.Util.ApiVolleyManager;
 import id.net.gmedia.selby.Util.Converter;
-import id.net.gmedia.selby.Util.CountDrawable;
 import id.net.gmedia.selby.Util.DialogFactory;
 import id.net.gmedia.selby.Util.ImageContainer;
 import id.net.gmedia.selby.Util.ImageSliderAdapter;
@@ -79,7 +81,8 @@ public class BarangDetailActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private Button btn_follow;
     private CollapsingToolbarLayout collapsingToolbar;
-    private ImageView btn_chat;
+    //private ImageView btn_chat;
+    private Button btn_chat;
     private TextView txt_title, txt_nama, txt_harga, txt_kondisi, txt_dilihat, txt_terkirim;
     private LinearLayout layout_pelapak;
 
@@ -91,7 +94,7 @@ public class BarangDetailActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_barang_detail);
+        setContentView(R.layout.activity_detail_barang);
 
         //Inisialisasi UI
         txt_title = findViewById(R.id.txt_title);
@@ -203,11 +206,11 @@ public class BarangDetailActivity extends AppCompatActivity {
                             if(status == 200){
                                 if(follow){
                                     Toast.makeText(BarangDetailActivity.this, "Berhenti Follow berhasil", Toast.LENGTH_SHORT).show();
-                                    btn_follow.setText(R.string.follow);
+                                    btn_follow.setText(R.string.penjual_follow);
                                 }
                                 else{
                                     Toast.makeText(BarangDetailActivity.this, "Follow berhasil", Toast.LENGTH_SHORT).show();
-                                    btn_follow.setText(R.string.unfollow);
+                                    btn_follow.setText(R.string.penjual_unfollow);
                                 }
 
                                 follow = !follow;
@@ -262,9 +265,11 @@ public class BarangDetailActivity extends AppCompatActivity {
                             txt_title.setText(nama_barang);
                         }
                         isShow = true;
+                        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                     } else if (isShow) {
                         txt_title.setText("");
                         isShow = false;
+                        getSupportActionBar().setBackgroundDrawable(getDrawable(R.drawable.style_rectangle_gradient_black));
                     }
                 }
             });
@@ -317,7 +322,7 @@ public class BarangDetailActivity extends AppCompatActivity {
                             Glide.with(BarangDetailActivity.this).load(barang.getJSONObject("penjual").getString("image")).apply(new RequestOptions().circleCrop().priority(Priority.LOW)).thumbnail(0.1f).into((ImageView)findViewById(R.id.img_artis));
                             follow = barang.getJSONObject("penjual").getInt("followed") == 1;
                             if(follow){
-                                btn_follow.setText(R.string.unfollow);
+                                btn_follow.setText(R.string.penjual_unfollow);
                             }
 
                             ImageContainer imageContainer = new ImageContainer();
@@ -357,14 +362,15 @@ public class BarangDetailActivity extends AppCompatActivity {
 
     private void tambahKeranjang(){
         //Memunculkan dialog dan menambahkan barang ke keranjang
-        final Dialog dialog = DialogFactory.getInstance().createDialog(BarangDetailActivity.this, R.layout.popup_tambah, 70, 45);
+        final Dialog dialog = DialogFactory.getInstance().createDialog(BarangDetailActivity.this, R.layout.popup_keranjang_tambah, 70, 50);
 
         Button btn_tambah = dialog.findViewById(R.id.btn_tambah);
         TextView txt_kurang, txt_tambah;
         txt_kurang = dialog.findViewById(R.id.txt_kurang);
         txt_tambah = dialog.findViewById(R.id.txt_tambah);
         final TextView txt_jumlah = dialog.findViewById(R.id.txt_jumlah);
-        final ProgressBar bar_loading = dialog.findViewById(R.id.bar_loading);
+        txt_jumlah.setText("1");
+        //final ProgressBar bar_loading = dialog.findViewById(R.id.bar_loading);
 
         txt_kurang.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -390,7 +396,7 @@ public class BarangDetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(!id.equals("")){
-                    bar_loading.setVisibility(View.VISIBLE);
+                    //bar_loading.setVisibility(View.VISIBLE);
 
                     try{
                         JSONObject body = new JSONObject();
@@ -434,7 +440,7 @@ public class BarangDetailActivity extends AppCompatActivity {
                         Log.e("Tambah Keranjang", e.toString());
                     }
 
-                    bar_loading.setVisibility(View.INVISIBLE);
+                    //bar_loading.setVisibility(View.INVISIBLE);
                 }
             }
         });
@@ -443,7 +449,7 @@ public class BarangDetailActivity extends AppCompatActivity {
 
     private void setupViewPager(final ViewPager viewPager) {
         //Inisialisasi View Pager dan Fragment Detail barang, Ulasan, dan Diskusi Barang
-        adapter = new DetailBarangViewPagerAdapter(getSupportFragmentManager());
+        adapter = new DetailBarangViewPagerAdapter(this, getSupportFragmentManager());
 
         Bundle bundle;
         bundle = new Bundle();
@@ -473,7 +479,7 @@ public class BarangDetailActivity extends AppCompatActivity {
 
     private void initSlider(){
         //Inisialisasi Slider
-        ImageSliderAdapter sliderAdapter = new ImageSliderAdapter(this, sliderView, listImage, false);
+        ImageSliderAdapter sliderAdapter = new ImageSliderAdapter(this, sliderView, listImage, true);
         sliderView.setAdapter(sliderAdapter);
 
         indicator.setViewPager(sliderView);
@@ -587,7 +593,7 @@ public class BarangDetailActivity extends AppCompatActivity {
                                         //img_pesan.setImageResource(R.drawable.lovepink);
                                         favorit = true;
                                         item.setIcon(R.drawable.ic_favorit_isi);
-                                        txt_pesan.setText(R.string.tambah_favorit);
+                                        txt_pesan.setText(R.string.barang_tambah_favorit);
                                         dialog.show();
                                     }
                                     else if(status == 401){

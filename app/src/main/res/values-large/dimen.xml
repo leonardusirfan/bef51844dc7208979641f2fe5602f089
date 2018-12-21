@@ -15,6 +15,7 @@
     <dimen name="padding15">22.5dp</dimen>
     <dimen name="padding10">15dp</dimen>
     <dimen name="padding20">30dp</dimen>
+    <dimen name="button_height">69dp</dimen>
 
     <dimen name="artis_item_width">450dp</dimen>
     <dimen name="artis_item_height">750dp</dimen>
@@ -32,6 +33,7 @@
     <dimen name="button_width">150dp</dimen>
     <dimen name="profile_size">110dp</dimen>
     <dimen name="profile_size_small">60dp</dimen>
+    <dimen name="profile_size_medium">90dp</dimen>
 
     <dimen name="popup_height">500dp</dimen>
     <dimen name="popup_width">600dp</dimen>
@@ -47,19 +49,36 @@
 
     <dimen name="text_gradient_height">150dp</dimen>
     <dimen name="rv_gradient_height">75dp</dimen>
-    <dimen name="image_item_height">375dp</dimen>
+    <dimen name="image_item_height">525dp</dimen>
     <dimen name="akun_header_height">225dp</dimen>
 
     <dimen name="input_gambar_size">150dp</dimen>
     <dimen name="deskripsi_height">2250dp</dimen>
     <dimen name="feed_satu_gambar_height">450dp</dimen>
 
-    <dimen name="circle_indicator_size">18dp</dimen>
-    <dimen name="circle_indicator_layout_size">36dp</dimen>
+    <dimen name="circle_indicator_size">12dp</dimen>
+    <dimen name="circle_indicator_layout_size">24dp</dimen>
 
     <dimen name="rating_size">24dp</dimen>
     <dimen name="rating_size_small">18dp</dimen>
 
     <dimen name="popup_button_width">195dp</dimen>
     <dimen name="popup_button_height">90dp</dimen>
+    <dimen name="rounded_radius">300dp</dimen>
+    <dimen name="padding35">55dp</dimen>
+    <dimen name="item_kategori_width">180dp</dimen>
+    <dimen name="long_button_width">300dp</dimen>
+
+    <dimen name="item_barang_icon_size">36dp</dimen>
+    <dimen name="item_barang_keranjang_size">30dp</dimen>
+    <dimen name="medium_button_width">255dp</dimen>
+
+    <dimen name="detail_barang_button_width">180dp</dimen>
+    <dimen name="detail_barang_button_height">45dp</dimen>
+
+    <dimen name="item_barang_button_height">45dp</dimen>
+    <dimen name="home_icon_width">90dp</dimen>
+
+    <dimen name="popup_icon_size">120dp</dimen>
+    <dimen name="popup_icon_padding">60dp</dimen>
 </resources>

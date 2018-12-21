@@ -11,74 +11,32 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
+        <FrameLayout
+            android:id="@+id/frame_home"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            app:layout_collapseMode="pin"
-            android:background="@color/blue"
-            app:titleTextColor="#fff"
-            android:elevation="0dp"/>
+            android:layout_height="match_parent" />
 
-        <android.support.design.widget.CoordinatorLayout
+        <android.support.design.widget.BottomNavigationView
+            android:id="@+id/act_home_bottombar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@id/toolbar">
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="#fff"
+            app:elevation="0dp"
+            app:itemIconTint="#000"
+            app:itemTextColor="#000"/>
 
-            <android.support.design.widget.AppBarLayout
-                android:id="@+id/appbar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:elevation="0dp"
-                android:background="@android:color/transparent">
-
-                <android.support.design.widget.CollapsingToolbarLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:scrollbarFadeDuration="1000"
-                    app:scrimAnimationDuration="1000"
-                    app:layout_scrollFlags="scroll|enterAlways">
-
-                    <android.support.design.widget.TabLayout
-                        android:id="@+id/tab_home"
-                        android:layout_width="match_parent"
-                        android:layout_height="?attr/actionBarSize"
-                        app:tabMode="fixed"
-                        app:tabGravity="fill"
-                        android:background="@color/grey"
-                        app:tabIndicatorHeight="0dp">
-
-                    </android.support.design.widget.TabLayout>
-                </android.support.design.widget.CollapsingToolbarLayout>
-
-            </android.support.design.widget.AppBarLayout>
-
-            <FrameLayout
-                android:id="@+id/frame_home"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
-
-            <ProgressBar
-                android:id="@+id/progress_bar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:visibility="invisible"/>
-
-        </android.support.design.widget.CoordinatorLayout>
-
-        <rjsv.floatingmenu.floatingmenubutton.FloatingMenuButton
+        <!--<rjsv.floatingmenu.floatingmenubutton.FloatingMenuButton
             android:id="@+id/fab_post"
             android:layout_width="@dimen/floating_size"
             android:layout_height="@dimen/floating_size"
             android:scaleType="centerInside"
             app:animationType="radial"
-            app:dispositionEndAngle="360"
-            app:dispositionStartAngle="0"
+            app:dispositionEndAngle="0"
+            app:dispositionStartAngle="360"
             app:subActionButtonRadius="150"
             android:background="@drawable/plus"
-            android:layout_alignParentBottom="true"
+            android:layout_above="@id/act_home_bottombar"
             android:layout_alignParentEnd="true"
             app:anchored="true"
             android:visibility="gone"
@@ -102,7 +60,8 @@
                 android:layout_height="@dimen/floating_sub_size"
                 android:background="@drawable/barang" />
 
-        </rjsv.floatingmenu.floatingmenubutton.FloatingMenuButton>
+        </rjsv.floatingmenu.floatingmenubutton.FloatingMenuButton>-->
+
     </RelativeLayout>
 
     <android.support.constraint.ConstraintLayout
@@ -170,4 +129,5 @@
             app:layout_constraintTop_toTopOf="parent" />
 
     </android.support.constraint.ConstraintLayout>
+
 </FrameLayout>

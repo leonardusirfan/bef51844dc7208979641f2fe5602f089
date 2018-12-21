@@ -1,8 +1,5 @@
 package id.net.gmedia.selby.Model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class BarangModel {
     private String id;
     private String nama;
@@ -12,10 +9,20 @@ public class BarangModel {
 
     private int jumlah = 0;
 
+    private String jenis;
+    private ArtisModel penjual;
+
     public BarangModel(String id, String nama, String url){
         this.id = id;
         this.nama = nama;
         this.url = url;
+    }
+
+    public BarangModel(String id, String nama, String url, String jenis){
+        this.id = id;
+        this.nama = nama;
+        this.url = url;
+        this.jenis = jenis;
     }
 
     public BarangModel(String id, String nama, String url, double harga){
@@ -25,12 +32,66 @@ public class BarangModel {
         this.harga = harga;
     }
 
+    public BarangModel(String id, String nama, String url, double harga, ArtisModel penjual){
+        this.id = id;
+        this.nama = nama;
+        this.url = url;
+        this.harga = harga;
+        this.penjual = penjual;
+    }
+
+    public BarangModel(String id, String nama, String url, double harga, boolean favorit, String jenis){
+        this.id = id;
+        this.nama = nama;
+        this.url = url;
+        this.harga = harga;
+        this.favorit = favorit;
+        this.jenis = jenis;
+    }
+
+    public BarangModel(String id, String nama, String url, double harga, boolean favorit, String jenis, ArtisModel penjual){
+        this.id = id;
+        this.nama = nama;
+        this.url = url;
+        this.harga = harga;
+        this.favorit = favorit;
+        this.jenis = jenis;
+        this.penjual = penjual;
+    }
+
+    public BarangModel(String id, String nama, String url, double harga, String jenis, ArtisModel penjual){
+        this.id = id;
+        this.nama = nama;
+        this.url = url;
+        this.harga = harga;
+        this.jenis = jenis;
+        this.penjual = penjual;
+    }
+
+
     public BarangModel(String id, String nama, String url, double harga, boolean favorit){
         this.id = id;
         this.nama = nama;
         this.url = url;
         this.harga = harga;
         this.favorit = favorit;
+    }
+
+    public BarangModel(String id, String nama, String url, double harga, boolean favorit, ArtisModel penjual){
+        this.id = id;
+        this.nama = nama;
+        this.url = url;
+        this.harga = harga;
+        this.favorit = favorit;
+        this.penjual = penjual;
+    }
+
+    public String getJenis() {
+        return jenis;
+    }
+
+    public ArtisModel getPenjual() {
+        return penjual;
     }
 
     public void setJumlah(int jumlah) {

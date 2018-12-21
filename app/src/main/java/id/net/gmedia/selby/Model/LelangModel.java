@@ -16,6 +16,8 @@ public class LelangModel {
     private List<BidModel> listBid = new ArrayList<>();
     private List<String> gallery = new ArrayList<>();
 
+    private ArtisModel penjual;
+
     public LelangModel(String id, String nama, String url){
         this.id = id;
         this.nama = nama;
@@ -29,6 +31,20 @@ public class LelangModel {
         this.harga = harga;
         this.hargaNormal = hargaNormal;
         this.tglSelesai = tglSelesai;
+    }
+
+    public LelangModel(String id, String nama, String url, double harga, double hargaNormal, ArtisModel penjual, Date tglSelesai){
+        this.id = id;
+        this.nama = nama;
+        this.url = url;
+        this.harga = harga;
+        this.hargaNormal = hargaNormal;
+        this.tglSelesai = tglSelesai;
+        this.penjual = penjual;
+    }
+
+    public ArtisModel getPenjual() {
+        return penjual;
     }
 
     public String getId() {

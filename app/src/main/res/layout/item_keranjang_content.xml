@@ -37,11 +37,11 @@
         app:layout_constraintTop_toTopOf="@+id/img_item" />
 
     <ImageView
+        android:contentDescription="@string/barang"
         android:id="@+id/img_item"
         android:layout_width="@dimen/image_height"
         android:layout_height="@dimen/image_height"
         android:layout_marginStart="@dimen/padding10"
-        android:layout_marginLeft="@dimen/padding10"
         app:layout_constraintStart_toEndOf="@+id/cb_item"
         app:layout_constraintTop_toTopOf="@+id/cb_item"
         app:srcCompat="@android:color/darker_gray" />
@@ -57,6 +57,7 @@
         app:layout_constraintTop_toBottomOf="@+id/txt_nama" />
 
     <ImageView
+        android:contentDescription="@string/hapus"
         android:id="@+id/btn_hapus"
         android:layout_width="@dimen/image_height_small"
         android:layout_height="@dimen/image_height_small"
@@ -71,7 +72,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/padding15"
-        android:layout_marginLeft="@dimen/padding15"
         android:layout_marginTop="@dimen/padding10"
         android:layout_marginBottom="@dimen/padding10"
         android:orientation="horizontal"
@@ -86,7 +86,7 @@
             android:layout_weight="1"
             android:background="@drawable/style_rectangle_rounded_bordered_white"
             android:gravity="center"
-            android:text="-"
+            android:text="@string/minus"
             android:textSize="@dimen/text14" />
 
         <TextView
@@ -95,7 +95,6 @@
             android:layout_height="@dimen/item_keranjang_size"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="0"
             android:textSize="@dimen/text14" />
 
         <TextView
@@ -105,7 +104,7 @@
             android:layout_weight="1"
             android:background="@drawable/style_rectangle_rounded_bordered_white"
             android:gravity="center"
-            android:text="+"
+            android:text="@string/plus"
             android:textSize="@dimen/text14" />
     </LinearLayout>
 

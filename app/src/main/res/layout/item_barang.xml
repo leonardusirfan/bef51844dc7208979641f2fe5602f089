@@ -1,99 +1,120 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    android:id="@+id/layout_barang"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/barang_item_height"
+    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
     android:layout_marginStart="@dimen/padding5"
     android:layout_marginEnd="@dimen/padding5"
-    android:layout_marginTop="@dimen/padding10"
-    android:layout_marginBottom="@dimen/padding10"
-    app:cardCornerRadius="@dimen/padding5"
-    app:strokeWidth=".5dp"
-    app:cardElevation="0dp"
-    app:strokeColor="#c4c4c4">
+    android:layout_marginTop="@dimen/padding5"
+    android:layout_marginBottom="@dimen/padding20">
 
-    <LinearLayout
+    <android.support.v7.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="@dimen/barang_item_height_small"
+        app:cardCornerRadius="@dimen/padding10">
 
-        <FrameLayout
+        <ImageView
+            android:id="@+id/img_barang"
+            android:contentDescription="@string/barang"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="0.7">
+            android:layout_height="match_parent"
+            android:src="@drawable/artis2"
+            android:scaleType="centerCrop"/>
 
-            <ImageView
-                android:id="@+id/img_barang"
-                android:contentDescription="@string/barang"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:transitionName="barang"
-                android:scaleType="centerCrop"/>
+    </android.support.v7.widget.CardView>
 
-            <ImageView
-                android:id="@+id/img_favorit"
-                android:contentDescription="@string/favorit"
-                android:layout_width="@dimen/favorit_size"
-                android:layout_height="@dimen/favorit_size"
-                android:layout_gravity="end"
-                android:src="@drawable/loveblack"
-                android:scaleType="centerCrop"
-                android:padding="@dimen/padding2"
-                android:layout_margin="@dimen/padding5"/>
+    <TextView
+        android:id="@+id/txt_nama"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxLines="2"
+        android:minLines="2"
+        android:ellipsize="end"
+        android:padding="@dimen/padding2"
+        android:text="@string/lorem_ipsum"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text14" />
 
-        </FrameLayout>
+    <TextView
+        android:id="@+id/txt_harga"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:textStyle="bold"
+        android:textColor="@color/orange"
+        android:textSize="@dimen/text12"
+        android:padding="@dimen/padding2"/>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:orientation="vertical"
-            android:layout_weight="0.3"
-            android:gravity="center_vertical"
-            android:padding="@dimen/padding10">
+    <include layout="@layout/view_divider"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/padding1"
+        android:layout_marginTop="@dimen/padding10" />
 
-            <TextView
-                android:id="@+id/txt_nama"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/text12"
-                android:maxLines="1"
-                android:ellipsize="end"
-                android:textColor="#000"
-                android:textStyle="bold"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/padding10">
 
-            <TextView
-                android:id="@+id/txt_harga"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/text10"
-                android:textColor="#000"
-                android:textStyle="bold"/>
+        <ImageView
+            android:id="@+id/img_pelapak"
+            android:contentDescription="@string/penjual"
+            android:layout_width="@dimen/item_barang_icon_size"
+            android:layout_height="@dimen/item_barang_icon_size"
+            android:layout_alignParentStart="true"
+            android:scaleType="centerCrop"
+            android:src="@drawable/artis2"/>
 
-        </LinearLayout>
+        <RatingBar
+            android:id="@+id/rate_pelapak"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:numStars="5"
+            android:scaleY="0.7"
+            android:scaleX="0.7"
+            android:layout_marginStart="@dimen/padding_10"
+            style="@style/Base.Widget.AppCompat.RatingBar.Small"
+            android:theme="@style/AppRatingBar.Orange"
+            android:layout_toEndOf="@id/img_pelapak"
+            android:layout_alignTop="@id/img_pelapak"/>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/small_button_size"
-            android:orientation="horizontal">
+        <TextView
+            android:id="@+id/txt_nama_pelapak"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text10"
+            android:textColor="@color/very_dark_grey"
+            android:maxLines="1"
+            android:layout_marginStart="@dimen/padding5"
+            android:ellipsize="end"
+            android:layout_below="@id/rate_pelapak"
+            android:layout_toEndOf="@id/img_pelapak"
+            android:layout_toStartOf="@id/img_keranjang"/>
 
-            <ImageView
-                android:id="@+id/btn_keranjang"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:background="@color/orange"
-                android:src="@drawable/ic_keranjang_white"
-                android:padding="@dimen/padding5"
-                android:layout_weight="0.3"/>
+        <ImageView
+            android:id="@+id/img_keranjang"
+            android:contentDescription="@string/keranjang"
+            android:layout_width="@dimen/item_barang_keranjang_size"
+            android:layout_height="@dimen/item_barang_keranjang_size"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/cart"
+            android:layout_centerVertical="true" />
+    </RelativeLayout>
 
-            <Button
-                android:id="@+id/btn_lihat"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="0.7"
-                android:background="@color/blue"
-                android:text="Lihat"
-                android:textSize="@dimen/text10" />
-        </LinearLayout>
-
-    </LinearLayout>
-</android.support.design.card.MaterialCardView>
+    <Button
+        android:id="@+id/btn_beli"
+        android:layout_width="match_parent"
+        android:layout_marginStart="@dimen/padding10"
+        android:layout_marginEnd="@dimen/padding10"
+        android:layout_height="@dimen/item_barang_button_height"
+        android:layout_marginTop="@dimen/padding5"
+        android:text="@string/barang_beli_langsung"
+        android:background="@drawable/style_fullrounded_gold_rectangle"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text10"
+        android:textAllCaps="false"
+        android:layout_gravity="center"/>
+</LinearLayout>

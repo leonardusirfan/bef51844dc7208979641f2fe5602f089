@@ -1,14 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#ffffff</color>
-    <color name="colorPrimaryDark">#9ad7ff</color>
-    <color name="colorAccent">#D81B60</color>
+    <color name="colorPrimary">#004D7F</color>
+    <color name="colorPrimaryDark">#0068AB</color>
+    <color name="colorAccent">#f14b45</color>
 
-    <color name="blue">#abdaf9</color>
-    <color name="orange">#f38251</color>
-    <color name="grey">#f8f8f8</color>
-    <color name="dark_grey">#b1b1b1</color>
+    <color name="orange">#f14b45</color>
+    <color name="light_orange">#feba04</color>
 
-    <color name="colorPrimaryPix">#9ad7ff</color>
-    <color name="colorPrimaryLightPix">#abdaf9</color>
+    <color name="colorPrimaryPix">#0068AB</color>
+    <color name="colorPrimaryLightPix">#3B9ED9</color>
+
+    <!--<color name="gold">#9f7c4e</color>
+    <color name="dark_gold">#8c6c41</color>-->
+    <color name="white">#ffffff</color>
+    <color name="grey">#ededed</color>
+    <color name="dark_grey">#d2d2d2</color>
+    <color name="very_dark_grey">#686868</color>
+    <color name="black">#515151</color>
+
+    <color name="gold">#0068AB</color>
+    <color name="dark_gold">#004D7F</color>
+
+    <color name="very_light_blue">#abdaf9</color>
+    <color name="light_blue">#3B9ED9</color>
+    <color name="blue">#0068AB</color>
+    <color name="dark_blue">#004D7F</color>
 </resources>

@@ -12,6 +12,7 @@
 
         <ImageView
             android:id="@+id/img_close"
+            android:contentDescription="@string/tutup"
             android:layout_width="@dimen/favorit_size"
             android:layout_height="@dimen/favorit_size"
             android:layout_marginTop="@dimen/padding10"

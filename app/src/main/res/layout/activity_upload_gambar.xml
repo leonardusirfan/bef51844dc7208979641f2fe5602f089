@@ -4,14 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Home.Upload.UploadGambarActivity">
+    android:background="#fff"
+    tools:context=".Upload.UploadGambarActivity">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         app:layout_collapseMode="pin"
-        android:background="@color/blue"
+        android:background="@color/gold"
         app:titleTextColor="#fff"
         android:theme="@style/AppTheme.ActionBar"
         android:elevation="0dp"/>
@@ -20,8 +21,11 @@
         android:id="@+id/txt_deskripsi"
         android:layout_width="match_parent"
         android:layout_below="@id/toolbar"
-        android:hint="Tulis sesuatu di sini"
-        android:layout_height="@dimen/deskripsi_height"
+        android:hint="@string/upload_foto_tulis"
+        android:inputType="textMultiLine"
+        android:layout_height="wrap_content"
+        android:minLines="5"
+        android:maxLines="5"
         android:padding="@dimen/padding10"
         android:textSize="@dimen/text16"
         android:background="#fff"/>

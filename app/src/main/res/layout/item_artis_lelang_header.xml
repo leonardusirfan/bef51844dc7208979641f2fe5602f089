@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/lelang_item_header_width"
+    android:layout_height="@dimen/lelang_item_height"
+    android:layout_margin="@dimen/padding10"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="@android:color/transparent">
+
+    <TextView
+        android:id="@+id/txt_deskripsi"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/artis_lelang_hari_ini"
+        android:textColor="@color/gold"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:textAllCaps="true"
+        android:textSize="@dimen/text20"/>
+
+    <TextView
+        android:id="@+id/txt_lihat_semua"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/lihat_semua"
+        android:textColor="@color/gold"
+        android:gravity="center"
+        android:textSize="@dimen/text10"
+        android:layout_marginTop="@dimen/padding5"/>
+
+
+</LinearLayout>

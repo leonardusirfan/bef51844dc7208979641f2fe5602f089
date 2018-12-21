@@ -20,7 +20,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="No. Transaksi"
+            android:text="@string/transaksi_nomor"
             android:textStyle="bold"
             android:textColor="#000"
             android:padding="@dimen/padding5"/>
@@ -28,7 +28,6 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="181125849372"
             android:padding="@dimen/padding5"/>
     </LinearLayout>
 
@@ -44,14 +43,13 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Metode Pembayaran"
+            android:text="@string/transaksi_pembayaran"
             android:textStyle="bold"
             android:textColor="#000"
             android:padding="@dimen/padding5"/>
 
         <TextView
             android:id="@+id/metode_pembayaran"
-            android:text="Transfer BCA"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="@dimen/padding5"/>
@@ -69,7 +67,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Alamat Pengiriman"
+            android:text="@string/transaksi_alamat"
             android:textStyle="bold"
             android:textColor="#000"
             android:padding="@dimen/padding5"/>
@@ -78,7 +76,6 @@
             android:id="@+id/txt_alamat"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Jl. Bukit Menur Raya 165A, Sendang Mulyo, Tembalang, Semarang"
             android:padding="@dimen/padding5"/>
     </LinearLayout>
 
@@ -100,7 +97,6 @@
             android:layout_marginEnd="@dimen/padding10"
             android:ellipsize="end"
             android:maxLines="1"
-            android:text="Tas Escream"
             android:textSize="@dimen/text16"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/txt_harga"
@@ -117,7 +113,6 @@
             android:layout_marginStart="@dimen/padding10"
             android:layout_marginTop="@dimen/padding5"
             android:layout_marginEnd="@dimen/padding10"
-            android:text="Rp 400.000"
             app:layout_constraintBottom_toTopOf="@+id/txt_jumlah"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/img_barang"
@@ -129,7 +124,6 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/padding10"
             android:layout_marginTop="@dimen/padding5"
-            android:text="2"
             android:textSize="@dimen/text14"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/txt_total"
@@ -145,7 +139,7 @@
             android:layout_marginStart="@dimen/padding10"
             android:layout_marginTop="@dimen/padding20"
             android:layout_marginBottom="@dimen/padding10"
-            android:text="Total biaya"
+            android:text="@string/transaksi_total"
             android:textSize="@dimen/text18"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -160,7 +154,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/padding10"
-            android:text="Rp 800.000"
             android:textAlignment="viewEnd"
             android:textSize="@dimen/text18"
             android:textStyle="bold"
@@ -192,7 +185,7 @@
             android:layout_marginStart="@dimen/padding10"
             android:background="@drawable/style_rectangle_rounded_bordered_white"
             android:gravity="center"
-            android:text="-"
+            android:text="@string/minus"
             android:textSize="@dimen/text14"
             android:textStyle="bold"
             app:layout_constraintEnd_toStartOf="@+id/txt_jumlah"
@@ -208,7 +201,7 @@
             android:layout_marginStart="@dimen/padding10"
             android:background="@drawable/style_rectangle_rounded_bordered_white"
             android:gravity="center"
-            android:text="+"
+            android:text="@string/plus"
             android:textSize="@dimen/text14"
             android:textStyle="bold"
             app:layout_constraintStart_toEndOf="@+id/txt_jumlah"
@@ -223,6 +216,6 @@
         android:layout_marginEnd="@dimen/padding5"
         android:layout_marginTop="@dimen/padding20"
         android:background="@drawable/style_rectangle_rounded_blue"
-        android:text="Bayar"/>
+        android:text="@string/transaksi_bayar"/>
 
 </LinearLayout>

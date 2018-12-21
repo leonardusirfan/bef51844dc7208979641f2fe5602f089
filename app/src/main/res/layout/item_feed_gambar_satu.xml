@@ -13,6 +13,7 @@
 
         <ImageView
             android:id="@+id/img_user"
+            android:contentDescription="@string/user"
             android:layout_width="@dimen/profile_size_small"
             android:layout_height="@dimen/profile_size_small"
             android:layout_margin="@dimen/padding20" />
@@ -88,11 +89,12 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Lihat Semua"
+            android:text="@string/lihat_semua"
             android:textColor="#c1c1c1"
             android:textSize="@dimen/text12"/>
 
         <ImageView
+            android:contentDescription="@null"
             android:layout_width="@dimen/favorit_size"
             android:layout_height="match_parent"
             android:padding="@dimen/padding2"

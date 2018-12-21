@@ -23,7 +23,7 @@ public class Constant {
     public final static Map<String, String> HEADER_AUTH = new HashMap<String, String>(){{put("Auth-Key", "gmedia"); put("Client-Service", "selby-ecommerce");}};
 
     //URL Request
-    private static final String BASE_URL = "http://gmedia.bz/selby/api/";
+    private static final String BASE_URL = "http://gmedia.bz/selbi/api/";
     public static final String URL_HOME_SLIDE = BASE_URL + "Slider/index";
     public static final String URL_ARTIS = BASE_URL + "Penjual/index";
     public static final String URL_HOME_CATEGORY = BASE_URL + "Category/index";
@@ -59,6 +59,11 @@ public class Constant {
     public static final String URL_LIST_BID = BASE_URL + "Lelang/list_bid";
     public static final String URL_FOLLOW_PENJUAL = BASE_URL + "Profile/follow";
     public static final String URL_KEGIATAN = BASE_URL + "Feed/kegiatan";
+    public static final String URL_ARTIS_DIFOLLOW = BASE_URL + "Penjual/following";
+    public static final String URL_KATEGORI_BARANG = BASE_URL + "Category/index";
+    public static final String URL_KATEGORI_ARTIS = BASE_URL + "Pekerjaan/index";
+    public static final String URL_BARANG_RATING = BASE_URL + "Produk/jumlah_rating";
+    public static final String URL_HOT_ITEM = BASE_URL + "Produk/hot_item";
 
     //Token heaader dengan enkripsi
     public static Map<String, String> getTokenHeader(String uuid){

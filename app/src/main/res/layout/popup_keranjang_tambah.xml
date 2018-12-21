@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent">
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:contentDescription="@null"
+        android:layout_width="@dimen/popup_icon_size"
+        android:layout_height="@dimen/popup_icon_size"
+        android:elevation="@dimen/padding10"
+        android:src="@drawable/popup_keranjang"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <android.support.design.card.MaterialCardView
+        android:id="@+id/materialCardView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/popup_icon_padding"
+        android:background="#fff"
+        android:elevation="@dimen/padding5"
+        app:cardCornerRadius="@dimen/padding10"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:elevation="@dimen/padding10"
+            android:paddingTop="@dimen/popup_icon_padding">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="@dimen/padding15"
+                app:layout_constraintBottom_toTopOf="@+id/btn_tambah"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/padding10"
+                    android:gravity="center"
+                    android:text="@string/barang_keranjang_jumlah_barang"
+                    android:textSize="@dimen/text16" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/padding10"
+                    android:gravity="center"
+                    android:padding="@dimen/padding5">
+
+                    <TextView
+                        android:id="@+id/txt_kurang"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/style_rectangle_rounded_bordered_white_bold"
+                        android:gravity="center"
+                        android:paddingStart="@dimen/padding20"
+                        android:paddingTop="@dimen/padding10"
+                        android:paddingEnd="@dimen/padding20"
+                        android:paddingBottom="@dimen/padding10"
+                        android:text="@string/minus"
+                        android:textColor="#000"
+                        android:textSize="@dimen/text24"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/txt_jumlah"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.5"
+                        android:background="#fff"
+                        android:gravity="center"
+                        android:padding="@dimen/padding10"
+                        android:textSize="@dimen/text24"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/txt_tambah"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/style_rectangle_rounded_bordered_white_bold"
+                        android:gravity="center"
+                        android:paddingStart="@dimen/padding20"
+                        android:paddingTop="@dimen/padding10"
+                        android:paddingEnd="@dimen/padding20"
+                        android:paddingBottom="@dimen/padding10"
+                        android:text="@string/plus"
+                        android:textColor="#000"
+                        android:textSize="@dimen/text24"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btn_tambah"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/button_height"
+                android:layout_alignParentBottom="true"
+                android:background="#2a7de2"
+                android:padding="@dimen/padding5"
+                android:text="@string/tambah"
+                android:textAllCaps="false"
+                android:textColor="#fff"
+                android:textSize="@dimen/text14"
+                app:layout_constraintBottom_toBottomOf="parent" />
+
+        </android.support.constraint.ConstraintLayout>
+
+
+    </android.support.design.card.MaterialCardView>
+
+</android.support.constraint.ConstraintLayout>

@@ -1,0 +1,198 @@
+<resources>
+    <string name="app_name">Selby</string>
+    <string name="user">User</string>
+    <string name="artis">Artist</string>
+    <string name="penjual">Seller</string>
+    <string name="barang">Product</string>
+    <string name="keranjang">Cart</string>
+    <string name="hapus">Delete</string>
+    <string name="batal">Cancel</string>
+    <string name="tutup">Close</string>
+    <string name="tambah">Add</string>
+    <string name="favorit">Favourite</string>
+    <string name="lokasi">Place</string>
+    <string name="waktu">Time</string>
+    <string name="lihat">Detail</string>
+    <string name="nama">Name</string>
+    <string name="ttl">Birthplace, birthdate</string>
+    <string name="tinggi">Height</string>
+    <string name="plus">"+"</string>
+    <string name="minus">"-"</string>
+    <string name="waktu_nol">"00"</string>
+    <string name="rp">"Rp"</string>
+    <string name="lihat_semua">"See all"</string>
+    <string name="lihat_lebih_banyak">"See more"</string>
+
+    <string name="feed_rekomendasi_artis">"Recommended artist"</string>
+
+    <string name="hari">"Day"</string>
+    <string name="jam">"Hour"</string>
+    <string name="menit">"Minute"</string>
+    <string name="detik">"Second"</string>
+
+    <string name="error_database">Error Occurred</string>
+    <string name="error_json">JSON Parsing error</string>
+
+    <string name="artis_lihat_kegiatan">"Events"</string>
+    <string name="artis_lihat_produk">"Products"</string>
+    <string name="artis_lelang_hari_ini">"Today's auction"</string>
+
+    <string name="kosong">"Empty"</string>
+    <string name="kosong_keranjang">"Your cart is empty"</string>
+    <string name="kosong_artis_barang">"Empty artist product"</string>
+    <string name="kosong_artis_galeri">"Empty artist photo"</string>
+    <string name="kosong_artis_kegiatan">"Empty artist event"</string>
+
+    <string name="pertama">"First"</string>
+    <string name="selanjutnya">"Next"</string>
+    <string name="sebelumnya">"Previous"</string>
+    <string name="terakhir">"Last"</string>
+
+    <string name="cari">"Search"</string>
+    <string name="cari_artis">"Look for your idol here"</string>
+    <string name="cari_lelang">"Look for your auction here"</string>
+    <string name="cari_barang">"Look for your product here"</string>
+
+    <string name="penjual_produk">"Product"</string>
+    <string name="penjual_penilaian">"Rating"</string>
+    <string name="penjual_bergabung">"Join"</string>
+    <string name="penjual_terakhir_online">"Last Online"</string>
+    <string name="penjual_chat_dibalas">"Chat replied"</string>
+    <string name="penjual_pengikut">"Follower"</string>
+    <string name="penjual_follow">"Follow"</string>
+    <string name="penjual_unfollow">"Unfollow"</string>
+    <string name="penjual_chat">"Chat Seller"</string>
+
+    <string name="barang_dilihat">"Viewed"</string>
+    <string name="barang_terkirim">"Delivered"</string>
+    <string name="barang_kondisi">"Condition"</string>
+    <string name="barang_asuransi">"Insurance"</string>
+    <string name="barang_beli_langsung">"Buy Now"</string>
+    <string name="barang_pesan_sekarang">"Order Now"</string>
+    <string name="barang_spesifikasi">Specification</string>
+    <string name="barang_kategori">Category</string>
+    <string name="barang_berat">Weight</string>
+    <string name="barang_merk">Brand</string>
+    <string name="barang_deskripsi">Description</string>
+    <string name="barang_pesan">Order</string>
+    <string name="barang_tambah_favorit">"Product added to favourite"</string>
+    <string name="barang_balas_diskusi">"Reply Discussion"</string>
+    <string name="barang_balas_ulasan">"Reply Review"</string>
+    <string name="barang_tulis_ulasan">"Write your review here"</string>
+    <string name="barang_kirim">"Send"</string>
+    <string name="barang_tulis_balasan">"Write your reply here"</string>
+    <string name="barang_keranjang_jumlah_barang">"Number of items you want to buy"</string>
+
+    <string name="ulasan_tulis">"Write Review"</string>
+    <string name="balasan_tulis">"Write Reply"</string>
+    <string name="ulasan_rating">"Give Rating"</string>
+
+    <string name="diskusi_tulis">"Write Discussion"</string>
+    <string name="diskusi_tulis_disini">"Write discussion here"</string>
+
+    <string name="lelang_bid">Submit Bid</string>
+    <string name="lelang_ajukan_bid">Submit a Bid</string>
+    <string name="lelang_bid_awal">"Initial Bid/Price"</string>
+    <string name="lelang_waktu">"Auction time"</string>
+    <string name="lelang_penawaran_saat_ini">"Current bid"</string>
+    <string name="lelang_list_bid">"Bid list"</string>
+    <string name="lelang_tulis_penawaran">"Submit your bid"</string>
+
+    <string name="profil_nama">"Profile Name"</string>
+    <string name="profil_alamat">"Address"</string>
+    <string name="profil_no_telepon">"Telephone Number"</string>
+    <string name="profil_telepon">"Telephone"</string>
+    <string name="profil_email">"Email"</string>
+    <string name="profil_edit">"Edit Profile"</string>
+    <string name="profil_logout">"Logout"</string>
+    <string name="profil_pembayaran">"Payment"</string>
+    <string name="profil_berlangganan">"Following : "</string>
+    <string name="pilih_semua">"Select All"</string>
+    <string name="subtotal">"Subtotal"</string>
+    <string name="keranjang_tanpa_ongkir">"Shipping costs not included"</string>
+
+    <string name="artis_kegiatan">"Events"</string>
+    <string name="artis_galeri">"Gallery"</string>
+
+    <string name="transaksi_nomor">"Transaction Number"</string>
+    <string name="transaksi_pembayaran">"Payment Method"</string>
+    <string name="transaksi_alamat">"Delivery Address"</string>
+    <string name="transaksi_total">"Total Price"</string>
+    <string name="transaksi_bayar">"Buy"</string>
+
+    <string name="upload_barang_nama">"Product Name"</string>
+    <string name="upload_barang_harga">"Product Price"</string>
+    <string name="upload_barang_harga_normal">"Normal Price (Optional)"</string>
+    <string name="upload_barang_waktu">"Auction End Time"</string>
+    <string name="upload_barang_berat">"Weight"</string>
+    <string name="upload_barang_ukuran">"Dimension"</string>
+    <string name="upload_barang_kondisi">"Condition"</string>
+    <string name="upload_barang_kategori">"Category"</string>
+    <string name="upload_barang_merk">"Brand"</string>
+    <string name="upload_barang_deskripsi">"Product Description"</string>
+    <string name="upload_barang_foto">"Photos"</string>
+    <string name="upload_barang_tambah_barang">"Add Product"</string>
+
+    <string name="preloved">"Preloved"</string>
+    <string name="lelang">"Auction"</string>
+    <string name="merchandise">"Merchandise"</string>
+    <string name="merchandise_belum_punya">"Don't have merchandise? "</string>
+    <string name="merchandise_pesan_disini">"Order here"</string>
+
+    <string name="upload_foto_tulis">"Write something here"</string>
+    <string name="upload_kegiatan_judul">"Title"</string>
+    <string name="upload_kegiatan_tempat">"Place"</string>
+    <string name="upload_kegiatan_waktu">"Time"</string>
+    <string name="upload_kegiatan_deskripsi">"Description"</string>
+
+    <string name="facebook_app_id">330921904309199</string>
+    <string name="fb_login_protocol_scheme">fb330921904309199</string>
+    <string name="lorem_ipsum">"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."</string>
+
+    <string-array name="satuan_berat">
+        <item>gram</item>
+        <item>kilogram</item>
+        <item>ton</item>
+    </string-array>
+
+    <string-array name="item_kondisi">
+        <item>New</item>
+        <item>Used</item>
+    </string-array>
+
+    <string name="home_artis_favorit">"Favourite Artist"</string>
+    <string name="home_preloved">"Preloved"</string>
+    <string name="home_merchandise">"Merchandise"</string>
+    <string name="home_hot_item">"Hot Item"</string>
+    <string name="home_lelang">"Auction"</string>
+
+    <string name="menu_home">"Home"</string>
+    <string name="menu_feed">"Feed"</string>
+    <string name="menu_favorit">"Favourite"</string>
+    <string name="menu_keranjang">"Cart"</string>
+    <string name="menu_akun">"Account"</string>
+
+    <string name="barang_detail_informasi">"Detail"</string>
+    <string name="barang_detail_ulasan">"Review"</string>
+    <string name="barang_detail_diskusi">"Discussion"</string>
+
+    <string name="feed_status">"Posted new status"</string>
+    <string name="feed_gambar">"Posted %d new photos"</string>
+    <string name="feed_gambar1">"Posted new photo"</string>
+    <string name="feed_kegiatan">"Posted new event"</string>
+    <string name="feed_lelang">"Posted new auction product"</string>
+    <string name="feed_barang">"Posted new product"</string>
+
+    <string name="upload_gambar">"Post Photo"</string>
+    <string name="upload_barang">"Post Product"</string>
+    <string name="upload_kegiatan">"Post Event"</string>
+    <string name="kirim">"Send"</string>
+
+    <string name="ulasan_semua">"All"</string>
+    <string name="ulasan_bintang1">"1 Star"</string>
+    <string name="ulasan_bintang2">"2 Star"</string>
+    <string name="ulasan_bintang3">"3 Star"</string>
+    <string name="ulasan_bintang4">"4 Star"</string>
+    <string name="ulasan_bintang5">"5 Star"</string>
+    <string name="ulasan_jumlah_ulasan">"%d review"</string>
+</resources>
