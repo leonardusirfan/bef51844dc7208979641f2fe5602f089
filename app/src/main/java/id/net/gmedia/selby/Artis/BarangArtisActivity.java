@@ -124,12 +124,14 @@ public class BarangArtisActivity extends AppCompatActivity {
                         listLelang.add(new LelangModel(lelang.getString("id"), lelang.getString("nama"), lelang.getString("image"), lelang.getDouble("bid_awal"), lelang.getDouble("bid_awal"), Converter.stringDTTToDate(lelang.getString("end"))));
                     }
 
-                    rv_lelang = findViewById(R.id.rv_lelang);
-                    rv_lelang.setVisibility(View.VISIBLE);
-                    lelangArtisAdapter = new LelangArtisAdapter(listLelang);
-                    rv_lelang.setLayoutManager(new LinearLayoutManager(BarangArtisActivity.this, LinearLayoutManager.HORIZONTAL, false));
-                    rv_lelang.setItemAnimator(new DefaultItemAnimator());
-                    rv_lelang.setAdapter(lelangArtisAdapter);
+                    if(result.length() != 0){
+                        rv_lelang = findViewById(R.id.rv_lelang);
+                        rv_lelang.setVisibility(View.VISIBLE);
+                        lelangArtisAdapter = new LelangArtisAdapter(listLelang);
+                        rv_lelang.setLayoutManager(new LinearLayoutManager(BarangArtisActivity.this, LinearLayoutManager.HORIZONTAL, false));
+                        rv_lelang.setItemAnimator(new DefaultItemAnimator());
+                        rv_lelang.setAdapter(lelangArtisAdapter);
+                    }
                 }
                 catch (JSONException e){
                     Toast.makeText(BarangArtisActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();

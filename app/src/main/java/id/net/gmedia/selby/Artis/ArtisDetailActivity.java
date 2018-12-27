@@ -7,6 +7,7 @@ import android.support.constraint.ConstraintSet;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.Toolbar;
 import android.transition.Transition;
 import android.transition.TransitionManager;
 import android.util.Log;
@@ -73,6 +74,20 @@ public class ArtisDetailActivity extends AppCompatActivity {
         txt_artis = findViewById(R.id.txt_artis);
         txt_detail = findViewById(R.id.txt_detail);
         btn_detail = findViewById(R.id.btn_detail);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+
+        //Inisialisasi Toolbar
+        setSupportActionBar(toolbar);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
+        if(getSupportActionBar() != null){
+            getSupportActionBar().setTitle("");
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
         //Animasi + Transisi dari activity sebelumnya
         Transition enterTransition = getWindow().getSharedElementEnterTransition();

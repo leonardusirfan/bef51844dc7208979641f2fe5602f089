@@ -84,7 +84,6 @@
             </RelativeLayout>
 
             <android.support.v7.widget.GridLayout
-                android:id="@+id/gridLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -244,7 +243,6 @@
     </android.support.design.card.MaterialCardView>
 
     <android.support.constraint.Guideline
-        android:id="@+id/guideline8"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"

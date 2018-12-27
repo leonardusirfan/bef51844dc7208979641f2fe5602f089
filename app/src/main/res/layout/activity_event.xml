@@ -51,13 +51,11 @@
                         app:tabIndicatorHeight="0dp">
 
                         <android.support.design.widget.TabItem
-                            android:id="@+id/tab_carousel"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:text="@string/artis_kegiatan" />
 
                         <android.support.design.widget.TabItem
-                            android:id="@+id/tab_thumbnail"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:text="@string/artis_galeri" />

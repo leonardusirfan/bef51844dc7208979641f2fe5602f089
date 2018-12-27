@@ -7,7 +7,6 @@
     android:background="@android:color/transparent">
 
     <ImageView
-        android:id="@+id/imageView"
         android:contentDescription="@null"
         android:layout_width="@dimen/popup_icon_size"
         android:layout_height="@dimen/popup_icon_size"
@@ -18,7 +17,6 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <android.support.design.card.MaterialCardView
-        android:id="@+id/materialCardView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="@dimen/popup_icon_padding"

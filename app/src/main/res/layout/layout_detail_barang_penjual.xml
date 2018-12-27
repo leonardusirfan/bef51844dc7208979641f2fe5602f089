@@ -26,7 +26,6 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/txt_produk"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/penjual_produk"
@@ -34,7 +33,6 @@
                 android:textSize="@dimen/text12" />
 
             <TextView
-                android:id="@+id/txt_penilaian"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/penjual_penilaian"
@@ -42,7 +40,6 @@
                 android:textSize="@dimen/text12" />
 
             <TextView
-                android:id="@+id/txt_bergabung"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/penjual_bergabung"
@@ -59,7 +56,6 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/txt_online"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/penjual_terakhir_online"
@@ -67,7 +63,6 @@
                 android:textSize="@dimen/text12" />
 
             <TextView
-                android:id="@+id/txt_chat_dibalas"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/penjual_chat_dibalas"
@@ -75,7 +70,6 @@
                 android:textSize="@dimen/text12" />
 
             <TextView
-                android:id="@+id/pengikut"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/penjual_pengikut"

@@ -14,7 +14,6 @@
         android:visibility="visible">
 
         <LinearLayout
-            android:id="@+id/layout_pilih_semua"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="@dimen/padding10">
@@ -52,7 +51,6 @@
         </LinearLayout>
 
         <include layout="@layout/view_divider"
-            android:id="@+id/divider"
             android:layout_width="match_parent"
             android:layout_height="1dp"/>
 

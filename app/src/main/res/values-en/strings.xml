@@ -6,16 +6,10 @@
     <string name="barang">Product</string>
     <string name="keranjang">Cart</string>
     <string name="hapus">Delete</string>
-    <string name="batal">Cancel</string>
     <string name="tutup">Close</string>
     <string name="tambah">Add</string>
-    <string name="favorit">Favourite</string>
     <string name="lokasi">Place</string>
     <string name="waktu">Time</string>
-    <string name="lihat">Detail</string>
-    <string name="nama">Name</string>
-    <string name="ttl">Birthplace, birthdate</string>
-    <string name="tinggi">Height</string>
     <string name="plus">"+"</string>
     <string name="minus">"-"</string>
     <string name="waktu_nol">"00"</string>
@@ -124,10 +118,8 @@
     <string name="upload_barang_nama">"Product Name"</string>
     <string name="upload_barang_harga">"Product Price"</string>
     <string name="upload_barang_harga_normal">"Normal Price (Optional)"</string>
-    <string name="upload_barang_waktu">"Auction End Time"</string>
     <string name="upload_barang_berat">"Weight"</string>
     <string name="upload_barang_ukuran">"Dimension"</string>
-    <string name="upload_barang_kondisi">"Condition"</string>
     <string name="upload_barang_kategori">"Category"</string>
     <string name="upload_barang_merk">"Brand"</string>
     <string name="upload_barang_deskripsi">"Product Description"</string>
@@ -165,7 +157,6 @@
     <string name="home_preloved">"Preloved"</string>
     <string name="home_merchandise">"Merchandise"</string>
     <string name="home_hot_item">"Hot Item"</string>
-    <string name="home_lelang">"Auction"</string>
 
     <string name="menu_home">"Home"</string>
     <string name="menu_feed">"Feed"</string>
