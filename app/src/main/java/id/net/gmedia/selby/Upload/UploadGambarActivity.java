@@ -26,11 +26,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import id.net.gmedia.selby.Home.HomeActivity;
+import id.net.gmedia.selby.Util.AppRequestCallback;
 import id.net.gmedia.selby.Util.Constant;
 import id.net.gmedia.selby.Model.UploadModel;
 
 import id.net.gmedia.selby.R;
 import id.net.gmedia.selby.Util.ApiVolleyManager;
+import id.net.gmedia.selby.Util.JSONBuilder;
 
 public class UploadGambarActivity extends AppCompatActivity {
 
@@ -67,50 +69,32 @@ public class UploadGambarActivity extends AppCompatActivity {
 
     private void upload(){
         if(adapter.isNoPic()){
-            try{
-                String judul = txt_deskripsi.getText().toString();
+            String judul = txt_deskripsi.getText().toString();
 
-                JSONObject body = new JSONObject();
-                body.put("jenis", 3);
-                body.put("judul", judul);
-                body.put("id_gambar", new JSONArray());
+            JSONBuilder body = new JSONBuilder();
+            body.add("jenis", 3);
+            body.add("judul", judul);
+            body.add("id_gambar", new JSONArray());
+            ApiVolleyManager.getInstance().addRequest(UploadGambarActivity.this, Constant.URL_POST, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body.create(), new AppRequestCallback(new AppRequestCallback.AdvancedRequestListener() {
+                @Override
+                public void onEmpty(String message) {
+                    Toast.makeText(UploadGambarActivity.this, message, Toast.LENGTH_SHORT).show();
+                }
 
-                ApiVolleyManager.getInstance().addRequest(UploadGambarActivity.this, Constant.URL_POST, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body, new ApiVolleyManager.RequestCallback() {
-                    @Override
-                    public void onSuccess(String result) {
-                        try{
-                            JSONObject jsonresult = new JSONObject(result);
-                            int status = jsonresult.getJSONObject("metadata").getInt("status");
-                            String message = jsonresult.getJSONObject("metadata").getString("message");
+                @Override
+                public void onSuccess(String result) {
+                    Intent i = new Intent(UploadGambarActivity.this, HomeActivity.class);
+                    i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    i.putExtra("start", 1);
+                    startActivity(i);
+                }
 
-                            if(status == 200){
-                                Intent i = new Intent(UploadGambarActivity.this, HomeActivity.class);
-                                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                i.putExtra("start", 1);
-                                startActivity(i);
-                            }
-                            else{
-                                Toast.makeText(UploadGambarActivity.this, message, Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                        catch (JSONException e){
-                            Toast.makeText(UploadGambarActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
-                            Log.e("Post", e.getMessage());
-                        }
-                    }
-
-                    @Override
-                    public void onError(String result) {
-                        Toast.makeText(UploadGambarActivity.this, R.string.error_database, Toast.LENGTH_SHORT).show();
-                        Log.e("Post", result);
-                    }
-                });
-            }
-            catch (JSONException e){
-                Toast.makeText(UploadGambarActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
-                Log.e("Post", e.getMessage());
-            }
+                @Override
+                public void onFail(String message) {
+                    Toast.makeText(UploadGambarActivity.this, message, Toast.LENGTH_SHORT).show();
+                }
+            }));
         }
         else if(adapter.isAllUploaded()){
             try{
@@ -128,37 +112,26 @@ public class UploadGambarActivity extends AppCompatActivity {
                 body.put("judul", judul);
                 body.put("id_gambar", listGambar);
 
-                ApiVolleyManager.getInstance().addRequest(UploadGambarActivity.this, Constant.URL_POST, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body, new ApiVolleyManager.RequestCallback() {
+                ApiVolleyManager.getInstance().addRequest(UploadGambarActivity.this, Constant.URL_POST, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body, new AppRequestCallback(new AppRequestCallback.AdvancedRequestListener() {
+                    @Override
+                    public void onEmpty(String message) {
+                        Toast.makeText(UploadGambarActivity.this, message, Toast.LENGTH_SHORT).show();
+                    }
+
                     @Override
                     public void onSuccess(String result) {
-                        try{
-                            JSONObject jsonresult = new JSONObject(result);
-                            int status = jsonresult.getJSONObject("metadata").getInt("status");
-                            String message = jsonresult.getJSONObject("metadata").getString("message");
-
-                            if(status == 200){
-                                Intent i = new Intent(UploadGambarActivity.this, HomeActivity.class);
-                                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                i.putExtra("start", 1);
-                                startActivity(i);
-                            }
-                            else{
-                                Toast.makeText(UploadGambarActivity.this, message, Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                        catch (JSONException e){
-                            Toast.makeText(UploadGambarActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
-                            Log.e("Post", e.getMessage());
-                        }
+                        Intent i = new Intent(UploadGambarActivity.this, HomeActivity.class);
+                        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        i.putExtra("start", 1);
+                        startActivity(i);
                     }
 
                     @Override
-                    public void onError(String result) {
-                        Toast.makeText(UploadGambarActivity.this, R.string.error_database, Toast.LENGTH_SHORT).show();
-                        Log.e("Post", result);
+                    public void onFail(String message) {
+                        Toast.makeText(UploadGambarActivity.this, message, Toast.LENGTH_SHORT).show();
                     }
-                });
+                }));
             }
             catch (JSONException e){
                 Toast.makeText(UploadGambarActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();

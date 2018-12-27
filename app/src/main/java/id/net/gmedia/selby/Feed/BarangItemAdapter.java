@@ -16,7 +16,6 @@ import com.bumptech.glide.Glide;
 import java.util.List;
 
 import id.net.gmedia.selby.Barang.BarangDetailActivity;
-import id.net.gmedia.selby.Barang.MerchandiseDetailActivity;
 import id.net.gmedia.selby.Model.BarangModel;
 import id.net.gmedia.selby.R;
 

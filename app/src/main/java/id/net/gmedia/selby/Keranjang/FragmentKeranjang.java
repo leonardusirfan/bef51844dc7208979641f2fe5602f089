@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import id.net.gmedia.selby.Util.AppRequestCallback;
 import id.net.gmedia.selby.Util.Constant;
 import id.net.gmedia.selby.Model.ArtisModel;
 import id.net.gmedia.selby.Model.BarangModel;
@@ -239,55 +240,44 @@ public class FragmentKeranjang extends Fragment {
     }
 
     private void initKeranjang(){
-
-        ApiVolleyManager.getInstance().addRequest(getActivity(), Constant.URL_KERANJANG, ApiVolleyManager.METHOD_GET, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), new ApiVolleyManager.RequestCallback() {
+        ApiVolleyManager.getInstance().addRequest(getActivity(), Constant.URL_KERANJANG, ApiVolleyManager.METHOD_GET, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), new AppRequestCallback(new AppRequestCallback.RequestListener() {
             @Override
             public void onSuccess(String result) {
                 try{
-                    System.out.println(result);
-                    JSONObject json = new JSONObject(result);
-                    int status = json.getJSONObject("metadata").getInt("status");
-                    String message = json.getJSONObject("metadata").getString("message");
+                    needLoad = false;
+                    //listItem.clear();
+                    listItem = new ArrayList<>();
 
-                    if(status == 200 || status == 404){
-                        needLoad = false;
-                        //listItem.clear();
-                        listItem = new ArrayList<>();
+                    Map<ArtisModel, List<BarangModel>> listKeranjang = new LinkedHashMap<>();
+                    JSONArray response = new JSONArray(result);
+                    for(int i = 0; i < response.length(); i++){
+                        ArtisModel pelapak = new ArtisModel(response.getJSONObject(i).getString("penjual"));
+                        JSONArray listBarang = response.getJSONObject(i).getJSONArray("barang");
+                        List<BarangModel> barang = new ArrayList<>();
 
-                        Map<ArtisModel, List<BarangModel>> listKeranjang = new LinkedHashMap<>();
-                        JSONArray response = json.getJSONArray("response");
-                        for(int i = 0; i < response.length(); i++){
-                            ArtisModel pelapak = new ArtisModel(response.getJSONObject(i).getString("penjual"));
-                            JSONArray listBarang = response.getJSONObject(i).getJSONArray("barang");
-                            List<BarangModel> barang = new ArrayList<>();
-
-                            for(int j = 0; j < listBarang.length(); j++){
-                                BarangModel barangbelanja = new BarangModel(listBarang.getJSONObject(j).getString("id"),listBarang.getJSONObject(j).getString("barang"), listBarang.getJSONObject(j).getString("image"),listBarang.getJSONObject(j).getDouble("harga"));
-                                barangbelanja.setJumlah(listBarang.getJSONObject(j).getInt("jumlah"));
-                                barang.add(barangbelanja);
-                            }
-
-                            listKeranjang.put(pelapak, barang);
+                        for(int j = 0; j < listBarang.length(); j++){
+                            BarangModel barangbelanja = new BarangModel(listBarang.getJSONObject(j).getString("id"),listBarang.getJSONObject(j).getString("barang"), listBarang.getJSONObject(j).getString("image"),listBarang.getJSONObject(j).getDouble("harga"));
+                            barangbelanja.setJumlah(listBarang.getJSONObject(j).getInt("jumlah"));
+                            barang.add(barangbelanja);
                         }
 
-                        for (ArtisModel p : listKeranjang.keySet()) {
-                            HeaderListItem header = new HeaderListItem(p);
-                            listItem.add(header);
+                        listKeranjang.put(pelapak, barang);
+                    }
 
-                            for (BarangModel i : Objects.requireNonNull(listKeranjang.get(p))) {
-                                ContentListItem item = new ContentListItem(i, i.getJumlah());
-                                listItem.add(item);
-                            }
+                    for (ArtisModel p : listKeranjang.keySet()) {
+                        HeaderListItem header = new HeaderListItem(p);
+                        listItem.add(header);
 
-                            //Menambah Divider
-                            listItem.add(new FooterListItem());
+                        for (BarangModel i : Objects.requireNonNull(listKeranjang.get(p))) {
+                            ContentListItem item = new ContentListItem(i, i.getJumlah());
+                            listItem.add(item);
                         }
 
-                        resetFragment();
+                        //Menambah Divider
+                        listItem.add(new FooterListItem());
                     }
-                    else{
-                        showError(message);
-                    }
+
+                    resetFragment();
                 }
                 catch (JSONException e){
                     e.printStackTrace();
@@ -296,10 +286,10 @@ public class FragmentKeranjang extends Fragment {
             }
 
             @Override
-            public void onError(String result) {
-                showError(getString(R.string.error_database));
+            public void onFail(String message) {
+                Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
             }
-        });
+        }));
     }
 
     private void showError(String message){

@@ -21,16 +21,17 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import id.net.gmedia.selby.Artis.Adapter.GaleriAdapter;
 import id.net.gmedia.selby.Artis.EventActivity;
+import id.net.gmedia.selby.Util.AppRequestCallback;
 import id.net.gmedia.selby.Util.Constant;
 import id.net.gmedia.selby.R;
 import id.net.gmedia.selby.Util.ApiVolleyManager;
+import id.net.gmedia.selby.Util.JSONBuilder;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -95,47 +96,32 @@ public class FragmentGaleri extends Fragment {
 
     private void initGaleri(){
         //Inisialisasi Galeri dari Web Service
-        try{
-            JSONObject body = new JSONObject();
-            body.put("id", "");
-            body.put("id_penjual", id);
+        JSONBuilder body = new JSONBuilder();
+        body.add("id", "");
+        body.add("id_penjual", id);
 
-            ApiVolleyManager.getInstance().addRequest(activity, Constant.URL_GALLERY, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body, new ApiVolleyManager.RequestCallback() {
-                @Override
-                public void onSuccess(String result) {
-                    try{
-                        JSONObject jsonresult = new JSONObject(result);
-                        int status = jsonresult.getJSONObject("metadata").getInt("status");
-                        String message = jsonresult.getJSONObject("metadata").getString("message");
-
-                        if(status == 200 || status == 404){
-                            needLoad = false;
-                            JSONArray images = jsonresult.getJSONArray("response");
-                            for(int i = 0; i < images.length(); i++){
-                                listImage.add(images.getJSONObject(i).getString("image"));
-                            }
-                            resetFragment();
-                        }
-                        else{
-                            Toast.makeText(activity, message, Toast.LENGTH_SHORT).show();
-                        }
+        ApiVolleyManager.getInstance().addRequest(activity, Constant.URL_GALLERY, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body.create(), new AppRequestCallback(new AppRequestCallback.RequestListener() {
+            @Override
+            public void onSuccess(String response) {
+                try{
+                    needLoad = false;
+                    JSONArray images = new JSONArray(response);
+                    for(int i = 0; i < images.length(); i++){
+                        listImage.add(images.getJSONObject(i).getString("image"));
                     }
-                    catch (JSONException e){
-                        Toast.makeText(activity, R.string.error_json, Toast.LENGTH_SHORT).show();
-                        Log.e("Galeri", e.toString());
-                    }
+                    resetFragment();
                 }
+                catch (JSONException e){
+                    Toast.makeText(activity, R.string.error_json, Toast.LENGTH_SHORT).show();
+                    Log.e("Galeri", e.toString());
+                }
+            }
 
-                @Override
-                public void onError(String result) {
-                    Toast.makeText(activity, R.string.error_database, Toast.LENGTH_SHORT).show();
-                    Log.e("Galeri", result);
-                }
-            });
-        }catch (JSONException e){
-            Toast.makeText(activity, R.string.error_json, Toast.LENGTH_SHORT).show();
-            Log.e("Galeri", e.toString());
-        }
+            @Override
+            public void onFail(String message) {
+                Toast.makeText(activity, message, Toast.LENGTH_SHORT).show();
+            }
+        }));
     }
 
     public void resetFragment(){

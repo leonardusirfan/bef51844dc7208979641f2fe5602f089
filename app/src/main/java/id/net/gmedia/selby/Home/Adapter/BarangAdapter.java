@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,9 +20,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.firebase.auth.FirebaseAuth;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.List;
 
 import id.net.gmedia.selby.Barang.BarangDetailActivity;
@@ -32,9 +28,12 @@ import id.net.gmedia.selby.LoginActivity;
 import id.net.gmedia.selby.Model.BarangModel;
 import id.net.gmedia.selby.R;
 import id.net.gmedia.selby.Util.ApiVolleyManager;
+import id.net.gmedia.selby.Util.AppRequestCallback;
+import id.net.gmedia.selby.Util.AppSharedPreferences;
 import id.net.gmedia.selby.Util.Constant;
 import id.net.gmedia.selby.Util.Converter;
 import id.net.gmedia.selby.Util.DialogFactory;
+import id.net.gmedia.selby.Util.JSONBuilder;
 
 public class BarangAdapter extends RecyclerView.Adapter<BarangAdapter.BarangViewHolder> {
 
@@ -80,136 +79,91 @@ public class BarangAdapter extends RecyclerView.Adapter<BarangAdapter.BarangView
         barangViewHolder.img_keranjang.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final Dialog dialog = DialogFactory.getInstance().createDialog(activity, R.layout.popup_keranjang_tambah, 70, 50);
+                if(AppSharedPreferences.isLoggedIn(activity)){
+                    final Dialog dialog = DialogFactory.getInstance().createDialog(activity, R.layout.popup_keranjang_tambah, 70, 50);
 
-                Button btn_tambah = dialog.findViewById(R.id.btn_tambah);
-                TextView txt_kurang, txt_tambah;
-                txt_kurang = dialog.findViewById(R.id.txt_kurang);
-                txt_tambah = dialog.findViewById(R.id.txt_tambah);
-                final TextView txt_jumlah = dialog.findViewById(R.id.txt_jumlah);
-                txt_jumlah.setText("1");
-                //final ProgressBar bar_loading = dialog.findViewById(R.id.bar_loading);
+                    Button btn_tambah = dialog.findViewById(R.id.btn_tambah);
+                    TextView txt_kurang, txt_tambah;
+                    txt_kurang = dialog.findViewById(R.id.txt_kurang);
+                    txt_tambah = dialog.findViewById(R.id.txt_tambah);
+                    final TextView txt_jumlah = dialog.findViewById(R.id.txt_jumlah);
+                    txt_jumlah.setText("1");
+                    //final ProgressBar bar_loading = dialog.findViewById(R.id.bar_loading);
 
-                txt_kurang.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        int jumlah = Integer.parseInt(txt_jumlah.getText().toString());
-                        if(jumlah > 1){
-                            jumlah--;
+                    txt_kurang.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            int jumlah = Integer.parseInt(txt_jumlah.getText().toString());
+                            if(jumlah > 1){
+                                jumlah--;
+                            }
+                            txt_jumlah.setText(String.valueOf(jumlah));
                         }
-                        txt_jumlah.setText(String.valueOf(jumlah));
-                    }
-                });
+                    });
 
-                txt_tambah.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        int jumlah = Integer.parseInt(txt_jumlah.getText().toString());
-                        jumlah++;
-                        txt_jumlah.setText(String.valueOf(jumlah));
-                    }
-                });
+                    txt_tambah.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            int jumlah = Integer.parseInt(txt_jumlah.getText().toString());
+                            jumlah++;
+                            txt_jumlah.setText(String.valueOf(jumlah));
+                        }
+                    });
 
-                btn_tambah.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        //bar_loading.setVisibility(View.VISIBLE);
-
-                        try{
-                            JSONObject body = new JSONObject();
-                            body.put("id_barang", barang.getId());
-                            body.put("jumlah", Integer.parseInt(txt_jumlah.getText().toString()));
-
-                            ApiVolleyManager.getInstance().addRequest(activity, Constant.URL_TAMBAH_KERANJANG, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body, new ApiVolleyManager.RequestCallback() {
+                    btn_tambah.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            JSONBuilder body = new JSONBuilder();
+                            body.add("id_barang", barang.getId());
+                            body.add("jumlah", txt_jumlah.getText().toString());
+                            ApiVolleyManager.getInstance().addRequest(activity, Constant.URL_TAMBAH_KERANJANG, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body.create(), new AppRequestCallback(new AppRequestCallback.RequestListener() {
                                 @Override
-                                public void onSuccess(String result) {
-                                    try {
-                                        JSONObject jsonresult = new JSONObject(result);
-                                        int status = jsonresult.getJSONObject("metadata").getInt("status");
-                                        String message = jsonresult.getJSONObject("metadata").getString("message");
-
-                                        if(status == 200){
-                                            Toast.makeText(activity, "Barang berhasil ditambahkan", Toast.LENGTH_SHORT).show();
-                                            dialog.dismiss();
-                                        }
-                                        else if(status == 401){
-                                            activity.startActivity(new Intent(activity, LoginActivity.class));
-                                        }
-                                        else{
-                                            Toast.makeText(activity, message, Toast.LENGTH_SHORT).show();
-                                        }
-                                    }
-                                    catch (JSONException e){
-                                        Toast.makeText(activity, R.string.error_json, Toast.LENGTH_SHORT).show();
-                                        Log.e("Tambah Keranjang", e.toString());
-                                    }
+                                public void onSuccess(String response) {
+                                    Toast.makeText(activity, "Barang berhasil ditambahkan", Toast.LENGTH_SHORT).show();
+                                    dialog.dismiss();
                                 }
 
                                 @Override
-                                public void onError(String result) {
-                                    Toast.makeText(activity, R.string.error_database, Toast.LENGTH_SHORT).show();
-                                    Log.e("Tambah Keranjang",result);
+                                public void onFail(String message) {
+                                    Toast.makeText(activity, message, Toast.LENGTH_SHORT).show();
                                 }
-                            });
+                            }));
                         }
-                        catch (JSONException e){
-                            Toast.makeText(activity, R.string.error_json, Toast.LENGTH_SHORT).show();
-                            Log.e("Tambah Keranjang", e.toString());
-                        }
-
-                        //bar_loading.setVisibility(View.INVISIBLE);
-                    }
-                });
-                dialog.show();
+                    });
+                    dialog.show();
+                }
+                else{
+                    activity.startActivity(new Intent(activity, LoginActivity.class));
+                }
             }
         });
 
         barangViewHolder.btn_beli.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try{
-                    JSONObject body = new JSONObject();
-                    body.put("id_barang", barang.getId());
-                    body.put("jumlah", 1);
+                if(AppSharedPreferences.isLoggedIn(activity)){
+                    JSONBuilder body = new JSONBuilder();
+                    body.add("id_barang", barang.getId());
+                    body.add("jumlah", 1);
 
-                    ApiVolleyManager.getInstance().addRequest(activity, Constant.URL_TAMBAH_KERANJANG, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body, new ApiVolleyManager.RequestCallback() {
+                    ApiVolleyManager.getInstance().addRequest(activity, Constant.URL_TAMBAH_KERANJANG, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body.create(), new AppRequestCallback(new AppRequestCallback.RequestListener() {
                         @Override
-                        public void onSuccess(String result) {
-                            try {
-                                JSONObject jsonresult = new JSONObject(result);
-                                int status = jsonresult.getJSONObject("metadata").getInt("status");
-                                String message = jsonresult.getJSONObject("metadata").getString("message");
-
-                                if(status == 200){
-                                    Intent i = new Intent(activity, HomeActivity.class);
-                                    i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                    i.putExtra("start", 3);
-                                    activity.startActivity(i);
-                                }
-                                else if(status == 401){
-                                    activity.startActivity(new Intent(activity, LoginActivity.class));
-                                }
-                                else{
-                                    Toast.makeText(activity, message, Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                            catch (JSONException e){
-                                Toast.makeText(activity, R.string.error_json, Toast.LENGTH_SHORT).show();
-                                Log.e("Tambah Keranjang", e.toString());
-                            }
+                        public void onSuccess(String response) {
+                            Intent i = new Intent(activity, HomeActivity.class);
+                            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            i.putExtra("start", 3);
+                            activity.startActivity(i);
                         }
 
                         @Override
-                        public void onError(String result) {
-                            Toast.makeText(activity, R.string.error_database, Toast.LENGTH_SHORT).show();
-                            Log.e("Tambah Keranjang",result);
+                        public void onFail(String message) {
+                            Toast.makeText(activity, message, Toast.LENGTH_SHORT).show();
                         }
-                    });
+                    }));
                 }
-                catch (JSONException e){
-                    Toast.makeText(activity, R.string.error_json, Toast.LENGTH_SHORT).show();
-                    Log.e("Tambah Keranjang", e.toString());
+                else{
+                    activity.startActivity(new Intent(activity, LoginActivity.class));
                 }
             }
         });

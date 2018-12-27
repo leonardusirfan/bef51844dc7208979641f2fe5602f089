@@ -26,7 +26,9 @@ import id.net.gmedia.selby.Home.Adapter.ArtisAdapter;
 import id.net.gmedia.selby.Model.ArtisModel;
 import id.net.gmedia.selby.R;
 import id.net.gmedia.selby.Util.ApiVolleyManager;
+import id.net.gmedia.selby.Util.AppRequestCallback;
 import id.net.gmedia.selby.Util.Constant;
+import id.net.gmedia.selby.Util.JSONBuilder;
 
 public class SearchActivity extends AppCompatActivity {
 
@@ -99,67 +101,48 @@ public class SearchActivity extends AppCompatActivity {
 
     private void loadArtis(String keyword){
         pb_artis.setVisibility(View.VISIBLE);
-        try{
-            JSONObject body = new JSONObject();
-            body.put("start", 0);
-            body.put("count", 0);
-            body.put("id", "");
-            body.put("keyword", keyword);
-            body.put("pekerjaan", "");
 
-            ApiVolleyManager.getInstance().addRequest(this, Constant.URL_ARTIS, ApiVolleyManager.METHOD_POST, Constant.HEADER_AUTH, body, new ApiVolleyManager.RequestCallback() {
-                @Override
-                public void onSuccess(String result) {
-                    try{
-                        JSONObject jsonresult = new JSONObject(result);
+        JSONBuilder body = new JSONBuilder();
+        body.add("start", 0);
+        body.add("count", 0);
+        body.add("id", "");
+        body.add("keyword", keyword);
+        body.add("pekerjaan", "");
 
-                        int status = jsonresult.getJSONObject("metadata").getInt("status");
-                        String message = jsonresult.getJSONObject("metadata").getString("message");
+        ApiVolleyManager.getInstance().addRequest(this, Constant.URL_ARTIS, ApiVolleyManager.METHOD_POST, Constant.HEADER_AUTH, body.create(), new AppRequestCallback(new AppRequestCallback.AdvancedRequestListener() {
+            @Override
+            public void onEmpty(String response) {
+                listArtis.clear();
+                artisAdapter.notifyDataSetChanged();
+                pb_artis.setVisibility(View.GONE);
+            }
 
-                        if(status == 200){
-                            listArtis.clear();
-                            JSONArray array = jsonresult.getJSONObject("response").getJSONArray("pelapak");
-                            //int total_count = jsonresult.getJSONObject("response").getInt("total_records");
-                            for(int i = 0; i < array.length(); i++){
-                                JSONObject artis = array.getJSONObject(i);
-                                listArtis.add(new ArtisModel(artis.getString("id"), artis.getString("nama"), artis.getString("image"), "Amerika Serikat","2 juni 1995", 167, artis.getString("deskripsi")));
-                            }
-                            artisAdapter.notifyDataSetChanged();
-                        }
-                        else if(status == 404){
-                            listArtis.clear();
-                            artisAdapter.notifyDataSetChanged();
-                        }
-                        else{
-                            Toast.makeText(SearchActivity.this, message, Toast.LENGTH_SHORT).show();
-                        }
-
-                        pb_artis.setVisibility(View.GONE);
+            @Override
+            public void onSuccess(String response) {
+                try{
+                    listArtis.clear();
+                    JSONObject jsonresult = new JSONObject(response);
+                    JSONArray array = jsonresult.getJSONArray("pelapak");
+                    for(int i = 0; i < array.length(); i++){
+                        JSONObject artis = array.getJSONObject(i);
+                        listArtis.add(new ArtisModel(artis.getString("id"), artis.getString("nama"), artis.getString("image"), "Amerika Serikat","2 juni 1995", 167, artis.getString("deskripsi")));
                     }
-                    catch (JSONException e){
-                        Toast.makeText(SearchActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
-                        Log.e("InitArtis", e.getMessage());
-
-                        pb_artis.setVisibility(View.GONE);
-                    }
-                }
-
-                @Override
-                public void onError(String result) {
-                    Toast.makeText(SearchActivity.this, R.string.error_database, Toast.LENGTH_SHORT).show();
-                    Log.e("InitArtis", result);
-
+                    artisAdapter.notifyDataSetChanged();
                     pb_artis.setVisibility(View.GONE);
                 }
-            });
+                catch (JSONException e){
+                    Toast.makeText(SearchActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
+                    Log.e("Search", e.getMessage());
+                    pb_artis.setVisibility(View.GONE);
+                }
+            }
 
-        }
-        catch (JSONException e){
-            Toast.makeText(SearchActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
-            Log.e("InitArtis", e.getMessage());
-
-            pb_artis.setVisibility(View.GONE);
-        }
+            @Override
+            public void onFail(String message) {
+                Toast.makeText(SearchActivity.this, message, Toast.LENGTH_SHORT).show();
+                pb_artis.setVisibility(View.GONE);
+            }
+        }));
     }
 
     @Override

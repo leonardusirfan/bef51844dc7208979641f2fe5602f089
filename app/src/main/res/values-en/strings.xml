@@ -30,14 +30,15 @@
     <string name="menit">"Minute"</string>
     <string name="detik">"Second"</string>
 
-    <string name="error_database">Error Occurred</string>
-    <string name="error_json">JSON Parsing error</string>
+    <string name="error_database">Connection error occurred</string>
+    <string name="error_json">JSON parsing error</string>
 
     <string name="artis_lihat_kegiatan">"Events"</string>
     <string name="artis_lihat_produk">"Products"</string>
     <string name="artis_lelang_hari_ini">"Today's auction"</string>
 
     <string name="kosong">"Empty"</string>
+    <string name="kosong_favorit">"Your favourite is empty"</string>
     <string name="kosong_keranjang">"Your cart is empty"</string>
     <string name="kosong_artis_barang">"Empty artist product"</string>
     <string name="kosong_artis_galeri">"Empty artist photo"</string>

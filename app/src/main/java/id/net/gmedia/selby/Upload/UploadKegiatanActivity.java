@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,14 +13,13 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import id.net.gmedia.selby.Home.HomeActivity;
 import id.net.gmedia.selby.R;
 import id.net.gmedia.selby.Util.ApiVolleyManager;
+import id.net.gmedia.selby.Util.AppRequestCallback;
 import id.net.gmedia.selby.Util.Constant;
 import id.net.gmedia.selby.Util.DateTimeChooser;
+import id.net.gmedia.selby.Util.JSONBuilder;
 
 public class UploadKegiatanActivity extends AppCompatActivity {
     /*
@@ -70,50 +68,33 @@ public class UploadKegiatanActivity extends AppCompatActivity {
     }
 
     private void upload(){
-        try{
-            JSONObject body = new JSONObject();
-            body.put("jenis", 1);
-            body.put("judul", txt_judul.getText().toString());
-            body.put("tgl", txt_tanggal.getText().toString());
-            body.put("tempat", txt_tempat.getText().toString());
-            body.put("deskripsi", txt_deskripsi.getText().toString());
+        JSONBuilder body = new JSONBuilder();
+        body.add("jenis", 1);
+        body.add("judul", txt_judul.getText().toString());
+        body.add("tgl", txt_tanggal.getText().toString());
+        body.add("tempat", txt_tempat.getText().toString());
+        body.add("deskripsi", txt_deskripsi.getText().toString());
 
-            ApiVolleyManager.getInstance().addRequest(this, Constant.URL_POST, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body, new ApiVolleyManager.RequestCallback() {
-                @Override
-                public void onSuccess(String result) {
-                    try{
-                        JSONObject jsonresult = new JSONObject(result);
-                        int status = jsonresult.getJSONObject("metadata").getInt("status");
-                        String message = jsonresult.getJSONObject("metadata").getString("message");
+        ApiVolleyManager.getInstance().addRequest(this, Constant.URL_POST, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body.create(), new AppRequestCallback(new AppRequestCallback.AdvancedRequestListener() {
+            @Override
+            public void onEmpty(String message) {
+                Toast.makeText(UploadKegiatanActivity.this, message, Toast.LENGTH_SHORT).show();
+            }
 
-                        if(status == 200){
-                            Intent i = new Intent(UploadKegiatanActivity.this, HomeActivity.class);
-                            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            i.putExtra("start", 1);
-                            startActivity(i);
-                        }
-                        else{
-                            Toast.makeText(UploadKegiatanActivity.this, message, Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                    catch (JSONException e){
-                        Toast.makeText(UploadKegiatanActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
-                        Log.e("UploadKegiatan", e.getMessage());
-                    }
-                }
+            @Override
+            public void onSuccess(String response) {
+                Intent i = new Intent(UploadKegiatanActivity.this, HomeActivity.class);
+                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                i.putExtra("start", 1);
+                startActivity(i);
+            }
 
-                @Override
-                public void onError(String result) {
-                    Toast.makeText(UploadKegiatanActivity.this, R.string.error_database, Toast.LENGTH_SHORT).show();
-                    Log.e("UploadKegiatan",result);
-                }
-            });
-        }
-        catch (JSONException e){
-            Toast.makeText(this, R.string.error_json, Toast.LENGTH_SHORT).show();
-            Log.e("UploadKegiatan", e.getMessage());
-        }
+            @Override
+            public void onFail(String message) {
+                Toast.makeText(UploadKegiatanActivity.this, message, Toast.LENGTH_SHORT).show();
+            }
+        }));
     }
 
     @Override

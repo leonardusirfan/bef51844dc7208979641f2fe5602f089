@@ -30,10 +30,12 @@ import com.google.gson.Gson;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import id.net.gmedia.selby.Util.AppRequestCallback;
 import id.net.gmedia.selby.Util.Constant;
 import id.net.gmedia.selby.Model.ArtisModel;
 import id.net.gmedia.selby.R;
 import id.net.gmedia.selby.Util.ApiVolleyManager;
+import id.net.gmedia.selby.Util.JSONBuilder;
 
 public class ArtisDetailActivity extends AppCompatActivity {
     /*
@@ -168,41 +170,29 @@ public class ArtisDetailActivity extends AppCompatActivity {
             txt_artis.setText(artis.getNama());
             txt_detail.setText(artis.getDeskripsi());
 
-            try{
-                JSONObject body = new JSONObject();
-                body.put("id", artis.getId());
-                body.put("start", 0);
-                body.put("count", 0);
+            JSONBuilder body = new JSONBuilder();
+            body.add("id", artis.getId());
+            body.add("start", 0);
+            body.add("count", 0);
 
-                ApiVolleyManager.getInstance().addRequest(ArtisDetailActivity.this, Constant.URL_ARTIS, ApiVolleyManager.METHOD_POST, Constant.HEADER_AUTH, body, new ApiVolleyManager.RequestCallback() {
-                    @Override
-                    public void onSuccess(String result) {
-                        try{
-                            JSONObject jsonresult = new JSONObject(result);
-                            int status = jsonresult.getJSONObject("metadata").getInt("status");
-                            String message = jsonresult.getJSONObject("metadata").getString("message");
-
-                            if(status == 200){
-                                txt_detail.setText(jsonresult.getJSONObject("response").getJSONArray("pelapak").getJSONObject(0).getString("deskripsi"));
-                            }
-                            else{
-                                Toast.makeText(ArtisDetailActivity.this, message, Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                        catch (JSONException e){
-                            Log.e("Artis", e.getMessage());
-                        }
+            ApiVolleyManager.getInstance().addRequest(ArtisDetailActivity.this, Constant.URL_ARTIS, ApiVolleyManager.METHOD_POST, Constant.HEADER_AUTH, body.create(), new AppRequestCallback(new AppRequestCallback.RequestListener() {
+                @Override
+                public void onSuccess(String response) {
+                    try{
+                        JSONObject jsonresult = new JSONObject(response);
+                        txt_detail.setText(jsonresult.getJSONArray("pelapak").getJSONObject(0).getString("deskripsi"));
                     }
-
-                    @Override
-                    public void onError(String result) {
-                        Log.e("Artis", result);
+                    catch (JSONException e){
+                        Toast.makeText(ArtisDetailActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
+                        Log.e("Artis", e.getMessage());
                     }
-                });
-            }
-            catch (JSONException e){
-                Log.e("Artis", e.getMessage());
-            }
+                }
+
+                @Override
+                public void onFail(String message) {
+                    Toast.makeText(ArtisDetailActivity.this, message, Toast.LENGTH_SHORT).show();
+                }
+            }));
         }
     }
 
@@ -238,6 +228,7 @@ public class ArtisDetailActivity extends AppCompatActivity {
             return mDetector.onTouchEvent(event);
         }
     };
+
     class MyGestureListener extends GestureDetector.SimpleOnGestureListener {
 
         @Override

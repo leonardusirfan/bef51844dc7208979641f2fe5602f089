@@ -24,11 +24,13 @@ import java.util.ArrayList;
 
 import id.net.gmedia.selby.R;
 import id.net.gmedia.selby.Util.ApiVolleyManager;
+import id.net.gmedia.selby.Util.AppRequestCallback;
 import id.net.gmedia.selby.Util.Constant;
 import id.net.gmedia.selby.Util.Converter;
 import id.net.gmedia.selby.Util.ImageContainer;
 import id.net.gmedia.selby.Util.ImageSliderAdapter;
 import id.net.gmedia.selby.Util.ImageSliderViewPager;
+import id.net.gmedia.selby.Util.JSONBuilder;
 import me.relex.circleindicator.CircleIndicator;
 
 public class MerchandiseDetailActivity extends AppCompatActivity {
@@ -79,65 +81,53 @@ public class MerchandiseDetailActivity extends AppCompatActivity {
 
     private void initBarang(){
         //Membaca detail barang dari Web Service
-        try{
-            JSONObject body = new JSONObject();
-            id = getIntent().getStringExtra("merchandise");
-            body.put("id", id);
+        JSONBuilder body = new JSONBuilder();
+        id = getIntent().getStringExtra("merchandise");
+        body.add("id", id);
 
-            ApiVolleyManager.getInstance().addRequest(this, Constant.URL_DETAIL_PRODUK, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body, new ApiVolleyManager.RequestCallback() {
-                @Override
-                public void onSuccess(String result) {
-                    try{
-                        System.out.println(result);
-                        JSONObject jsonresult = new JSONObject(result);
-                        int status = jsonresult.getJSONObject("metadata").getInt("status");
-                        String message = jsonresult.getJSONObject("metadata").getString("message");
+        ApiVolleyManager.getInstance().addRequest(this, Constant.URL_DETAIL_PRODUK, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body.create(), new AppRequestCallback(new AppRequestCallback.AdvancedRequestListener() {
+            @Override
+            public void onEmpty(String message) {
+                Toast.makeText(MerchandiseDetailActivity.this, "Barang tidak ditemukan", Toast.LENGTH_SHORT).show();
+            }
 
-                        if(status == 200){
-                            JSONObject barang = jsonresult.getJSONObject("response");
+            @Override
+            public void onSuccess(String result) {
+                try{
+                    JSONObject barang = new JSONObject(result);
 
-                            nama_barang = barang.getString("nama");
-                            txt_nama.setText(nama_barang);
-                            txt_harga.setText(Converter.doubleToRupiah(barang.getDouble("harga")));
+                    nama_barang = barang.getString("nama");
+                    txt_nama.setText(nama_barang);
+                    txt_harga.setText(Converter.doubleToRupiah(barang.getDouble("harga")));
 
-                            txt_deskripsi.setText(barang.getString("deskripsi"));
-                            String deskripsi = ": " + barang.getString("category");
-                            txt_kategori.setText(deskripsi);
-                            deskripsi = ": " + String.valueOf(barang.getInt("berat")) + " " + barang.getString("berat_satuan");
-                            txt_berat.setText(deskripsi);
-                            deskripsi = ": " + barang.getString("brand");
-                            txt_merk.setText(deskripsi);
+                    txt_deskripsi.setText(barang.getString("deskripsi"));
+                    String deskripsi = ": " + barang.getString("category");
+                    txt_kategori.setText(deskripsi);
+                    deskripsi = ": " + String.valueOf(barang.getInt("berat")) + " " + barang.getString("berat_satuan");
+                    txt_berat.setText(deskripsi);
+                    deskripsi = ": " + barang.getString("brand");
+                    txt_merk.setText(deskripsi);
 
-                            ArrayList<ImageContainer> listImage = new ArrayList<>();
-                            listImage.add(new ImageContainer(barang.getString("image")));
-                            JSONArray galeri = barang.getJSONArray("gallery");
-                            for(int i = 0; i < galeri.length(); i++){
-                                listImage.add(new ImageContainer(galeri.getJSONObject(i).getString("image")));
-                            }
-
-                            initSlider(listImage);
-                        }
-                        else{
-                            Toast.makeText(MerchandiseDetailActivity.this, message, Toast.LENGTH_SHORT).show();
-                        }
+                    ArrayList<ImageContainer> listImage = new ArrayList<>();
+                    listImage.add(new ImageContainer(barang.getString("image")));
+                    JSONArray galeri = barang.getJSONArray("gallery");
+                    for(int i = 0; i < galeri.length(); i++){
+                        listImage.add(new ImageContainer(galeri.getJSONObject(i).getString("image")));
                     }
-                    catch (JSONException e){
-                        Toast.makeText(MerchandiseDetailActivity.this, R.string.error_database, Toast.LENGTH_SHORT).show();
-                        Log.e("Barang Detail", e.toString());
-                    }
+
+                    initSlider(listImage);
                 }
-
-                @Override
-                public void onError(String result) {
+                catch (JSONException e){
                     Toast.makeText(MerchandiseDetailActivity.this, R.string.error_database, Toast.LENGTH_SHORT).show();
-                    Log.e("Barang Detail", result);
+                    Log.e("Barang Detail", e.toString());
                 }
-            });
-        }
-        catch (JSONException e){
-            Toast.makeText(MerchandiseDetailActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
-            Log.e("Barang Detail", e.toString());
-        }
+            }
+
+            @Override
+            public void onFail(String message) {
+                Toast.makeText(MerchandiseDetailActivity.this, message, Toast.LENGTH_SHORT).show();
+            }
+        }));
     }
 
     private void initToolbar(){
@@ -202,7 +192,7 @@ public class MerchandiseDetailActivity extends AppCompatActivity {
 
             }
         });
-        sliderAdapter.startTimer();
+        //sliderAdapter.startTimer();
     }
 
    /* private void initSlider(List<String> listImage){

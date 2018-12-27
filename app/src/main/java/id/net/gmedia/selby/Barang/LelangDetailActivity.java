@@ -37,6 +37,7 @@ import id.net.gmedia.selby.Barang.Adapter.DetailBarangViewPagerAdapter;
 import id.net.gmedia.selby.Barang.Fragment.FragmentDetailBarang;
 import id.net.gmedia.selby.Barang.Fragment.FragmentDiskusiBarang;
 import id.net.gmedia.selby.Barang.Fragment.FragmentUlasan;
+import id.net.gmedia.selby.Util.AppRequestCallback;
 import id.net.gmedia.selby.Util.AppSharedPreferences;
 import id.net.gmedia.selby.Util.Constant;
 import id.net.gmedia.selby.LoginActivity;
@@ -47,6 +48,7 @@ import id.net.gmedia.selby.Util.DialogFactory;
 import id.net.gmedia.selby.Util.ImageContainer;
 import id.net.gmedia.selby.Util.ImageSliderAdapter;
 import id.net.gmedia.selby.Util.ImageSliderViewPager;
+import id.net.gmedia.selby.Util.JSONBuilder;
 import me.relex.circleindicator.CircleIndicator;
 import rjsv.floatingmenu.floatingmenubutton.FloatingMenuButton;
 
@@ -146,7 +148,10 @@ public class LelangDetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //Menampilkan dialog bid
-                if(canBid){
+                if(!AppSharedPreferences.isLoggedIn(LelangDetailActivity.this)){
+                    startActivity(new Intent(LelangDetailActivity.this, LoginActivity.class));
+                }
+                else if(canBid){
                     bid();
                 }
             }
@@ -194,119 +199,109 @@ public class LelangDetailActivity extends AppCompatActivity {
     private void initLelang(){
         //Membaca detail barang lelang dari Web Service
         if (getIntent().hasExtra("lelang")) {
-            try {
-                JSONObject body = new JSONObject();
-                id_lelang = getIntent().getStringExtra("lelang");
-                body.put("id", id_lelang);
+            JSONBuilder body = new JSONBuilder();
+            id_lelang = getIntent().getStringExtra("lelang");
+            body.add("id", id_lelang);
 
-                ApiVolleyManager.getInstance().addRequest(this, Constant.URL_DETAIL_LELANG, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body, new ApiVolleyManager.RequestCallback() {
-                    @Override
-                    public void onSuccess(String result) {
-                        try {
-                            JSONObject jsonresult = new JSONObject(result);
-                            int status = jsonresult.getJSONObject("metadata").getInt("status");
-                            String message = jsonresult.getJSONObject("metadata").getString("message");
+            ApiVolleyManager.getInstance().addRequest(this, Constant.URL_DETAIL_LELANG, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body.create(), new AppRequestCallback(new AppRequestCallback.AdvancedRequestListener() {
+                @Override
+                public void onEmpty(String message) {
+                    Toast.makeText(LelangDetailActivity.this, "Barang tidak ditemukan", Toast.LENGTH_SHORT).show();
+                }
 
-                            if (status == 200) {
-                                JSONObject lelang = jsonresult.getJSONObject("response");
+                @Override
+                public void onSuccess(String result) {
+                    try {
+                        JSONObject lelang = new JSONObject(result);
 
-                                id_barang = lelang.getString("id_barang");
-                                deskripsi = lelang.getString("deskripsi");
-                                kategori = lelang.getString("category");
-                                berat = String.valueOf(lelang.getInt("berat")) + " " + lelang.getString("berat_satuan");
-                                merk = lelang.getString("brand");
-                                rating = (float) lelang.getDouble("rating");
+                        id_barang = lelang.getString("id_barang");
+                        deskripsi = lelang.getString("deskripsi");
+                        kategori = lelang.getString("category");
+                        berat = String.valueOf(lelang.getInt("berat")) + " " + lelang.getString("berat_satuan");
+                        merk = lelang.getString("brand");
+                        rating = (float) lelang.getDouble("rating");
 
-                                txt_dilihat.setText(lelang.getString("dilihat"));
-                                txt_terkirim.setText(lelang.getString("terjual"));
-                                txt_kondisi.setText(lelang.getString("kondisi"));
+                        txt_dilihat.setText(lelang.getString("dilihat"));
+                        txt_terkirim.setText(lelang.getString("terjual"));
+                        txt_kondisi.setText(lelang.getString("kondisi"));
 
-                                nama_barang = lelang.getString("nama");
-                                txt_nama.setText(nama_barang);
-                                txt_harga.setText(Converter.doubleToRupiah(lelang.getDouble("bid_awal")));
-                                txt_bid.setText(Converter.doubleToRupiah(lelang.getDouble("bid_akhir")));
+                        nama_barang = lelang.getString("nama");
+                        txt_nama.setText(nama_barang);
+                        txt_harga.setText(Converter.doubleToRupiah(lelang.getDouble("bid_awal")));
+                        txt_bid.setText(Converter.doubleToRupiah(lelang.getDouble("bid_akhir")));
 
-                                id_penjual = lelang.getJSONObject("penjual").getString("id");
-                                if(!lelang.getJSONObject("penjual").getString("uid").equals(FirebaseAuth.getInstance().getUid())){
-                                    layout_pelapak.setVisibility(View.VISIBLE);
-                                }
-                                Glide.with(LelangDetailActivity.this).load(lelang.getJSONObject("penjual").getString("image")).apply(new RequestOptions().circleCrop()).thumbnail(0.1f).into((ImageView)findViewById(R.id.img_artis));
-                                follow = lelang.getJSONObject("penjual").getInt("followed") == 1;
-                                if(follow){
-                                    btn_follow.setText(R.string.penjual_unfollow);
-                                }
-
-                                ImageContainer imageContainer = new ImageContainer();
-                                imageContainer.setImage(lelang.getString("image"));
-                                listImage.add(imageContainer);
-                                JSONArray galeri = lelang.getJSONArray("gallery");
-                                for(int i = 0; i < galeri.length(); i++){
-                                    imageContainer = new ImageContainer();
-                                    imageContainer.setImage(galeri.getJSONObject(i).getString("image"));
-                                    listImage.add(imageContainer);
-                                }
-
-                                //Inisialisasi Timer lelang
-                                Date now = new Date();
-                                Date end = Converter.stringDTTToDate(lelang.getString("end"));
-                                long timeLeft = 0;
-                                if(end != null){
-                                    timeLeft = end.getTime() - now.getTime();
-                                }
-                                new CountDownTimer(timeLeft, 1000){
-
-                                    long secondsInMilli = 1000;
-                                    long minutesInMilli = secondsInMilli * 60;
-                                    long hoursInMilli = minutesInMilli * 60;
-                                    long daysInMilli = hoursInMilli * 24;
-
-                                    @Override
-                                    public void onTick(long millisUntilFinished) {
-                                        long elapsedDays = millisUntilFinished / daysInMilli;
-                                        millisUntilFinished =  millisUntilFinished % daysInMilli;
-
-                                        long elapsedHours =  millisUntilFinished / hoursInMilli;
-                                        millisUntilFinished =  millisUntilFinished % hoursInMilli;
-
-                                        long elapsedMinutes =  millisUntilFinished / minutesInMilli;
-                                        millisUntilFinished =  millisUntilFinished % minutesInMilli;
-
-                                        long elapsedSeconds =  millisUntilFinished / secondsInMilli;
-                                        String waktu = String.format(Locale.getDefault(), "%02d : %02d : %02d : %02d",elapsedDays, elapsedHours, elapsedMinutes, elapsedSeconds);
-                                        txt_waktu.setText(waktu);
-                                    }
-
-                                    @Override
-                                    public void onFinish() {
-                                        canBid = false;
-                                    }
-                                }.start();
-
-                                //Apabila lelang sudah siap, proses bidding bisa dilakukan
-                                canBid = true;
-
-                                //Menginisialisasi slider
-                                initSlider();
-
-                            } else {
-                                Toast.makeText(LelangDetailActivity.this, message, Toast.LENGTH_SHORT).show();
-                            }
-                        } catch (JSONException e) {
-                            Toast.makeText(LelangDetailActivity.this, R.string.error_database, Toast.LENGTH_SHORT).show();
-                            Log.e("Barang Detail", e.toString());
+                        id_penjual = lelang.getJSONObject("penjual").getString("id");
+                        if(!lelang.getJSONObject("penjual").getString("uid").equals(FirebaseAuth.getInstance().getUid())){
+                            layout_pelapak.setVisibility(View.VISIBLE);
                         }
-                    }
+                        Glide.with(LelangDetailActivity.this).load(lelang.getJSONObject("penjual").getString("image")).apply(new RequestOptions().circleCrop()).thumbnail(0.1f).into((ImageView)findViewById(R.id.img_artis));
+                        follow = lelang.getJSONObject("penjual").getInt("followed") == 1;
+                        if(follow){
+                            btn_follow.setText(R.string.penjual_unfollow);
+                        }
 
-                    @Override
-                    public void onError(String result) {
+                        ImageContainer imageContainer = new ImageContainer();
+                        imageContainer.setImage(lelang.getString("image"));
+                        listImage.add(imageContainer);
+                        JSONArray galeri = lelang.getJSONArray("gallery");
+                        for(int i = 0; i < galeri.length(); i++){
+                            imageContainer = new ImageContainer();
+                            imageContainer.setImage(galeri.getJSONObject(i).getString("image"));
+                            listImage.add(imageContainer);
+                        }
+
+                        //Inisialisasi Timer lelang
+                        Date now = new Date();
+                        Date end = Converter.stringDTTToDate(lelang.getString("end"));
+                        long timeLeft = 0;
+                        if(end != null){
+                            timeLeft = end.getTime() - now.getTime();
+                        }
+                        new CountDownTimer(timeLeft, 1000){
+
+                            long secondsInMilli = 1000;
+                            long minutesInMilli = secondsInMilli * 60;
+                            long hoursInMilli = minutesInMilli * 60;
+                            long daysInMilli = hoursInMilli * 24;
+
+                            @Override
+                            public void onTick(long millisUntilFinished) {
+                                long elapsedDays = millisUntilFinished / daysInMilli;
+                                millisUntilFinished =  millisUntilFinished % daysInMilli;
+
+                                long elapsedHours =  millisUntilFinished / hoursInMilli;
+                                millisUntilFinished =  millisUntilFinished % hoursInMilli;
+
+                                long elapsedMinutes =  millisUntilFinished / minutesInMilli;
+                                millisUntilFinished =  millisUntilFinished % minutesInMilli;
+
+                                long elapsedSeconds =  millisUntilFinished / secondsInMilli;
+                                String waktu = String.format(Locale.getDefault(), "%02d : %02d : %02d : %02d",elapsedDays, elapsedHours, elapsedMinutes, elapsedSeconds);
+                                txt_waktu.setText(waktu);
+                            }
+
+                            @Override
+                            public void onFinish() {
+                                canBid = false;
+                            }
+                        }.start();
+
+                        //Apabila lelang sudah siap, proses bidding bisa dilakukan
+                        canBid = true;
+
+                        //Menginisialisasi slider
+                        initSlider();
+                    } catch (JSONException e) {
                         Toast.makeText(LelangDetailActivity.this, R.string.error_database, Toast.LENGTH_SHORT).show();
-                        Log.e("Barang Detail", result);
+                        Log.e("Barang Detail", e.toString());
                     }
-                });
-            } catch (JSONException e) {
-                Toast.makeText(LelangDetailActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
-                Log.e("Barang Detail", e.toString());
-            }
+                }
+
+                @Override
+                public void onFail(String message) {
+                    Toast.makeText(LelangDetailActivity.this, message, Toast.LENGTH_SHORT).show();
+                }
+            }));
         }
     }
 
@@ -322,54 +317,28 @@ public class LelangDetailActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(!txt_bid.getText().toString().equals("")){
                     final double bid = Double.parseDouble(txt_bid.getText().toString());
-                    try{
-                        JSONObject body = new JSONObject();
-                        body.put("id_lelang", id_lelang);
-                        body.put("nominal", bid);
-                        ApiVolleyManager.getInstance().addRequest(LelangDetailActivity.this, Constant.URL_BID, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body, new ApiVolleyManager.RequestCallback() {
-                            @Override
-                            public void onSuccess(String result) {
-                                try{
-                                    System.out.println(result);
-                                    JSONObject jsonresult = new JSONObject(result);
-                                    int status = jsonresult.getJSONObject("metadata").getInt("status");
-                                    String message = jsonresult.getJSONObject("metadata").getString("message");
 
-                                    if(status == 200){
-                                        dialog.dismiss();
-                                        LelangDetailActivity.this.txt_bid.setText(Converter.doubleToRupiah(bid));
-                                        Toast.makeText(LelangDetailActivity.this, "Bid sebesar " + Converter.doubleToRupiah(bid) + " berhasil", Toast.LENGTH_SHORT).show();
-                                    }
-                                    else if(status == 401){
-                                        startActivity(new Intent(LelangDetailActivity.this, LoginActivity.class));
-                                    }
-                                    else{
-                                        Toast.makeText(LelangDetailActivity.this, message, Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-                                catch (JSONException e){
-                                    Toast.makeText(LelangDetailActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
-                                    Log.e("Bid", e.getMessage());
-                                }
-                            }
+                    JSONBuilder body = new JSONBuilder();
+                    body.add("id_lelang", id_lelang);
+                    body.add("nominal", bid);
 
-                            @Override
-                            public void onError(String result) {
-                                Toast.makeText(LelangDetailActivity.this, R.string.error_database, Toast.LENGTH_SHORT).show();
-                                Log.e("Bid", result);
-                            }
-                        });
+                    ApiVolleyManager.getInstance().addRequest(LelangDetailActivity.this, Constant.URL_BID, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body.create(), new AppRequestCallback(new AppRequestCallback.RequestListener() {
+                        @Override
+                        public void onSuccess(String result) {
+                            dialog.dismiss();
+                            LelangDetailActivity.this.txt_bid.setText(Converter.doubleToRupiah(bid));
+                            Toast.makeText(LelangDetailActivity.this, "Bid sebesar " + Converter.doubleToRupiah(bid) + " berhasil", Toast.LENGTH_SHORT).show();
+                        }
 
-                    }
-                    catch (JSONException e){
-                        Toast.makeText(LelangDetailActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
-                        Log.e("Bid", e.getMessage());
-                    }
+                        @Override
+                        public void onFail(String message) {
+                            Toast.makeText(LelangDetailActivity.this, message, Toast.LENGTH_SHORT).show();
+                        }
+                    }));
                 }
                 else{
                     Toast.makeText(LelangDetailActivity.this, "Masukkan nilai bid", Toast.LENGTH_SHORT).show();
                 }
-
             }
         });
         dialog.show();
@@ -414,51 +383,30 @@ public class LelangDetailActivity extends AppCompatActivity {
 
     private void followPenjual(){
         //Mengubah status follow/unfollow terhadap penjual
-        try{
-            JSONObject body = new JSONObject();
-            body.put("id_penjual", id_penjual);
+        //Mengubah status follow/unfollow terhadap penjual
+        if(!id_penjual.equals("")) {
+            JSONBuilder body = new JSONBuilder();
+            body.add("id_penjual", id_penjual);
 
-            ApiVolleyManager.getInstance().addRequest(this, Constant.URL_FOLLOW_PENJUAL, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body, new ApiVolleyManager.RequestCallback() {
+            ApiVolleyManager.getInstance().addRequest(this, Constant.URL_FOLLOW_PENJUAL, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body.create(), new AppRequestCallback(new AppRequestCallback.RequestListener() {
                 @Override
-                public void onSuccess(String result) {
-                    try{
-                        System.out.println(result);
-                        JSONObject jsonresult = new JSONObject(result);
-                        int status = jsonresult.getJSONObject("metadata").getInt("status");
-                        String message = jsonresult.getJSONObject("metadata").getString("message");
-
-                        if(status == 200){
-                            if(follow){
-                                Toast.makeText(LelangDetailActivity.this, "Berhenti Follow berhasil", Toast.LENGTH_SHORT).show();
-                                btn_follow.setText(R.string.penjual_follow);
-                            }
-                            else{
-                                Toast.makeText(LelangDetailActivity.this, "Follow berhasil", Toast.LENGTH_SHORT).show();
-                                btn_follow.setText(R.string.penjual_unfollow);
-                            }
-
-                            follow = !follow;
-                        }
-                        else{
-                            Toast.makeText(LelangDetailActivity.this, message, Toast.LENGTH_SHORT).show();
-                        }
+                public void onSuccess(String response) {
+                    if (follow) {
+                        Toast.makeText(LelangDetailActivity.this, "Berhenti Follow berhasil", Toast.LENGTH_SHORT).show();
+                        btn_follow.setText(R.string.penjual_follow);
+                    } else {
+                        Toast.makeText(LelangDetailActivity.this, "Follow berhasil", Toast.LENGTH_SHORT).show();
+                        btn_follow.setText(R.string.penjual_unfollow);
                     }
-                    catch (JSONException e){
-                        Toast.makeText(LelangDetailActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
-                        Log.e("Follow", e.getMessage());
-                    }
+
+                    follow = !follow;
                 }
 
                 @Override
-                public void onError(String result) {
-                    Toast.makeText(LelangDetailActivity.this, R.string.error_database, Toast.LENGTH_SHORT).show();
-                    Log.e("Follow", result);
+                public void onFail(String message) {
+                    Toast.makeText(LelangDetailActivity.this, message, Toast.LENGTH_SHORT).show();
                 }
-            });
-        }
-        catch (JSONException e){
-            Toast.makeText(LelangDetailActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
-            Log.e("Follow", e.getMessage());
+            }));
         }
     }
 
@@ -507,7 +455,7 @@ public class LelangDetailActivity extends AppCompatActivity {
             }
         });
 
-        sliderAdapter.startTimer();
+        //sliderAdapter.startTimer();
         setupViewPager(viewPager);
         tabLayout.setupWithViewPager(viewPager);
     }

@@ -28,10 +28,12 @@ import java.util.List;
 
 import id.net.gmedia.selby.Home.Adapter.BarangAdapter;
 import id.net.gmedia.selby.Model.ArtisModel;
+import id.net.gmedia.selby.Util.AppRequestCallback;
 import id.net.gmedia.selby.Util.Constant;
 import id.net.gmedia.selby.Model.BarangModel;
 import id.net.gmedia.selby.R;
 import id.net.gmedia.selby.Util.ApiVolleyManager;
+import id.net.gmedia.selby.Util.JSONBuilder;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -62,7 +64,7 @@ public class FragmentFavorit extends Fragment {
                 v = inflater.inflate(R.layout.fragment_kosong, container, false);
 
                 TextView txt_kosong = v.findViewById(R.id.txt_kosong);
-                txt_kosong.setText("Favorit anda masih kosong");
+                txt_kosong.setText(R.string.kosong_favorit);
             } else {
                 v = inflater.inflate(R.layout.fragment_favorit, container, false);
 
@@ -77,51 +79,35 @@ public class FragmentFavorit extends Fragment {
     }
 
     private void initFavorit(){
-        try{
-            JSONObject body = new JSONObject();
-            body.put("keyword", "");
-            body.put("start", 0);
-            body.put("count", 0);
+        JSONBuilder body = new JSONBuilder();
+        body.add("keyword", "");
+        body.add("start", 0);
+        body.add("count", 0);
 
-            ApiVolleyManager.getInstance().addRequest(activity, Constant.URL_FAVORIT, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), new ApiVolleyManager.RequestCallback() {
-                @Override
-                public void onSuccess(String result) {
-                    try{
-                        JSONObject jsonresult = new JSONObject(result);
-                        int status = jsonresult.getJSONObject("metadata").getInt("status");
-                        String message = jsonresult.getJSONObject("metadata").getString("message");
-
-                        if(status == 200 || status == 404){
-                            needLoad = false;
-                            JSONArray listfavorit = jsonresult.getJSONArray("response");
-                            for(int i = 0; i < listfavorit.length(); i++){
-                                JSONObject favorit = listfavorit.getJSONObject(i);
-                                listItem.add(new BarangModel(favorit.getString("id_barang"), favorit.getString("barang"), favorit.getString("image"), favorit.getDouble("harga"), new ArtisModel(favorit.getString("penjual"), favorit.getString("foto"), (float) favorit.getDouble("rating_penjual"))));
-                            }
-
-                            resetFragment();
-                        }
-                        else{
-                            Toast.makeText(activity, message, Toast.LENGTH_SHORT).show();
-                        }
+        ApiVolleyManager.getInstance().addRequest(activity, Constant.URL_FAVORIT, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), new AppRequestCallback(new AppRequestCallback.RequestListener() {
+            @Override
+            public void onSuccess(String response) {
+                try{
+                    needLoad = false;
+                    JSONArray listfavorit = new JSONArray(response);
+                    for(int i = 0; i < listfavorit.length(); i++){
+                        JSONObject favorit = listfavorit.getJSONObject(i);
+                        listItem.add(new BarangModel(favorit.getString("id_barang"), favorit.getString("barang"), favorit.getString("image"), favorit.getDouble("harga"), new ArtisModel(favorit.getString("penjual"), favorit.getString("foto"), (float) favorit.getDouble("rating_penjual"))));
                     }
-                    catch (JSONException e){
-                        Toast.makeText(activity, R.string.error_json, Toast.LENGTH_SHORT).show();
-                        Log.e("Favorit", e.toString());
-                    }
-                }
 
-                @Override
-                public void onError(String result) {
-                    Toast.makeText(activity, R.string.error_database, Toast.LENGTH_SHORT).show();
-                    Log.e("Favorit", result);
+                    resetFragment();
                 }
-            });
-        }
-        catch (JSONException e){
-            Toast.makeText(activity, R.string.error_json, Toast.LENGTH_SHORT).show();
-            Log.e("Favorit", e.toString());
-        }
+                catch (JSONException e){
+                    Toast.makeText(activity, R.string.error_json, Toast.LENGTH_SHORT).show();
+                    Log.e("Favorit", e.toString());
+                }
+            }
+
+            @Override
+            public void onFail(String message) {
+                Toast.makeText(activity, message, Toast.LENGTH_SHORT).show();
+            }
+        }));
     }
 
     public void resetFragment(){

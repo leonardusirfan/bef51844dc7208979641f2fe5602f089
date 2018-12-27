@@ -38,13 +38,6 @@ public class RatingAdapter extends RecyclerView.Adapter<RatingAdapter.RatingView
         ratingViewHolder.txt_ulasan.setText(String.valueOf(count));
     }
 
-    /*public void calculateSum(){
-        sum = 0;
-        for(int s = 0; s < listRating.size(); s++){
-            sum += listRating.get(s) * (s + 1);
-        }
-    }*/
-
     public void setSum(float sum){
         this.sum = sum;
     }

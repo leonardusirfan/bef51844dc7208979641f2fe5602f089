@@ -30,6 +30,7 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.bumptech.glide.request.RequestOptions;
 import com.fxn.pix.Pix;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -41,6 +42,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import id.net.gmedia.selby.Home.HomeActivity;
+import id.net.gmedia.selby.Util.AppRequestCallback;
 import id.net.gmedia.selby.Util.AppSharedPreferences;
 import id.net.gmedia.selby.Util.Constant;
 import id.net.gmedia.selby.Model.UserModel;
@@ -89,49 +91,42 @@ public class FragmentAkun extends Fragment {
             txt_berlangganan = v.findViewById(R.id.txt_berlangganan);
 
             //Inisialisasi Profil
-            ApiVolleyManager.getInstance().addRequest(activity, Constant.URL_PROFIL, ApiVolleyManager.METHOD_GET, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), new ApiVolleyManager.RequestCallback() {
+            ApiVolleyManager.getInstance().addRequest(activity, Constant.URL_PROFIL, ApiVolleyManager.METHOD_GET, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), new AppRequestCallback(new AppRequestCallback.RequestListener() {
                 @Override
-                public void onSuccess(String result) {
+                public void onSuccess(String response) {
                     try{
-                        JSONObject jsonresult = new JSONObject(result);
-                        int status = jsonresult.getJSONObject("metadata").getInt("status");
-                        String message = jsonresult.getJSONObject("metadata").getString("message");
+                        JSONObject akun = new JSONObject(response);
 
-                        if(status == 200){
-                            JSONObject akun = jsonresult.getJSONObject("response");
+                        user = new UserModel(akun.getString("id"), akun.getString("profile_name"), akun.getString("alamat"), akun.getString("no_telp"));
+                        txt_akun.setText(user.getNama());
 
-                            user = new UserModel(akun.getString("id"), akun.getString("profile_name"), akun.getString("alamat"), akun.getString("no_telp"));
-                            txt_akun.setText(user.getNama());
+                        String berlangganan = "Berlangganan : " + akun.getInt("jumlah_following");
+                        txt_berlangganan.setText(berlangganan);
 
-                            String berlangganan = "Berlangganan : " + akun.getInt("jumlah_following");
-                            txt_berlangganan.setText(berlangganan);
-
-                            Glide.with(activity).load(akun.getString("sampul")).transition(DrawableTransitionOptions.withCrossFade()).apply(new RequestOptions().placeholder(R.color.grey)).thumbnail(0.5f).into(img_akun_album);
-                            Glide.with(activity)
-                                    .load(akun.getString("foto"))
-                                    .thumbnail(0.2f)
-                                    .transition(DrawableTransitionOptions.withCrossFade())
-                                    .apply(new RequestOptions().circleCrop())
-                                    .into(img_akun);
-                            txt_telepon.setText(user.getTelepon());
-                            txt_email.setText(akun.getString("email"));
-                            txt_alamat.setText(user.getAlamat());
-                        }
-                        else{
-                            Toast.makeText(activity, message, Toast.LENGTH_SHORT).show();
-                        }
+                        Glide.with(activity).load(akun.getString("sampul")).transition(DrawableTransitionOptions.withCrossFade()).apply(new RequestOptions().placeholder(R.color.grey)).thumbnail(0.5f).into(img_akun_album);
+                        Glide.with(activity)
+                                .load(akun.getString("foto"))
+                                .thumbnail(0.2f)
+                                .transition(DrawableTransitionOptions.withCrossFade())
+                                .apply(new RequestOptions().circleCrop())
+                                .into(img_akun);
+                        txt_telepon.setText(user.getTelepon());
+                        txt_email.setText(akun.getString("email"));
+                        txt_alamat.setText(user.getAlamat());
                     }
                     catch (JSONException e){
-                        Log.e("Akun", e.getMessage());
+                        Log.e("Profil", e.getMessage());
+                        Toast.makeText(activity, R.string.error_json, Toast.LENGTH_SHORT).show();
                     }
                 }
 
                 @Override
-                public void onError(String result) {
-                    Log.e("Akun", result);
+                public void onFail(String message) {
+                    Toast.makeText(activity, message, Toast.LENGTH_SHORT).show();
                 }
-            });
+            }));
 
+            //Mengubah foto profil akun
             img_akun.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -139,6 +134,7 @@ public class FragmentAkun extends Fragment {
                 }
             });
 
+            //Mengubah foto album akun
             img_akun_album.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -146,21 +142,7 @@ public class FragmentAkun extends Fragment {
                 }
             });
 
-            //Profil User Local
-            /*if(FirebaseAuth.getInstance().getCurrentUser() != null){
-                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                txt_akun.setText(user.getDisplayName());
-                Glide.with(activity).load(user.getPhotoUrl()).transition(DrawableTransitionOptions.withCrossFade()).apply(new RequestOptions().placeholder(R.color.grey)).thumbnail(0.5f).into(img_akun_album);
-                Glide.with(activity)
-                        .load(user.getPhotoUrl())
-                        .thumbnail(0.2f)
-                        .transition(DrawableTransitionOptions.withCrossFade())
-                        .apply(new RequestOptions().circleCrop())
-                        .into(img_akun);
-                txt_telepon.setText(user.getPhoneNumber());
-                txt_email.setText(user.getEmail());
-            }*/
-
+            //logout aplikasi
             v.findViewById(R.id.txt_logout).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -193,16 +175,21 @@ public class FragmentAkun extends Fragment {
             });
         }
 
+        //Edit profil
         v.findViewById(R.id.layout_edit).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(activity, EditProfilActivity.class));
+                Gson gson = new Gson();
+                Intent i = new Intent(activity, EditProfilActivity.class);
+                i.putExtra("user",gson.toJson(user));
+                startActivity(i);
             }
         });
 
         return v;
     }
 
+    //Upload gambar
     public void upload(String path, final boolean sampul){
         if(requestQueue == null){
             requestQueue = Volley.newRequestQueue(activity);

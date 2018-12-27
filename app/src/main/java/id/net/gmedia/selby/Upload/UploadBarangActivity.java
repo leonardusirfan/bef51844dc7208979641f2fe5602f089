@@ -31,13 +31,13 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
 import id.net.gmedia.selby.Home.HomeActivity;
+import id.net.gmedia.selby.Util.AppRequestCallback;
 import id.net.gmedia.selby.Util.Constant;
 import id.net.gmedia.selby.Model.ObjectModel;
 import id.net.gmedia.selby.Model.UploadModel;
@@ -45,6 +45,7 @@ import id.net.gmedia.selby.R;
 import id.net.gmedia.selby.Util.ApiVolleyManager;
 import id.net.gmedia.selby.Util.Converter;
 import id.net.gmedia.selby.Util.DialogFactory;
+import id.net.gmedia.selby.Util.JSONBuilder;
 
 public class UploadBarangActivity extends AppCompatActivity {
 
@@ -121,109 +122,77 @@ public class UploadBarangActivity extends AppCompatActivity {
     }
 
     private void initKategori(){
-        try{
-            JSONObject body = new JSONObject();
-            body.put("start", 0);
-            body.put("count", 0);
+        JSONBuilder body = new JSONBuilder();
+        body.add("start", 0);
+        body.add("count", 0);
 
-            ApiVolleyManager.getInstance().addRequest(this, Constant.URL_HOME_CATEGORY, ApiVolleyManager.METHOD_POST, Constant.HEADER_AUTH, body, new ApiVolleyManager.RequestCallback() {
-                @Override
-                public void onSuccess(String result) {
-                    try{
-                        JSONObject jsonresult = new JSONObject(result);
-                        int status = jsonresult.getJSONObject("metadata").getInt("status");
-                        String message = jsonresult.getJSONObject("metadata").getString("message");
+        ApiVolleyManager.getInstance().addRequest(this, Constant.URL_HOME_CATEGORY, ApiVolleyManager.METHOD_POST, Constant.HEADER_AUTH, body.create(), new AppRequestCallback(new AppRequestCallback.RequestListener() {
+            @Override
+            public void onSuccess(String result) {
+               try{
+                   List<String> spinnerItem = new ArrayList<>();
+                   JSONArray array = new JSONArray(result);
+                   for(int i = 0; i < array.length(); i++){
+                       listKategori.add(new ObjectModel(array.getJSONObject(i).getString("id"), array.getJSONObject(i).getString("category")));
+                       spinnerItem.add(listKategori.get(i).getValue());
+                   }
 
-                        if(status == 200){
-                            List<String> spinnerItem = new ArrayList<>();
-                            JSONArray array = jsonresult.getJSONArray("response");
-                            for(int i = 0; i < array.length(); i++){
-                                listKategori.add(new ObjectModel(array.getJSONObject(i).getString("id"), array.getJSONObject(i).getString("category")));
-                                spinnerItem.add(listKategori.get(i).getValue());
-                            }
+                   ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                           UploadBarangActivity.this, android.R.layout.simple_spinner_item, spinnerItem);
 
-                            ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                                    UploadBarangActivity.this, android.R.layout.simple_spinner_item, spinnerItem);
+                   adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                   spn_kategori.setAdapter(adapter);
+               }
+               catch (JSONException e){
+                   Toast.makeText(UploadBarangActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
+                   Log.e("Kategori", e.getMessage());
+               }
+            }
 
-                            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                            spn_kategori.setAdapter(adapter);
-                        }
-                        else{
-                            Toast.makeText(UploadBarangActivity.this, message, Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                    catch (JSONException e){
-                        Toast.makeText(UploadBarangActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
-                        Log.e("Kategori", e.getMessage());
-                    }
-                }
-
-                @Override
-                public void onError(String result) {
-                    Toast.makeText(UploadBarangActivity.this, R.string.error_database, Toast.LENGTH_SHORT).show();
-                    Log.e("Kategori", result);
-                }
-            });
-        }
-        catch (JSONException e){
-            Toast.makeText(this, R.string.error_json, Toast.LENGTH_SHORT).show();
-            Log.e("Kategori", e.getMessage());
-        }
+            @Override
+            public void onFail(String message) {
+                Toast.makeText(UploadBarangActivity.this, message, Toast.LENGTH_SHORT).show();
+            }
+        }));
     }
 
     private void initBrand(){
-        try{
-            JSONObject body = new JSONObject();
-            body.put("start", 0);
-            body.put("count", 0);
+        JSONBuilder body = new JSONBuilder();
+        body.add("start", 0);
+        body.add("count", 0);
 
-            ApiVolleyManager.getInstance().addRequest(this, Constant.URL_HOME_BRAND, ApiVolleyManager.METHOD_POST, Constant.HEADER_AUTH, body, new ApiVolleyManager.RequestCallback() {
-                @Override
-                public void onSuccess(String result) {
-                    try{
-                        JSONObject jsonresult = new JSONObject(result);
-                        int status = jsonresult.getJSONObject("metadata").getInt("status");
-                        String message = jsonresult.getJSONObject("metadata").getString("message");
-
-                        if(status == 200){
-                            List<String> spinnerItem = new ArrayList<>();
-                            JSONArray array = jsonresult.getJSONArray("response");
-                            spinnerItem.add("");
-                            listBrand.add(new ObjectModel("0", ""));
-                            for(int i = 0; i < array.length(); i++){
-                                listBrand.add(new ObjectModel(array.getJSONObject(i).getString("id"), array.getJSONObject(i).getString("brand")));
-                                spinnerItem.add(array.getJSONObject(i).getString("brand"));
-                            }
-                            spinnerItem.add("Lainnya");
-                            listBrand.add(new ObjectModel("0", "Lainnya"));
-
-                            ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                                    UploadBarangActivity.this, android.R.layout.simple_spinner_item, spinnerItem);
-
-                            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                            spn_brand.setAdapter(adapter);
-                        }
-                        else{
-                            Toast.makeText(UploadBarangActivity.this, message, Toast.LENGTH_SHORT).show();
-                        }
+        ApiVolleyManager.getInstance().addRequest(this, Constant.URL_HOME_BRAND, ApiVolleyManager.METHOD_POST, Constant.HEADER_AUTH, body.create(), new AppRequestCallback(new AppRequestCallback.RequestListener() {
+            @Override
+            public void onSuccess(String result) {
+                try{
+                    List<String> spinnerItem = new ArrayList<>();
+                    JSONArray array = new JSONArray(result);
+                    spinnerItem.add("");
+                    listBrand.add(new ObjectModel("0", ""));
+                    for(int i = 0; i < array.length(); i++){
+                        listBrand.add(new ObjectModel(array.getJSONObject(i).getString("id"), array.getJSONObject(i).getString("brand")));
+                        spinnerItem.add(array.getJSONObject(i).getString("brand"));
                     }
-                    catch (JSONException e){
-                        Toast.makeText(UploadBarangActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
-                        Log.e("Kategori", e.getMessage());
-                    }
-                }
+                    spinnerItem.add("Lainnya");
+                    listBrand.add(new ObjectModel("0", "Lainnya"));
 
-                @Override
-                public void onError(String result) {
-                    Toast.makeText(UploadBarangActivity.this, R.string.error_database, Toast.LENGTH_SHORT).show();
-                    Log.e("Kategori", result);
+                    ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                            UploadBarangActivity.this, android.R.layout.simple_spinner_item, spinnerItem);
+
+                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    spn_brand.setAdapter(adapter);
                 }
-            });
-        }
-        catch (JSONException e){
-            Toast.makeText(this, R.string.error_json, Toast.LENGTH_SHORT).show();
-            Log.e("Kategori", e.getMessage());
-        }
+                catch (JSONException e){
+                    Toast.makeText(UploadBarangActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
+                    Log.e("Kategori", e.getMessage());
+                }
+            }
+
+            @Override
+            public void onFail(String message) {
+                Toast.makeText(UploadBarangActivity.this, message, Toast.LENGTH_SHORT).show();
+            }
+        }));
     }
 
     private void initDialog(){
@@ -358,74 +327,56 @@ public class UploadBarangActivity extends AppCompatActivity {
     }
 
     private void uploadBarang(){
-        try{
-            JSONObject body = new JSONObject();
-            body.put("nama", txt_nama.getText().toString());
-            body.put("harga", txt_harga.getText().toString());
-            body.put("berat", txt_berat.getText().toString());
-            body.put("satuan_berat", spn_satuan_berat.getSelectedItem().toString());
-            body.put("deskripsi", txt_deskripsi.getText().toString());
-            body.put("ukuran", txt_ukuran.getText().toString());
-            body.put("foto", uploadAdapter.getMainImage());
-            body.put("gallery", new JSONArray(uploadAdapter.getListImage()));
-            body.put("kondisi", spn_kondisi.getSelectedItemPosition() == 0 ? 1 : 0 );
-            body.put("brand", listBrand.get(spn_brand.getSelectedItemPosition()).getId());
-            body.put("kategori", listKategori.get(spn_kategori.getSelectedItemPosition()).getId());
+        JSONBuilder body = new JSONBuilder();
+        body.add("nama", txt_nama.getText().toString());
+        body.add("harga", txt_harga.getText().toString());
+        body.add("berat", txt_berat.getText().toString());
+        body.add("satuan_berat", spn_satuan_berat.getSelectedItem().toString());
+        body.add("deskripsi", txt_deskripsi.getText().toString());
+        body.add("ukuran", txt_ukuran.getText().toString());
+        body.add("foto", uploadAdapter.getMainImage());
+        body.add("gallery", new JSONArray(uploadAdapter.getListImage()));
+        body.add("kondisi", spn_kondisi.getSelectedItemPosition() == 0 ? 1 : 0 );
+        body.add("brand", listBrand.get(spn_brand.getSelectedItemPosition()).getId());
+        body.add("kategori", listKategori.get(spn_kategori.getSelectedItemPosition()).getId());
+        body.add("lelang", jenis.equals("lelang")?"1":"0");
+        switch (jenis) {
+            case "lelang":
+                body.add("start", start);
+                body.add("end", end);
+                break;
+            case "preloved":
+                body.add("start", "");
+                body.add("end", "");
+                body.add("jenis", "1");
+                break;
+            case "merchandise":
+                body.add("start", "");
+                body.add("end", "");
+                body.add("jenis", "2");
+                break;
+        }
 
-            body.put("lelang", jenis.equals("lelang")?"1":"0");
-            switch (jenis) {
-                case "lelang":
-                    body.put("start", start);
-                    body.put("end", end);
-                    break;
-                case "preloved":
-                    body.put("start", "");
-                    body.put("end", "");
-                    body.put("jenis", "1");
-                    break;
-                case "merchandise":
-                    body.put("start", "");
-                    body.put("end", "");
-                    body.put("jenis", "2");
-                    break;
+        ApiVolleyManager.getInstance().addRequest(this, Constant.URL_UPLOAD_BARANG, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body.create(), new AppRequestCallback(new AppRequestCallback.AdvancedRequestListener() {
+            @Override
+            public void onEmpty(String message) {
+                Toast.makeText(UploadBarangActivity.this, message, Toast.LENGTH_SHORT).show();
             }
 
-            ApiVolleyManager.getInstance().addRequest(this, Constant.URL_UPLOAD_BARANG, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body, new ApiVolleyManager.RequestCallback() {
-                @Override
-                public void onSuccess(String result) {
-                    try{
-                        JSONObject jsonresult = new JSONObject(result);
-                        int status = jsonresult.getJSONObject("metadata").getInt("status");
-                        String message = jsonresult.getJSONObject("metadata").getString("message");
+            @Override
+            public void onSuccess(String result) {
+                Intent i = new Intent(UploadBarangActivity.this, HomeActivity.class);
+                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                i.putExtra("start", 1);
+                startActivity(i);
+            }
 
-                        if(status == 200){
-                            Intent i = new Intent(UploadBarangActivity.this, HomeActivity.class);
-                            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            i.putExtra("start", 1);
-                            startActivity(i);
-                        }
-                        else{
-                            Toast.makeText(UploadBarangActivity.this, message, Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                    catch (JSONException e){
-                        Toast.makeText(UploadBarangActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
-                        Log.e("InputBarang", e.getMessage());
-                    }
-                }
-
-                @Override
-                public void onError(String result) {
-                    Toast.makeText(UploadBarangActivity.this, R.string.error_database, Toast.LENGTH_SHORT).show();
-                    Log.e("InputBarang", result);
-                }
-            });
-        }
-        catch (JSONException e){
-            Toast.makeText(this, R.string.error_json, Toast.LENGTH_SHORT).show();
-            Log.e("InputBarang", e.getMessage());
-        }
+            @Override
+            public void onFail(String message) {
+                Toast.makeText(UploadBarangActivity.this, message, Toast.LENGTH_SHORT).show();
+            }
+        }));
     }
 
     private boolean validDate(){

@@ -18,7 +18,6 @@ import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,8 +27,10 @@ import id.net.gmedia.selby.Artis.EventActivity;
 import id.net.gmedia.selby.Model.KegiatanModel;
 import id.net.gmedia.selby.R;
 import id.net.gmedia.selby.Util.ApiVolleyManager;
+import id.net.gmedia.selby.Util.AppRequestCallback;
 import id.net.gmedia.selby.Util.Constant;
 import id.net.gmedia.selby.Util.Converter;
+import id.net.gmedia.selby.Util.JSONBuilder;
 
 
 /**
@@ -91,49 +92,36 @@ public class FragmentKegiatan extends Fragment {
     }
 
     private void initKegiatan(){
-        try{
-            JSONObject body = new JSONObject();
-            body.put("id", "");
-            body.put("id_penjual", id);
+        JSONBuilder body = new JSONBuilder();
+        body.add("id", "");
+        body.add("id_penjual", id);
 
-            ApiVolleyManager.getInstance().addRequest(activity, Constant.URL_KEGIATAN, ApiVolleyManager.METHOD_POST, Constant.HEADER_AUTH, body, new ApiVolleyManager.RequestCallback() {
-                @Override
-                public void onSuccess(String result) {
-                    try{
-                        JSONObject jsonresult = new JSONObject(result);
-                        int status = jsonresult.getJSONObject("metadata").getInt("status");
-                        String message = jsonresult.getJSONObject("metadata").getString("message");
-
-                        if(status == 200 || status == 404){
-                            needLoad = false;
-                            JSONArray kegiatan = jsonresult.getJSONArray("response");
-                            for(int i = 0; i < kegiatan.length(); i++){
-                                listKegiatan.add(new KegiatanModel(kegiatan.getJSONObject(i).getString("judul"), kegiatan.getJSONObject(i).getString("tempat"), Converter.stringDToDate(kegiatan.getJSONObject(i).getString("tgl")), kegiatan.getJSONObject(i).getString("deskripsi")));
-                            }
-
-                            resetFragment();
-                        }
-                        else{
-                            Toast.makeText(activity, message, Toast.LENGTH_SHORT).show();
-                        }
+        ApiVolleyManager.getInstance().addRequest(activity, Constant.URL_KEGIATAN, ApiVolleyManager.METHOD_POST, Constant.HEADER_AUTH, body.create(), new AppRequestCallback(new AppRequestCallback.RequestListener() {
+            @Override
+            public void onSuccess(String response) {
+                try{
+                    needLoad = false;
+                    JSONArray kegiatan = new JSONArray(response);
+                    for(int i = 0; i < kegiatan.length(); i++){
+                        listKegiatan.add(new KegiatanModel(kegiatan.getJSONObject(i).getString("judul"),
+                                kegiatan.getJSONObject(i).getString("tempat"),
+                                Converter.stringDToDate(kegiatan.getJSONObject(i).getString("tgl")),
+                                kegiatan.getJSONObject(i).getString("deskripsi")));
                     }
-                    catch (JSONException e){
-                        Toast.makeText(activity, R.string.error_json, Toast.LENGTH_SHORT).show();
-                        Log.e("Galeri", e.toString());
-                    }
-                }
 
-                @Override
-                public void onError(String result) {
-                    Toast.makeText(activity, R.string.error_database, Toast.LENGTH_SHORT).show();
-                    Log.e("Galeri", result);
+                    resetFragment();
                 }
-            });
-        }
-        catch (JSONException e){
-            Toast.makeText(activity, R.string.error_json, Toast.LENGTH_SHORT).show();
-            Log.e("Galeri", e.toString());
-        }
+                catch (JSONException e){
+                    Toast.makeText(activity, R.string.error_json, Toast.LENGTH_SHORT).show();
+                    Log.e("Galeri", e.toString());
+                }
+            }
+
+            @Override
+            public void onFail(String message) {
+                Toast.makeText(activity, message, Toast.LENGTH_SHORT).show();
+            }
+        }));
     }
 
     public void resetFragment(){

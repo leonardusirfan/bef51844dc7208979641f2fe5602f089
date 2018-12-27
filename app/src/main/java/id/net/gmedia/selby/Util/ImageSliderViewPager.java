@@ -10,6 +10,8 @@ import java.lang.reflect.Field;
 
 public class ImageSliderViewPager extends ViewPager{
 
+    private final int SCROLL_DURATION = 500;
+
     public ImageSliderViewPager(Context context, AttributeSet attrs) {
         super(context, attrs);
         setMyScroller();
@@ -38,7 +40,7 @@ public class ImageSliderViewPager extends ViewPager{
 
         @Override
         public void startScroll(int startX, int startY, int dx, int dy, int duration) {
-            super.startScroll(startX, startY, dx, dy, 1500);
+            super.startScroll(startX, startY, dx, dy, SCROLL_DURATION);
         }
     }
 }

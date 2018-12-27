@@ -22,6 +22,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONTokener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +33,9 @@ import id.net.gmedia.selby.Model.ArtisModel;
 import id.net.gmedia.selby.Model.ObjectModel;
 import id.net.gmedia.selby.R;
 import id.net.gmedia.selby.Util.ApiVolleyManager;
+import id.net.gmedia.selby.Util.AppRequestCallback;
 import id.net.gmedia.selby.Util.Constant;
+import id.net.gmedia.selby.Util.JSONBuilder;
 
 public class ArtisActivity extends AppCompatActivity {
 
@@ -144,50 +147,33 @@ public class ArtisActivity extends AppCompatActivity {
     }
 
     private void initKategori(){
-        try{
-            JSONObject body = new JSONObject();
-            body.put("start", 0);
-            body.put("count", "");
+        JSONBuilder body = new JSONBuilder();
+        body.add("start", 0);
+        body.add("count", "");
 
-            ApiVolleyManager.getInstance().addRequest(this, Constant.URL_KATEGORI_ARTIS, ApiVolleyManager.METHOD_POST, Constant.HEADER_AUTH, body, new ApiVolleyManager.RequestCallback() {
-                @Override
-                public void onSuccess(String result) {
-                    try{
-                        JSONObject jsonresult = new JSONObject(result);
-                        int status = jsonresult.getJSONObject("metadata").getInt("status");
-                        String message = jsonresult.getJSONObject("metadata").getString("message");
-
-                        if(status == 200){
-                            listKategori.add(new ObjectModel("", "Semua Kategori"));
-                            JSONArray arraykategori = jsonresult.getJSONArray("response");
-                            for(int i = 0; i < arraykategori.length(); i++){
-                                listKategori.add(new ObjectModel(arraykategori.getJSONObject(i).getString("id"),
-                                        arraykategori.getJSONObject(i).getString("pekerjaan")));
-                            }
-                            kategoriAdapter.notifyDataSetChanged();
-                        }
-                        else{
-                            Toast.makeText(ArtisActivity.this, message, Toast.LENGTH_SHORT).show();
-                        }
+        ApiVolleyManager.getInstance().addRequest(this, Constant.URL_KATEGORI_ARTIS, ApiVolleyManager.METHOD_POST, Constant.HEADER_AUTH, body.create(), new AppRequestCallback(new AppRequestCallback.RequestListener() {
+            @Override
+            public void onSuccess(String result) {
+                try{
+                    listKategori.add(new ObjectModel("", "Semua Kategori"));
+                    JSONArray arraykategori = new JSONArray(result);
+                    for(int i = 0; i < arraykategori.length(); i++){
+                        listKategori.add(new ObjectModel(arraykategori.getJSONObject(i).getString("id"),
+                                arraykategori.getJSONObject(i).getString("pekerjaan")));
                     }
-                    catch (JSONException e){
-                        Toast.makeText(ArtisActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
-                        Log.e("Kategori", e.getMessage());
-                    }
+                    kategoriAdapter.notifyDataSetChanged();
                 }
+                catch (JSONException e){
+                    Toast.makeText(ArtisActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
+                    Log.e("Kategori", e.getMessage());
+                }
+            }
 
-                @Override
-                public void onError(String result) {
-                    Toast.makeText(ArtisActivity.this, R.string.error_database, Toast.LENGTH_SHORT).show();
-                    Log.e("Kategori", result);
-                }
-            });
-        }
-        catch (JSONException e){
-            Toast.makeText(ArtisActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
-            Log.e("Kategori", e.getMessage());
-        }
-        kategoriAdapter.notifyDataSetChanged();
+            @Override
+            public void onFail(String message) {
+                Toast.makeText(ArtisActivity.this, message, Toast.LENGTH_SHORT).show();
+            }
+        }));
     }
 
     private void initArtis(String keyword){
@@ -196,71 +182,52 @@ public class ArtisActivity extends AppCompatActivity {
         rv_artis.setVisibility(View.INVISIBLE);
         pb_artis.setVisibility(View.VISIBLE);
 
-        try{
-            JSONObject body = new JSONObject();
-            body.put("start", 0);
-            body.put("count", LOAD_COUNT);
-            body.put("id", "");
-            body.put("keyword", keyword);
-            body.put("pekerjaan", kategori);
+        JSONBuilder body = new JSONBuilder();
+        body.add("start", 0);
+        body.add("count", LOAD_COUNT);
+        body.add("id", "");
+        body.add("keyword", keyword);
+        body.add("pekerjaan", kategori);
 
-            ApiVolleyManager.getInstance().addRequest(this, Constant.URL_ARTIS, ApiVolleyManager.METHOD_POST, Constant.HEADER_AUTH, body, new ApiVolleyManager.RequestCallback() {
-                @Override
-                public void onSuccess(String result) {
-                    try{
-                        JSONObject jsonresult = new JSONObject(result);
+        ApiVolleyManager.getInstance().addRequest(this, Constant.URL_ARTIS, ApiVolleyManager.METHOD_POST, Constant.HEADER_AUTH, body.create(), new AppRequestCallback(new AppRequestCallback.RequestListener() {
+            @Override
+            public void onSuccess(String result) {
+                try{
+                    listArtis.clear();
 
-                        int status = jsonresult.getJSONObject("metadata").getInt("status");
-                        String message = jsonresult.getJSONObject("metadata").getString("message");
-
-                        if(status == 200 || status == 404){
-                            listArtis.clear();
-                            if(jsonresult.get("response") instanceof JSONObject){
-                                JSONArray array = jsonresult.getJSONObject("response").getJSONArray("pelapak");
-                                //int total_count = jsonresult.getJSONObject("response").getInt("total_records");
-                                for(int i = 0; i < array.length(); i++){
-                                    JSONObject artis = array.getJSONObject(i);
-                                    listArtis.add(new ArtisModel(artis.getString("id"), artis.getString("nama"), artis.getString("image"), "Amerika Serikat","2 juni 1995", 167, artis.getString("deskripsi")));
-                                    last_loaded += 1;
-                                }
-                            }
-
-                            artisAdapter.notifyDataSetChanged();
+                    Object json = new JSONTokener(result).nextValue();
+                    if(json instanceof JSONObject){
+                        JSONArray array = ((JSONObject)json).getJSONArray("pelapak");
+                        //int total_count = jsonresult.getJSONObject("response").getInt("total_records");
+                        for(int i = 0; i < array.length(); i++){
+                            JSONObject artis = array.getJSONObject(i);
+                            listArtis.add(new ArtisModel(artis.getString("id"), artis.getString("nama"), artis.getString("image"), "Amerika Serikat","2 juni 1995", 167, artis.getString("deskripsi")));
+                            last_loaded += 1;
                         }
-                        else{
-                            Toast.makeText(ArtisActivity.this, message, Toast.LENGTH_SHORT).show();
-                        }
-
-                        rv_artis.setVisibility(View.VISIBLE);
-                        pb_artis.setVisibility(View.INVISIBLE);
                     }
-                    catch (JSONException e){
-                        Toast.makeText(ArtisActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
-                        Log.e("InitArtis", e.getMessage());
 
-                        rv_artis.setVisibility(View.VISIBLE);
-                        pb_artis.setVisibility(View.INVISIBLE);
-                    }
-                }
-
-                @Override
-                public void onError(String result) {
-                    Toast.makeText(ArtisActivity.this, R.string.error_database, Toast.LENGTH_SHORT).show();
-                    Log.e("InitArtis", result);
+                    artisAdapter.notifyDataSetChanged();
 
                     rv_artis.setVisibility(View.VISIBLE);
                     pb_artis.setVisibility(View.INVISIBLE);
                 }
-            });
+                catch (JSONException e){
+                    Toast.makeText(ArtisActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
+                    Log.e("InitArtis", e.getMessage());
 
-        }
-        catch (JSONException e){
-            Toast.makeText(ArtisActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
-            Log.e("InitArtis", e.getMessage());
+                    rv_artis.setVisibility(View.VISIBLE);
+                    pb_artis.setVisibility(View.INVISIBLE);
+                }
+            }
 
-            rv_artis.setVisibility(View.VISIBLE);
-            pb_artis.setVisibility(View.INVISIBLE);
-        }
+            @Override
+            public void onFail(String message) {
+                Toast.makeText(ArtisActivity.this, message, Toast.LENGTH_SHORT).show();
+
+                rv_artis.setVisibility(View.VISIBLE);
+                pb_artis.setVisibility(View.INVISIBLE);
+            }
+        }));
     }
 
     private void initArtisFollow(String keyword){
@@ -269,185 +236,138 @@ public class ArtisActivity extends AppCompatActivity {
         rv_artis.setVisibility(View.INVISIBLE);
         pb_artis.setVisibility(View.VISIBLE);
 
-        try{
-            JSONObject body = new JSONObject();
-            body.put("start", 0);
-            body.put("count", LOAD_COUNT);
-            body.put("keyword", keyword);
-            body.put("pekerjaan", kategori);
+        JSONBuilder body = new JSONBuilder();
+        body.add("start", 0);
+        body.add("count", LOAD_COUNT);
+        body.add("keyword", keyword);
+        body.add("pekerjaan", kategori);
 
-            ApiVolleyManager.getInstance().addRequest(this, Constant.URL_ARTIS_DIFOLLOW, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body, new ApiVolleyManager.RequestCallback() {
-                @Override
-                public void onSuccess(String result) {
-                    try{
-                        JSONObject jsonresult = new JSONObject(result);
+        ApiVolleyManager.getInstance().addRequest(this, Constant.URL_ARTIS_DIFOLLOW, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body.create(), new AppRequestCallback(new AppRequestCallback.RequestListener() {
+            @Override
+            public void onSuccess(String result) {
+                try{
+                    listArtis.clear();
 
-                        int status = jsonresult.getJSONObject("metadata").getInt("status");
-                        String message = jsonresult.getJSONObject("metadata").getString("message");
+                    Object json = new JSONTokener(result).nextValue();
+                    if(json instanceof JSONObject){
+                        JSONArray array = ((JSONObject) json).getJSONArray("pelapak");
 
-                        if(status == 200 || status == 404){
-                            listArtis.clear();
-                            if(jsonresult.get("response") instanceof JSONObject){
-                                JSONArray array = jsonresult.getJSONObject("response").getJSONArray("pelapak");
-
-                                for(int i = 0; i < array.length(); i++){
-                                    JSONObject artis = array.getJSONObject(i);
-                                    listArtis.add(new ArtisModel(artis.getString("id"), artis.getString("nama"), artis.getString("image"), "Amerika Serikat","2 juni 1995", 167, artis.getString("deskripsi")));
-                                    last_loaded += 1;
-                                }
-                            }
-
-                            artisAdapter.notifyDataSetChanged();
+                        for(int i = 0; i < array.length(); i++){
+                            JSONObject artis = array.getJSONObject(i);
+                            listArtis.add(new ArtisModel(artis.getString("id"), artis.getString("nama"), artis.getString("image"), "Amerika Serikat","2 juni 1995", 167, artis.getString("deskripsi")));
+                            last_loaded += 1;
                         }
-                        else{
-                            Toast.makeText(ArtisActivity.this, message, Toast.LENGTH_SHORT).show();
-                        }
-
-                        rv_artis.setVisibility(View.VISIBLE);
-                        pb_artis.setVisibility(View.INVISIBLE);
                     }
-                    catch (JSONException e){
-                        Toast.makeText(ArtisActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
-                        Log.e("InitArtis", e.getMessage());
 
-                        rv_artis.setVisibility(View.VISIBLE);
-                        pb_artis.setVisibility(View.INVISIBLE);
-                    }
-                }
-
-                @Override
-                public void onError(String result) {
-                    Toast.makeText(ArtisActivity.this, R.string.error_database, Toast.LENGTH_SHORT).show();
-                    Log.e("InitArtis", result);
+                    artisAdapter.notifyDataSetChanged();
 
                     rv_artis.setVisibility(View.VISIBLE);
                     pb_artis.setVisibility(View.INVISIBLE);
                 }
-            });
+                catch (JSONException e){
+                    Toast.makeText(ArtisActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
+                    Log.e("InitArtis", e.getMessage());
 
-        }
-        catch (JSONException e){
-            Toast.makeText(ArtisActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
-            Log.e("InitArtis", e.getMessage());
+                    rv_artis.setVisibility(View.VISIBLE);
+                    pb_artis.setVisibility(View.INVISIBLE);
+                }
+            }
 
-            rv_artis.setVisibility(View.VISIBLE);
-            pb_artis.setVisibility(View.INVISIBLE);
-        }
+            @Override
+            public void onFail(String message) {
+                Toast.makeText(ArtisActivity.this, message, Toast.LENGTH_SHORT).show();
+
+                rv_artis.setVisibility(View.VISIBLE);
+                pb_artis.setVisibility(View.INVISIBLE);
+            }
+        }));
     }
 
     private void loadArtis(){
-        try{
-            JSONObject body = new JSONObject();
-            body.put("start", last_loaded);
-            body.put("count", LOAD_COUNT);
-            body.put("id", "");
-            body.put("keyword", txt_search.getText().toString());
-            body.put("pekerjaan", kategori);
+        JSONBuilder body = new JSONBuilder();
+        body.add("start", last_loaded);
+        body.add("count", LOAD_COUNT);
+        body.add("id", "");
+        body.add("keyword", txt_search.getText().toString());
+        body.add("pekerjaan", kategori);
 
-            ApiVolleyManager.getInstance().addRequest(this, Constant.URL_ARTIS, ApiVolleyManager.METHOD_POST, Constant.HEADER_AUTH, body, new ApiVolleyManager.RequestCallback() {
-                @Override
-                public void onSuccess(String result) {
-                    try{
-                        JSONObject jsonresult = new JSONObject(result);
+        ApiVolleyManager.getInstance().addRequest(this, Constant.URL_ARTIS, ApiVolleyManager.METHOD_POST, Constant.HEADER_AUTH, body.create(), new AppRequestCallback(new AppRequestCallback.AdvancedRequestListener() {
+            @Override
+            public void onEmpty(String message) {
+                loading = false;
+            }
 
-                        int status = jsonresult.getJSONObject("metadata").getInt("status");
-                        String message = jsonresult.getJSONObject("metadata").getString("message");
-
-                        if(status == 200){
-                            JSONArray array = jsonresult.getJSONObject("response").getJSONArray("pelapak");
-                            //int total_count = jsonresult.getJSONObject("response").getInt("total_records");
-                            for(int i = 0; i < array.length(); i++){
-                                JSONObject artis = array.getJSONObject(i);
-                                listArtis.add(new ArtisModel(artis.getString("id"), artis.getString("nama"), artis.getString("image"), "Amerika Serikat","2 juni 1995", 167, artis.getString("deskripsi")));
-                                last_loaded += 1;
-                            }
-
-                            artisAdapter.notifyDataSetChanged();
-                        }
-                        else if(status != 404){
-                            Toast.makeText(ArtisActivity.this, message, Toast.LENGTH_SHORT).show();
-                        }
-
-                        loading = false;
+            @Override
+            public void onSuccess(String result) {
+                try{
+                    JSONArray array = new JSONObject(result).getJSONArray("pelapak");
+                    //int total_count = jsonresult.getJSONObject("response").getInt("total_records");
+                    for(int i = 0; i < array.length(); i++){
+                        JSONObject artis = array.getJSONObject(i);
+                        listArtis.add(new ArtisModel(artis.getString("id"), artis.getString("nama"), artis.getString("image"), "Amerika Serikat","2 juni 1995", 167, artis.getString("deskripsi")));
+                        last_loaded += 1;
                     }
-                    catch (JSONException e){
-                        Toast.makeText(ArtisActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
-                        Log.e("InitArtis", e.getMessage());
-                        loading = false;
-                    }
-                }
 
-                @Override
-                public void onError(String result) {
-                    Toast.makeText(ArtisActivity.this, R.string.error_database, Toast.LENGTH_SHORT).show();
-                    Log.e("InitArtis", result);
+                    artisAdapter.notifyDataSetChanged();
+
                     loading = false;
                 }
-            });
+                catch (JSONException e){
+                    Toast.makeText(ArtisActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
+                    Log.e("InitArtis", e.getMessage());
+                    loading = false;
+                }
+            }
 
-        }
-        catch (JSONException e){
-            Toast.makeText(ArtisActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
-            Log.e("InitArtis", e.getMessage());
-            loading = false;
-        }
+            @Override
+            public void onFail(String message) {
+                Toast.makeText(ArtisActivity.this, message, Toast.LENGTH_SHORT).show();
+                loading = false;
+            }
+        }));
     }
 
     private void loadArtisFollow(){
-        try{
-            JSONObject body = new JSONObject();
-            body.put("start", last_loaded);
-            body.put("count", LOAD_COUNT);
-            body.put("keyword", txt_search.getText().toString());
-            body.put("pekerjaan", kategori);
+        JSONBuilder body = new JSONBuilder();
+        body.add("start", last_loaded);
+        body.add("count", LOAD_COUNT);
+        body.add("keyword", txt_search.getText().toString());
+        body.add("pekerjaan", kategori);
 
-            ApiVolleyManager.getInstance().addRequest(this, Constant.URL_ARTIS_DIFOLLOW, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body, new ApiVolleyManager.RequestCallback() {
-                @Override
-                public void onSuccess(String result) {
-                    try{
-                        JSONObject jsonresult = new JSONObject(result);
+        ApiVolleyManager.getInstance().addRequest(this, Constant.URL_ARTIS_DIFOLLOW, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body.create(), new AppRequestCallback(new AppRequestCallback.AdvancedRequestListener() {
+            @Override
+            public void onEmpty(String message) {
+                loading = false;
+            }
 
-                        int status = jsonresult.getJSONObject("metadata").getInt("status");
-                        String message = jsonresult.getJSONObject("metadata").getString("message");
+            @Override
+            public void onSuccess(String result) {
+                try{
+                    JSONArray array = new JSONObject("response").getJSONArray("pelapak");
 
-                        if(status == 200){
-                            JSONArray array = jsonresult.getJSONObject("response").getJSONArray("pelapak");
-
-                            for(int i = 0; i < array.length(); i++){
-                                JSONObject artis = array.getJSONObject(i);
-                                listArtis.add(new ArtisModel(artis.getString("id"), artis.getString("nama"), artis.getString("image"), "Amerika Serikat","2 juni 1995", 167, artis.getString("deskripsi")));
-                                last_loaded += 1;
-                            }
-
-                            artisAdapter.notifyDataSetChanged();
-                        }
-                        else if(status != 404){
-                            Toast.makeText(ArtisActivity.this, message, Toast.LENGTH_SHORT).show();
-                        }
-
-                        loading = false;
+                    for(int i = 0; i < array.length(); i++){
+                        JSONObject artis = array.getJSONObject(i);
+                        listArtis.add(new ArtisModel(artis.getString("id"), artis.getString("nama"), artis.getString("image"), "Amerika Serikat","2 juni 1995", 167, artis.getString("deskripsi")));
+                        last_loaded += 1;
                     }
-                    catch (JSONException e){
-                        Toast.makeText(ArtisActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
-                        Log.e("InitArtis", e.getMessage());
-                        loading = false;
-                    }
-                }
 
-                @Override
-                public void onError(String result) {
-                    Toast.makeText(ArtisActivity.this, R.string.error_database, Toast.LENGTH_SHORT).show();
-                    Log.e("InitArtis", result);
+                    artisAdapter.notifyDataSetChanged();
+
                     loading = false;
                 }
-            });
+                catch (JSONException e){
+                    Toast.makeText(ArtisActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
+                    Log.e("InitArtis", e.getMessage());
+                    loading = false;
+                }
+            }
 
-        }
-        catch (JSONException e){
-            Toast.makeText(ArtisActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
-            Log.e("InitArtis", e.getMessage());
-            loading = false;
-        }
+            @Override
+            public void onFail(String message) {
+                Toast.makeText(ArtisActivity.this, message, Toast.LENGTH_SHORT).show();
+                loading = false;
+            }
+        }));
     }
 
     public void setKategori(String kategori){

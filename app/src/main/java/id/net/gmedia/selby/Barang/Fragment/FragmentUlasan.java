@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -25,6 +26,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONTokener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,12 +34,16 @@ import java.util.List;
 
 import id.net.gmedia.selby.Barang.Adapter.RatingAdapter;
 import id.net.gmedia.selby.Barang.Adapter.UlasanAdapter;
+import id.net.gmedia.selby.LoginActivity;
+import id.net.gmedia.selby.Util.AppRequestCallback;
+import id.net.gmedia.selby.Util.AppSharedPreferences;
 import id.net.gmedia.selby.Util.Constant;
 import id.net.gmedia.selby.R;
 import id.net.gmedia.selby.Model.UlasanModel;
 import id.net.gmedia.selby.Util.ApiVolleyManager;
 import id.net.gmedia.selby.Util.Converter;
 import id.net.gmedia.selby.Util.DialogFactory;
+import id.net.gmedia.selby.Util.JSONBuilder;
 
 public class FragmentUlasan extends Fragment {
 
@@ -154,206 +160,162 @@ public class FragmentUlasan extends Fragment {
     }
 
     private void initRating(){
-        try{
-            JSONObject body = new JSONObject();
-            body.put("id_barang", id);
+        JSONBuilder body = new JSONBuilder();
+        body.add("id_barang", id);
 
-            ApiVolleyManager.getInstance().addRequest(activity, Constant.URL_BARANG_RATING, ApiVolleyManager.METHOD_POST, Constant.HEADER_AUTH, body, new ApiVolleyManager.RequestCallback() {
-                @Override
-                public void onSuccess(String result) {
-                    try{
-                        JSONObject jsonresult = new JSONObject(result);
-                        int status = jsonresult.getJSONObject("metadata").getInt("status");
-                        String message = jsonresult.getJSONObject("metadata").getString("message");
-
-                        int jumlah = 0;
-                        for(int i = 0; i < listRating.size(); i++){
-                            listRating.set(i, 0);
-                        }
-
-                        if(status == 200){
-                            JSONObject rating = jsonresult.getJSONObject("response");
-
-                            listRating.set(0, rating.getInt("rating_1"));
-                            listRating.set(1, rating.getInt("rating_2"));
-                            listRating.set(2, rating.getInt("rating_3"));
-                            listRating.set(3, rating.getInt("rating_4"));
-                            listRating.set(4, rating.getInt("rating_5"));
-
-                            for(int i = 0; i < listRating.size(); i++){
-                                jumlah += listRating.get(i);
-                            }
-
-                            float rating_float = (float)rating.getDouble("rating");
-                            rate_produk.setRating(rating_float);
-                            txt_rating_barang.setText(String.valueOf(rating_float));
-                        }
-                        else if(status != 404){
-                            Toast.makeText(activity, message, Toast.LENGTH_SHORT).show();
-                        }
-
-                        ratingAdapter.setSum((float) jumlah);
-                        ratingAdapter.notifyDataSetChanged();
-
-                        txt_jumlah_ulasan.setText(getResources().getString(R.string.ulasan_jumlah_ulasan, jumlah));
+        ApiVolleyManager.getInstance().addRequest(activity, Constant.URL_BARANG_RATING, ApiVolleyManager.METHOD_POST, Constant.HEADER_AUTH, body.create(), new AppRequestCallback(new AppRequestCallback.RequestListener() {
+            @Override
+            public void onSuccess(String response) {
+                try{
+                    int jumlah = 0;
+                    for(int i = 0; i < listRating.size(); i++){
+                        listRating.set(i, 0);
                     }
-                    catch (JSONException e){
-                        Toast.makeText(activity, R.string.error_json, Toast.LENGTH_SHORT).show();
-                        Log.e("Ulasan", e.toString());
-                    }
-                }
 
-                @Override
-                public void onError(String result) {
-                    Toast.makeText(activity, R.string.error_database, Toast.LENGTH_SHORT).show();
-                    Log.e("Ulasan", result);
+                    JSONObject rating = new JSONObject(response);
+
+                    listRating.set(0, rating.getInt("rating_1"));
+                    listRating.set(1, rating.getInt("rating_2"));
+                    listRating.set(2, rating.getInt("rating_3"));
+                    listRating.set(3, rating.getInt("rating_4"));
+                    listRating.set(4, rating.getInt("rating_5"));
+
+                    for(int i = 0; i < listRating.size(); i++){
+                        jumlah += listRating.get(i);
+                    }
+
+                    float rating_float = (float)rating.getDouble("rating");
+                    rate_produk.setRating(rating_float);
+                    txt_rating_barang.setText(String.valueOf(rating_float));
+
+                    ratingAdapter.setSum((float) jumlah);
+                    ratingAdapter.notifyDataSetChanged();
+
+                    txt_jumlah_ulasan.setText(getResources().getString(R.string.ulasan_jumlah_ulasan, jumlah));
                 }
-            });
-        }
-        catch (JSONException e){
-            Toast.makeText(activity, R.string.error_json, Toast.LENGTH_SHORT).show();
-            Log.e("Ulasan", e.toString());
-        }
+                catch (JSONException e){
+                    Toast.makeText(activity, R.string.error_json, Toast.LENGTH_SHORT).show();
+                    Log.e("Ulasan", e.toString());
+                }
+            }
+
+            @Override
+            public void onFail(String message) {
+                Toast.makeText(activity, message, Toast.LENGTH_SHORT).show();
+            }
+        }));
     }
 
     public void initUlasan(int count){
         total = 0;
         last_loaded = 0;
 
-        try{
-            JSONObject body = new JSONObject();
-            body.put("id_barang", id);
-            body.put("start", 0);
-            body.put("count", count);
-            body.put("rating", bintang);
+        JSONBuilder body = new JSONBuilder();
+        body.add("id_barang", id);
+        body.add("start", 0);
+        body.add("count", count);
+        body.add("rating", bintang);
 
-            ApiVolleyManager.getInstance().addRequest(activity, Constant.URL_DETAIL_PRODUK_REVIEW, ApiVolleyManager.METHOD_POST, Constant.HEADER_AUTH, body, new ApiVolleyManager.RequestCallback() {
-                @Override
-                public void onSuccess(String result) {
-                    try{
-                        JSONObject jsonresult = new JSONObject(result);
-                        int status = jsonresult.getJSONObject("metadata").getInt("status");
-                        String message = jsonresult.getJSONObject("metadata").getString("message");
+        ApiVolleyManager.getInstance().addRequest(activity, Constant.URL_DETAIL_PRODUK_REVIEW, ApiVolleyManager.METHOD_POST, Constant.HEADER_AUTH, body.create(), new AppRequestCallback(new AppRequestCallback.RequestListener() {
+            @Override
+            public void onSuccess(String response) {
+                try{
+                    listUlasan.clear();
 
-                        if(status == 200 || status == 404){
-                            listUlasan.clear();
+                    Object json = new JSONTokener(response).nextValue();
+                    if(json instanceof JSONObject){
+                        JSONObject jsonresult = (JSONObject) json;
+                        total = jsonresult.getInt("total_records");
+                        JSONArray ulasanlist = jsonresult.getJSONArray("review");
 
-                            if(jsonresult.get("response") instanceof JSONObject){
-                                total = jsonresult.getJSONObject("response").getInt("total_records");
-                                JSONArray ulasanlist = jsonresult.getJSONObject("response").getJSONArray("review");
+                        for(int i = 0; i < ulasanlist.length(); i++){
+                            JSONObject obj = ulasanlist.getJSONObject(i);
+                            float rating = (float) obj.getDouble("rating");
+                            UlasanModel ulasan = new UlasanModel(obj.getString("id"), obj.getString("foto"), obj.getString("profile_name"), obj.getString("deskripsi"), rating, Converter.stringDTTToDate(obj.getString("waktu")));
 
-                                for(int i = 0; i < ulasanlist.length(); i++){
-                                    JSONObject obj = ulasanlist.getJSONObject(i);
-                                    float rating = (float) obj.getDouble("rating");
-                                    UlasanModel ulasan = new UlasanModel(obj.getString("id"), obj.getString("foto"), obj.getString("profile_name"), obj.getString("deskripsi"), rating, Converter.stringDTTToDate(obj.getString("waktu")));
-
-                                    if(obj.has("child")){
-                                        JSONArray balasan = obj.getJSONArray("child");
-                                        for(int j = 0; j < balasan.length(); j++){
-                                            ulasan.addBalasan(new UlasanModel(balasan.getJSONObject(j).getString("foto"),
-                                                    balasan.getJSONObject(j).getString("profile_name"), balasan.getJSONObject(j).getString("deskripsi"), Converter.stringDTTToDate(balasan.getJSONObject(j).getString("waktu"))));
-                                        }
-                                    }
-
-                                    listUlasan.add(ulasan);
-                                    last_loaded += 1;
+                            if(obj.has("child")){
+                                JSONArray balasan = obj.getJSONArray("child");
+                                for(int j = 0; j < balasan.length(); j++){
+                                    ulasan.addBalasan(new UlasanModel(balasan.getJSONObject(j).getString("foto"),
+                                            balasan.getJSONObject(j).getString("profile_name"), balasan.getJSONObject(j).getString("deskripsi"), Converter.stringDTTToDate(balasan.getJSONObject(j).getString("waktu"))));
                                 }
                             }
 
-                            ulasanAdapter = new UlasanAdapter(FragmentUlasan.this, listUlasan);
-                            if(total == last_loaded){
-                                ulasanAdapter.setAll_loaded();
-                            }
-                            rv_ulasan.setAdapter(ulasanAdapter);
-                        }
-                        else{
-                            Toast.makeText(activity, message, Toast.LENGTH_SHORT).show();
+                            listUlasan.add(ulasan);
+                            last_loaded += 1;
                         }
                     }
-                    catch (JSONException e){
-                        Toast.makeText(activity, R.string.error_json, Toast.LENGTH_SHORT).show();
-                        Log.e("Ulasan", e.toString());
-                    }
-                }
 
-                @Override
-                public void onError(String result) {
-                    Toast.makeText(activity, R.string.error_database, Toast.LENGTH_SHORT).show();
-                    Log.e("Ulasan", result);
+                    ulasanAdapter = new UlasanAdapter(FragmentUlasan.this, listUlasan);
+                    if(total == last_loaded){
+                        ulasanAdapter.setAll_loaded();
+                    }
+                    rv_ulasan.setAdapter(ulasanAdapter);
                 }
-            });
-        }
-        catch (JSONException e){
-            Toast.makeText(activity, R.string.error_json, Toast.LENGTH_SHORT).show();
-            Log.e("Ulasan", e.toString());
-        }
+                catch (JSONException e){
+                    Toast.makeText(activity, R.string.error_json, Toast.LENGTH_SHORT).show();
+                    Log.e("Ulasan", e.toString());
+                }
+            }
+
+            @Override
+            public void onFail(String message) {
+                Toast.makeText(activity, message, Toast.LENGTH_SHORT).show();
+            }
+        }));
     }
 
     public void loadUlasan(){
-        try{
-            JSONObject body = new JSONObject();
-            body.put("id_barang", id);
-            body.put("start", last_loaded);
-            body.put("count", LOAD_COUNT);
-            body.put("rating", bintang);
+        JSONBuilder body = new JSONBuilder();
+        body.add("id_barang", id);
+        body.add("start", last_loaded);
+        body.add("count", LOAD_COUNT);
+        body.add("rating", bintang);
 
-            ApiVolleyManager.getInstance().addRequest(activity, Constant.URL_DETAIL_PRODUK_REVIEW, ApiVolleyManager.METHOD_POST, Constant.HEADER_AUTH, body, new ApiVolleyManager.RequestCallback() {
-                @Override
-                public void onSuccess(String result) {
-                    try{
-                        JSONObject jsonresult = new JSONObject(result);
-                        int status = jsonresult.getJSONObject("metadata").getInt("status");
-                        String message = jsonresult.getJSONObject("metadata").getString("message");
+        ApiVolleyManager.getInstance().addRequest(activity, Constant.URL_DETAIL_PRODUK_REVIEW, ApiVolleyManager.METHOD_POST, Constant.HEADER_AUTH, body.create(), new AppRequestCallback(new AppRequestCallback.RequestListener() {
+            @Override
+            public void onSuccess(String response) {
+                try{
+                    Object json = new JSONTokener(response).nextValue();
+                    if(json instanceof JSONObject) {
+                        JSONObject jsonresult = (JSONObject) json;
+                        total = jsonresult.getInt("total_records");
+                        JSONArray ulasanlist = jsonresult.getJSONArray("review");
 
-                        if(status == 200 || status == 404){
-                            if(jsonresult.get("response") instanceof JSONObject){
-                                total = jsonresult.getJSONObject("response").getInt("total_records");
-                                JSONArray ulasanlist = jsonresult.getJSONObject("response").getJSONArray("review");
+                        for(int i = 0; i < ulasanlist.length(); i++){
+                            JSONObject obj = ulasanlist.getJSONObject(i);
+                            float rating = (float) obj.getDouble("rating");
+                            UlasanModel ulasan = new UlasanModel(obj.getString("id"), obj.getString("foto"), obj.getString("profile_name"), obj.getString("deskripsi"), rating, Converter.stringDTTToDate(obj.getString("waktu")));
 
-                                for(int i = 0; i < ulasanlist.length(); i++){
-                                    JSONObject obj = ulasanlist.getJSONObject(i);
-                                    float rating = (float) obj.getDouble("rating");
-                                    UlasanModel ulasan = new UlasanModel(obj.getString("id"), obj.getString("foto"), obj.getString("profile_name"), obj.getString("deskripsi"), rating, Converter.stringDTTToDate(obj.getString("waktu")));
-
-                                    if(obj.has("child")){
-                                        JSONArray balasan = obj.getJSONArray("child");
-                                        for(int j = 0; j < balasan.length(); j++){
-                                            ulasan.addBalasan(new UlasanModel(balasan.getJSONObject(j).getString("foto"),
-                                                    balasan.getJSONObject(j).getString("profile_name"), balasan.getJSONObject(j).getString("deskripsi"), Converter.stringDTTToDate(balasan.getJSONObject(j).getString("waktu"))));
-                                        }
-                                    }
-
-                                    listUlasan.add(ulasan);
-                                    last_loaded += 1;
+                            if(obj.has("child")){
+                                JSONArray balasan = obj.getJSONArray("child");
+                                for(int j = 0; j < balasan.length(); j++){
+                                    ulasan.addBalasan(new UlasanModel(balasan.getJSONObject(j).getString("foto"),
+                                            balasan.getJSONObject(j).getString("profile_name"), balasan.getJSONObject(j).getString("deskripsi"), Converter.stringDTTToDate(balasan.getJSONObject(j).getString("waktu"))));
                                 }
                             }
 
-                            if(total == last_loaded){
-                                ulasanAdapter.setAll_loaded();
-                            }
-                            ulasanAdapter.notifyDataSetChanged();
-                        }
-                        else{
-                            Toast.makeText(activity, message, Toast.LENGTH_SHORT).show();
+                            listUlasan.add(ulasan);
+                            last_loaded += 1;
                         }
                     }
-                    catch (JSONException e){
-                        Toast.makeText(activity, R.string.error_json, Toast.LENGTH_SHORT).show();
-                        Log.e("Ulasan", e.toString());
-                    }
-                }
 
-                @Override
-                public void onError(String result) {
-                    Toast.makeText(activity, R.string.error_database, Toast.LENGTH_SHORT).show();
-                    Log.e("Ulasan", result);
+                    if(total == last_loaded){
+                        ulasanAdapter.setAll_loaded();
+                    }
+                    ulasanAdapter.notifyDataSetChanged();
                 }
-            });
-        }
-        catch (JSONException e){
-            Toast.makeText(activity, R.string.error_json, Toast.LENGTH_SHORT).show();
-            Log.e("Ulasan", e.toString());
-        }
+                catch (JSONException e){
+                    Toast.makeText(activity, R.string.error_json, Toast.LENGTH_SHORT).show();
+                    Log.e("Ulasan", e.toString());
+                }
+            }
+
+            @Override
+            public void onFail(String message) {
+                Toast.makeText(activity, message, Toast.LENGTH_SHORT).show();
+            }
+        }));
     }
 
     public void bukaDialogReview(){
@@ -372,8 +334,8 @@ public class FragmentUlasan extends Fragment {
                 }
                 else if(dialog_rating_barang.getRating() == 0){
                     AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-                    builder.setTitle("Anda tidak memberi rating");
-                    builder.setMessage("Yakin ingin memberi rating kosong?");
+                    builder.setTitle("Anda belum memberi rating");
+                    builder.setMessage("Berikan rating untuk barang yang sudah anda beli");
                     builder.setPositiveButton("Ya", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -399,120 +361,71 @@ public class FragmentUlasan extends Fragment {
 
     private void kirimUlasan(final float rating, String teks){
         String id_user = FirebaseAuth.getInstance().getUid();
-        if(id_user == null){
-            Toast.makeText(activity, "Login terlebih dahulu untuk mengulas barang", Toast.LENGTH_SHORT).show();
-            return;
-        }
+        JSONBuilder body = new JSONBuilder();
+        body.add("id", "");
+        body.add("id_barang", id);
+        body.add("rating", rating);
+        body.add("deskripsi", teks);
 
-        try{
-            JSONObject body = new JSONObject();
-            body.put("id", "");
-            body.put("id_barang", id);
-            body.put("rating", rating);
-            body.put("deskripsi", teks);
+        ApiVolleyManager.getInstance().addRequest(activity, Constant.URL_TAMBAH_ULASAN, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(id_user), body.create(), new AppRequestCallback(new AppRequestCallback.RequestListener() {
+            @Override
+            public void onSuccess(String response) {
+                Toast.makeText(activity, "Ulasan berhasil ditambahkan", Toast.LENGTH_SHORT).show();
+                initRating();
+                initUlasan(last_loaded);
+                dialogReview.dismiss();
+            }
 
-            ApiVolleyManager.getInstance().addRequest(activity, Constant.URL_TAMBAH_ULASAN, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(id_user), body, new ApiVolleyManager.RequestCallback() {
-                @Override
-                public void onSuccess(String result) {
-                    try{
-                        JSONObject jsonresult = new JSONObject(result);
-                        int status = jsonresult.getJSONObject("metadata").getInt("status");
-                        String message = jsonresult.getJSONObject("metadata").getString("message");
-
-                        if(status == 200){
-                            Toast.makeText(activity, "Ulasan berhasil ditambahkan", Toast.LENGTH_SHORT).show();
-                            initRating();
-                            initUlasan(last_loaded);
-                            dialogReview.dismiss();
-                        }
-                        else{
-                            Toast.makeText(activity, message, Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                    catch (JSONException e){
-                        Toast.makeText(activity, R.string.error_json, Toast.LENGTH_SHORT).show();
-                        Log.e("Review", e.toString());
-                    }
-                }
-
-                @Override
-                public void onError(String result) {
-                    Toast.makeText(activity, R.string.error_database, Toast.LENGTH_SHORT).show();
-                    Log.e("Review", result);
-                }
-            });
-        }
-        catch (JSONException e){
-            Toast.makeText(activity, R.string.error_json, Toast.LENGTH_SHORT).show();
-            Log.e("Review", e.toString());
-        }
+            @Override
+            public void onFail(String message) {
+                Toast.makeText(activity, message, Toast.LENGTH_SHORT).show();
+            }
+        }));
     }
 
     public void balasUlasan(final String id_ulasan){
-        //Buka dialog balas ulasan
-        dialogBalas = DialogFactory.getInstance().createDialog(activity, R.layout.popup_barang_balas, 70, 45);
-        final EditText dialog_txt_ulasan = dialogBalas.findViewById(R.id.txt_ulasan);
-        Button btn_kirim = dialogBalas.findViewById(R.id.btn_kirim);
+        if(!AppSharedPreferences.isLoggedIn(activity)){
+            activity.startActivity(new Intent(activity, LoginActivity.class));
+        }
+        else{
+            //Buka dialog balas ulasan
+            dialogBalas = DialogFactory.getInstance().createDialog(activity, R.layout.popup_barang_balas, 70, 45);
+            final EditText dialog_txt_ulasan = dialogBalas.findViewById(R.id.txt_ulasan);
+            Button btn_kirim = dialogBalas.findViewById(R.id.btn_kirim);
 
-        //Mengirim request untuk membalas ulasan ke Web Service
-        btn_kirim.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(dialog_txt_ulasan.getText().toString().equals("")){
-                    Toast.makeText(activity, "Isi ulasan terlebih dahulu", Toast.LENGTH_SHORT).show();
-                }
-                else{
-                    String id_user = FirebaseAuth.getInstance().getUid();
-                    if(id_user == null){
-                        Toast.makeText(activity, "Login terlebih dahulu untuk mengulas barang", Toast.LENGTH_SHORT).show();
-                        return;
+            //Mengirim request untuk membalas ulasan ke Web Service
+            btn_kirim.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(dialog_txt_ulasan.getText().toString().equals("")){
+                        Toast.makeText(activity, "Isi ulasan terlebih dahulu", Toast.LENGTH_SHORT).show();
                     }
+                    else{
+                        String id_user = FirebaseAuth.getInstance().getUid();
+                        JSONBuilder body = new JSONBuilder();
+                        body.add("id", id_ulasan);
+                        body.add("id_barang", id);
+                        body.add("rating", 0);
+                        body.add("deskripsi", dialog_txt_ulasan.getText().toString());
 
-                    try{
-                        JSONObject body = new JSONObject();
-                        body.put("id", id_ulasan);
-                        body.put("id_barang", id);
-                        body.put("rating", 0);
-                        body.put("deskripsi", dialog_txt_ulasan.getText().toString());
-
-                        ApiVolleyManager.getInstance().addRequest(activity, Constant.URL_TAMBAH_ULASAN, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(id_user), body, new ApiVolleyManager.RequestCallback() {
+                        ApiVolleyManager.getInstance().addRequest(activity, Constant.URL_TAMBAH_ULASAN, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(id_user), body.create(), new AppRequestCallback(new AppRequestCallback.RequestListener() {
                             @Override
-                            public void onSuccess(String result) {
-                                try{
-                                    JSONObject jsonresult = new JSONObject(result);
-                                    int status = jsonresult.getJSONObject("metadata").getInt("status");
-                                    String message = jsonresult.getJSONObject("metadata").getString("message");
-
-                                    if(status == 200){
-                                        Toast.makeText(activity, "Ulasan berhasil ditambahkan", Toast.LENGTH_SHORT).show();
-                                        initUlasan(last_loaded);
-                                        dialogBalas.dismiss();
-                                    }
-                                    else{
-                                        Toast.makeText(activity, message, Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-                                catch (JSONException e){
-                                    Toast.makeText(activity, R.string.error_json, Toast.LENGTH_SHORT).show();
-                                    Log.e("Review", e.toString());
-                                }
+                            public void onSuccess(String response) {
+                                Toast.makeText(activity, "Ulasan berhasil ditambahkan", Toast.LENGTH_SHORT).show();
+                                initUlasan(last_loaded);
+                                dialogBalas.dismiss();
                             }
 
                             @Override
-                            public void onError(String result) {
-                                Toast.makeText(activity, R.string.error_database, Toast.LENGTH_SHORT).show();
-                                Log.e("Review", result);
+                            public void onFail(String message) {
+                                Toast.makeText(activity, message, Toast.LENGTH_SHORT).show();
                             }
-                        });
-                    }
-                    catch (JSONException e){
-                        Toast.makeText(activity, R.string.error_json, Toast.LENGTH_SHORT).show();
-                        Log.e("Review", e.toString());
+                        }));
                     }
                 }
-            }
-        });
+            });
 
-        dialogBalas.show();
+            dialogBalas.show();
+        }
     }
 }

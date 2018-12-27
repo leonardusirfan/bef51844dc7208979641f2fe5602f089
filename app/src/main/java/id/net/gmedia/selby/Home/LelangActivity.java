@@ -31,8 +31,10 @@ import id.net.gmedia.selby.Model.LelangModel;
 import id.net.gmedia.selby.Model.ObjectModel;
 import id.net.gmedia.selby.R;
 import id.net.gmedia.selby.Util.ApiVolleyManager;
+import id.net.gmedia.selby.Util.AppRequestCallback;
 import id.net.gmedia.selby.Util.Constant;
 import id.net.gmedia.selby.Util.Converter;
+import id.net.gmedia.selby.Util.JSONBuilder;
 
 public class LelangActivity extends AppCompatActivity {
 
@@ -133,171 +135,115 @@ public class LelangActivity extends AppCompatActivity {
     }
 
     private void initKategori(){
-        try{
-            JSONObject body = new JSONObject();
-            body.put("start", 0);
-            body.put("count", "");
+        JSONBuilder body = new JSONBuilder();
+        body.add("start", 0);
+        body.add("count", "");
 
-            ApiVolleyManager.getInstance().addRequest(this, Constant.URL_KATEGORI_BARANG, ApiVolleyManager.METHOD_POST, Constant.HEADER_AUTH, body, new ApiVolleyManager.RequestCallback() {
-                @Override
-                public void onSuccess(String result) {
-                    try{
-                        JSONObject jsonresult = new JSONObject(result);
-                        int status = jsonresult.getJSONObject("metadata").getInt("status");
-                        String message = jsonresult.getJSONObject("metadata").getString("message");
-
-                        if(status == 200){
-                            listKategori.add(new ObjectModel("", "Semua Kategori"));
-                            JSONArray arraykategori = jsonresult.getJSONArray("response");
-                            for(int i = 0; i < arraykategori.length(); i++){
-                                listKategori.add(new ObjectModel(arraykategori.getJSONObject(i).getString("id"),
-                                        arraykategori.getJSONObject(i).getString("category")));
-                            }
-                            kategoriAdapter.notifyDataSetChanged();
-                        }
-                        else{
-                            Toast.makeText(LelangActivity.this, message, Toast.LENGTH_SHORT).show();
-                        }
+        ApiVolleyManager.getInstance().addRequest(this, Constant.URL_KATEGORI_BARANG, ApiVolleyManager.METHOD_POST, Constant.HEADER_AUTH, body.create(), new AppRequestCallback(new AppRequestCallback.RequestListener() {
+            @Override
+            public void onSuccess(String result) {
+                try{
+                    listKategori.add(new ObjectModel("", "Semua Kategori"));
+                    JSONArray arraykategori = new JSONArray(result);
+                    for(int i = 0; i < arraykategori.length(); i++){
+                        listKategori.add(new ObjectModel(arraykategori.getJSONObject(i).getString("id"),
+                                arraykategori.getJSONObject(i).getString("category")));
                     }
-                    catch (JSONException e){
-                        Toast.makeText(LelangActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
-                        Log.e("Kategori", e.getMessage());
-                    }
+                    kategoriAdapter.notifyDataSetChanged();
                 }
+                catch (JSONException e){
+                    Toast.makeText(LelangActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
+                    Log.e("Kategori", e.getMessage());
+                }
+            }
 
-                @Override
-                public void onError(String result) {
-                    Toast.makeText(LelangActivity.this, R.string.error_database, Toast.LENGTH_SHORT).show();
-                    Log.e("Kategori", result);
-                }
-            });
-        }
-        catch (JSONException e){
-            Toast.makeText(LelangActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
-            Log.e("Kategori", e.getMessage());
-        }
+            @Override
+            public void onFail(String message) {
+                Toast.makeText(LelangActivity.this, message, Toast.LENGTH_SHORT).show();
+            }
+        }));
     }
 
     private void initLelang(int load, String keyword){
         rv_barang.setVisibility(View.INVISIBLE);
         pb_lelang.setVisibility(View.VISIBLE);
+
         //Inisialisasi barang lelang artis dari Web Service
-        try{
-            JSONObject body = new JSONObject();
-            body.put("id_penjual", "");
-            body.put("keyword", keyword);
-            body.put("kategori", kategori);
-            body.put("start", 0);
-            body.put("count", load);
+        JSONBuilder body = new JSONBuilder();
+        body.add("id_penjual", "");
+        body.add("keyword", keyword);
+        body.add("kategori", kategori);
+        body.add("start", 0);
+        body.add("count", load);
 
-            ApiVolleyManager.getInstance().addRequest(this, Constant.URL_LELANG, ApiVolleyManager.METHOD_POST, Constant.HEADER_AUTH, body, new ApiVolleyManager.RequestCallback() {
-                @Override
-                public void onSuccess(String result) {
-                    try{
-                        JSONObject jsonnresult = new JSONObject(result);
-                        int status = jsonnresult.getJSONObject("metadata").getInt("status");
-                        String message = jsonnresult.getJSONObject("metadata").getString("message");
-
-                        if(status == 200 || status == 404){
-                            listLelang.clear();
-                            JSONArray response = jsonnresult.getJSONArray("response");
-                            for(int i = 0; i < response.length(); i++){
-                                JSONObject lelang = response.getJSONObject(i);
-                                listLelang.add(new LelangModel(lelang.getString("id"), lelang.getString("nama"), lelang.getString("image"), lelang.getDouble("bid_akhir"), lelang.getDouble("bid_awal"), new ArtisModel(lelang.getString("penjual"), lelang.getString("foto"), (float)lelang.getDouble("rating")), Converter.stringDTTToDate(lelang.getString("end"))));
-                                last_loaded += 1;
-                            }
-
-                            lelangAdapter.notifyDataSetChanged();
-                        }
-                        else{
-                            Toast.makeText(LelangActivity.this, message, Toast.LENGTH_SHORT).show();
-                        }
-
-                        rv_barang.setVisibility(View.VISIBLE);
-                        pb_lelang.setVisibility(View.INVISIBLE);
+        ApiVolleyManager.getInstance().addRequest(this, Constant.URL_LELANG, ApiVolleyManager.METHOD_POST, Constant.HEADER_AUTH, body.create(), new AppRequestCallback(new AppRequestCallback.RequestListener() {
+            @Override
+            public void onSuccess(String result) {
+                try{
+                    listLelang.clear();
+                    JSONArray response = new JSONArray(result);
+                    for(int i = 0; i < response.length(); i++){
+                        JSONObject lelang = response.getJSONObject(i);
+                        listLelang.add(new LelangModel(lelang.getString("id"), lelang.getString("nama"), lelang.getString("image"), lelang.getDouble("bid_akhir"), lelang.getDouble("bid_awal"), new ArtisModel(lelang.getString("penjual"), lelang.getString("foto"), (float)lelang.getDouble("rating")), Converter.stringDTTToDate(lelang.getString("end"))));
+                        last_loaded += 1;
                     }
-                    catch (JSONException e){
-                        Toast.makeText(LelangActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
-                        Log.e("Barang Artis", e.toString());
 
-                        rv_barang.setVisibility(View.VISIBLE);
-                        pb_lelang.setVisibility(View.INVISIBLE);
-                    }
+                    lelangAdapter.notifyDataSetChanged();
                 }
-
-                @Override
-                public void onError(String result) {
-                    Toast.makeText(LelangActivity.this, R.string.error_database, Toast.LENGTH_SHORT).show();
-                    Log.e("Barang Artis", result);
-
+                catch (JSONException e){
+                    Toast.makeText(LelangActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
+                    Log.e("Barang Artis", e.toString());
+                }
+                finally {
                     rv_barang.setVisibility(View.VISIBLE);
                     pb_lelang.setVisibility(View.INVISIBLE);
                 }
-            });
-        }
-        catch (JSONException e){
-            Toast.makeText(LelangActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
-            Log.e("Barang Artis", e.toString());
+            }
 
-            rv_barang.setVisibility(View.VISIBLE);
-            pb_lelang.setVisibility(View.INVISIBLE);
-        }
+            @Override
+            public void onFail(String message) {
+                Toast.makeText(LelangActivity.this, message, Toast.LENGTH_SHORT).show();
+                rv_barang.setVisibility(View.VISIBLE);
+                pb_lelang.setVisibility(View.INVISIBLE);
+            }
+        }));
     }
 
     private void loadLelang(){
         //Inisialisasi barang lelang artis dari Web Service
-        try{
-            JSONObject body = new JSONObject();
-            body.put("id_penjual", "");
-            body.put("keyword", txt_search.getText().toString());
-            body.put("kategori", kategori);
-            body.put("start", last_loaded);
-            body.put("count", LOAD_COUNT);
+        JSONBuilder body = new JSONBuilder();
+        body.add("id_penjual", "");
+        body.add("keyword", txt_search.getText().toString());
+        body.add("kategori", kategori);
+        body.add("start", last_loaded);
+        body.add("count", LOAD_COUNT);
 
-            ApiVolleyManager.getInstance().addRequest(this, Constant.URL_LELANG, ApiVolleyManager.METHOD_POST, Constant.HEADER_AUTH, body, new ApiVolleyManager.RequestCallback() {
-                @Override
-                public void onSuccess(String result) {
-                    try{
-                        JSONObject jsonnresult = new JSONObject(result);
-                        int status = jsonnresult.getJSONObject("metadata").getInt("status");
-                        String message = jsonnresult.getJSONObject("metadata").getString("message");
-
-                        if(status == 200 || status == 404){
-                            JSONArray response = jsonnresult.getJSONArray("response");
-                            for(int i = 0; i < response.length(); i++){
-                                JSONObject lelang = response.getJSONObject(i);
-                                listLelang.add(new LelangModel(lelang.getString("id"), lelang.getString("nama"), lelang.getString("image"), lelang.getDouble("bid_awal"), lelang.getDouble("bid_awal"), new ArtisModel(lelang.getString("penjual"), lelang.getString("foto"), (float)lelang.getDouble("rating")), Converter.stringDTTToDate(lelang.getString("end"))));
-                                last_loaded += 1;
-                            }
-
-                            lelangAdapter.notifyDataSetChanged();
-                        }
-                        else{
-                            Toast.makeText(LelangActivity.this, message, Toast.LENGTH_SHORT).show();
-                        }
-
-                        loading = false;
+        ApiVolleyManager.getInstance().addRequest(this, Constant.URL_LELANG, ApiVolleyManager.METHOD_POST, Constant.HEADER_AUTH, body.create(), new AppRequestCallback(new AppRequestCallback.RequestListener() {
+            @Override
+            public void onSuccess(String result) {
+                try{
+                    JSONArray response = new JSONArray(result);
+                    for(int i = 0; i < response.length(); i++){
+                        JSONObject lelang = response.getJSONObject(i);
+                        listLelang.add(new LelangModel(lelang.getString("id"), lelang.getString("nama"), lelang.getString("image"), lelang.getDouble("bid_awal"), lelang.getDouble("bid_awal"), new ArtisModel(lelang.getString("penjual"), lelang.getString("foto"), (float)lelang.getDouble("rating")), Converter.stringDTTToDate(lelang.getString("end"))));
+                        last_loaded += 1;
                     }
-                    catch (JSONException e){
-                        Toast.makeText(LelangActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
-                        Log.e("Barang Artis", e.toString());
-                        loading = false;
-                    }
-                }
 
-                @Override
-                public void onError(String result) {
-                    Toast.makeText(LelangActivity.this, R.string.error_database, Toast.LENGTH_SHORT).show();
-                    Log.e("Barang Artis", result);
+                    lelangAdapter.notifyDataSetChanged();
                     loading = false;
                 }
-            });
-        }
-        catch (JSONException e){
-            Toast.makeText(LelangActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
-            Log.e("Barang Artis", e.toString());
-            loading = false;
-        }
+                catch (JSONException e){
+                    Toast.makeText(LelangActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
+                    Log.e("Barang Artis", e.toString());
+                    loading = false;
+                }
+            }
+
+            @Override
+            public void onFail(String message) {
+                Toast.makeText(LelangActivity.this, message, Toast.LENGTH_SHORT).show();
+            }
+        }));
     }
 
     @Override

@@ -33,7 +33,9 @@ import id.net.gmedia.selby.Model.BarangModel;
 import id.net.gmedia.selby.Model.ObjectModel;
 import id.net.gmedia.selby.R;
 import id.net.gmedia.selby.Util.ApiVolleyManager;
+import id.net.gmedia.selby.Util.AppRequestCallback;
 import id.net.gmedia.selby.Util.Constant;
+import id.net.gmedia.selby.Util.JSONBuilder;
 
 public class BarangActivity extends AppCompatActivity {
 
@@ -197,49 +199,33 @@ public class BarangActivity extends AppCompatActivity {
     }
 
     private void initKategori(){
-        try{
-            JSONObject body = new JSONObject();
-            body.put("start", 0);
-            body.put("count", "");
+        JSONBuilder body = new JSONBuilder();
+        body.add("start", 0);
+        body.add("count", "");
 
-            ApiVolleyManager.getInstance().addRequest(this, Constant.URL_KATEGORI_BARANG, ApiVolleyManager.METHOD_POST, Constant.HEADER_AUTH, body, new ApiVolleyManager.RequestCallback() {
-                @Override
-                public void onSuccess(String result) {
-                    try{
-                        JSONObject jsonresult = new JSONObject(result);
-                        int status = jsonresult.getJSONObject("metadata").getInt("status");
-                        String message = jsonresult.getJSONObject("metadata").getString("message");
-
-                        if(status == 200){
-                            listKategori.add(new ObjectModel("", "Semua Kategori"));
-                            JSONArray arraykategori = jsonresult.getJSONArray("response");
-                            for(int i = 0; i < arraykategori.length(); i++){
-                                listKategori.add(new ObjectModel(arraykategori.getJSONObject(i).getString("id"),
-                                        arraykategori.getJSONObject(i).getString("category")));
-                            }
-                            kategoriAdapter.notifyDataSetChanged();
-                        }
-                        else{
-                            Toast.makeText(BarangActivity.this, message, Toast.LENGTH_SHORT).show();
-                        }
+        ApiVolleyManager.getInstance().addRequest(this, Constant.URL_KATEGORI_BARANG, ApiVolleyManager.METHOD_POST, Constant.HEADER_AUTH, body.create(), new AppRequestCallback(new AppRequestCallback.RequestListener() {
+            @Override
+            public void onSuccess(String result) {
+                try{
+                    listKategori.add(new ObjectModel("", "Semua Kategori"));
+                    JSONArray arraykategori = new JSONArray(result);
+                    for(int i = 0; i < arraykategori.length(); i++){
+                        listKategori.add(new ObjectModel(arraykategori.getJSONObject(i).getString("id"),
+                                arraykategori.getJSONObject(i).getString("category")));
                     }
-                    catch (JSONException e){
-                        Toast.makeText(BarangActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
-                        Log.e("Kategori", e.getMessage());
-                    }
+                    kategoriAdapter.notifyDataSetChanged();
                 }
+                catch (JSONException e){
+                    Toast.makeText(BarangActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
+                    Log.e("Kategori", e.getMessage());
+                }
+            }
 
-                @Override
-                public void onError(String result) {
-                    Toast.makeText(BarangActivity.this, R.string.error_database, Toast.LENGTH_SHORT).show();
-                    Log.e("Kategori", result);
-                }
-            });
-        }
-        catch (JSONException e){
-            Toast.makeText(BarangActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
-            Log.e("Kategori", e.getMessage());
-        }
+            @Override
+            public void onFail(String message) {
+                Toast.makeText(BarangActivity.this, message, Toast.LENGTH_SHORT).show();
+            }
+        }));
     }
 
     private void initHotItem(String keyword){
@@ -248,119 +234,80 @@ public class BarangActivity extends AppCompatActivity {
         rv_barang.setVisibility(View.INVISIBLE);
         pb_barang.setVisibility(View.VISIBLE);
 
-        try{
-            JSONObject body = new JSONObject();
-            body.put("start", 0);
-            body.put("count", LOAD_COUNT);
-            body.put("keyword", keyword);
-            body.put("kategori", kategori);
+        JSONBuilder body = new JSONBuilder();
+        body.add("start", 0);
+        body.add("count", LOAD_COUNT);
+        body.add("keyword", keyword);
+        body.add("kategori", kategori);
 
-            ApiVolleyManager.getInstance().addRequest(BarangActivity.this, Constant.URL_HOT_ITEM, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body, new ApiVolleyManager.RequestCallback() {
-                @Override
-                public void onSuccess(String result) {
-                    try{
-                        listBarang.clear();
-                        JSONObject jsonnresult = new JSONObject(result);
-                        int status = jsonnresult.getJSONObject("metadata").getInt("status");
-                        String message = jsonnresult.getJSONObject("metadata").getString("message");
+        ApiVolleyManager.getInstance().addRequest(BarangActivity.this, Constant.URL_HOT_ITEM, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body.create(), new AppRequestCallback(new AppRequestCallback.RequestListener() {
+            @Override
+            public void onSuccess(String result) {
+                try{
+                    listBarang.clear();
 
-                        if(status == 200 || status == 404){
-                            JSONArray response = jsonnresult.getJSONArray("response");
-                            for(int i = 0; i < response.length(); i++){
-                                JSONObject barang = response.getJSONObject(i);
-                                listBarang.add(new BarangModel(barang.getString("id_barang"), barang.getString("nama"),barang.getString("image"), barang.getDouble("harga"), barang.getString("jenis"), new ArtisModel(barang.getString("penjual"), barang.getString("foto_penjual"), (float)barang.getDouble("rating"))));
-                                last_loaded += 1;
-                            }
-
-                            barangAdapter.notifyDataSetChanged();
-                        }
-                        else{
-                            Toast.makeText(BarangActivity.this, message, Toast.LENGTH_SHORT).show();
-                        }
-
-                        rv_barang.setVisibility(View.VISIBLE);
-                        pb_barang.setVisibility(View.INVISIBLE);
+                    JSONArray response = new JSONArray(result);
+                    for(int i = 0; i < response.length(); i++){
+                        JSONObject barang = response.getJSONObject(i);
+                        listBarang.add(new BarangModel(barang.getString("id_barang"), barang.getString("nama"),barang.getString("image"), barang.getDouble("harga"), barang.getString("jenis"), new ArtisModel(barang.getString("penjual"), barang.getString("foto_penjual"), (float)barang.getDouble("rating"))));
+                        last_loaded += 1;
                     }
-                    catch (JSONException e){
-                        Toast.makeText(BarangActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
-                        Log.e("Barang Artis", e.toString());
 
-                        rv_barang.setVisibility(View.VISIBLE);
-                        pb_barang.setVisibility(View.INVISIBLE);
-                    }
+                    barangAdapter.notifyDataSetChanged();
                 }
-
-                @Override
-                public void onError(String result) {
-                    Toast.makeText(BarangActivity.this, R.string.error_database, Toast.LENGTH_SHORT).show();
-                    Log.e("Barang Artis", result);
-
+                catch (JSONException e){
+                    Toast.makeText(BarangActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
+                    Log.e("Barang Artis", e.toString());
+                }
+                finally {
                     rv_barang.setVisibility(View.VISIBLE);
                     pb_barang.setVisibility(View.INVISIBLE);
                 }
-            });
-        }
-        catch (JSONException e){
-            Toast.makeText(BarangActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
-            Log.e("Barang Artis", e.toString());
+            }
 
-            rv_barang.setVisibility(View.VISIBLE);
-            pb_barang.setVisibility(View.INVISIBLE);
-        }
+            @Override
+            public void onFail(String message) {
+                Toast.makeText(BarangActivity.this, message, Toast.LENGTH_SHORT).show();
+                rv_barang.setVisibility(View.VISIBLE);
+                pb_barang.setVisibility(View.INVISIBLE);
+            }
+        }));
     }
 
     private void loadHotItem(){
-        try{
-            JSONObject body = new JSONObject();
-            body.put("start", last_loaded);
-            body.put("count", LOAD_COUNT);
-            body.put("keyword", txt_search.getText().toString());
-            body.put("kategori", kategori);
+        JSONBuilder body = new JSONBuilder();
+        body.add("start", last_loaded);
+        body.add("count", LOAD_COUNT);
+        body.add("keyword", txt_search.getText().toString());
+        body.add("kategori", kategori);
 
-            ApiVolleyManager.getInstance().addRequest(BarangActivity.this, Constant.URL_HOT_ITEM, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body, new ApiVolleyManager.RequestCallback() {
-                @Override
-                public void onSuccess(String result) {
-                    try{
-                        JSONObject jsonnresult = new JSONObject(result);
-                        int status = jsonnresult.getJSONObject("metadata").getInt("status");
-                        String message = jsonnresult.getJSONObject("metadata").getString("message");
-
-                        if(status == 200 || status == 404){
-                            JSONArray response = jsonnresult.getJSONArray("response");
-                            for(int i = 0; i < response.length(); i++){
-                                JSONObject barang = response.getJSONObject(i);
-                                listBarang.add(new BarangModel(barang.getString("id_barang"), barang.getString("nama"),barang.getString("image"), barang.getDouble("harga"), barang.getString("jenis"), new ArtisModel(barang.getString("penjual"), barang.getString("foto_penjual"), (float)barang.getDouble("rating"))));
-                                last_loaded += 1;
-                            }
-
-                            barangAdapter.notifyDataSetChanged();
-                        }
-                        else{
-                            Toast.makeText(BarangActivity.this, message, Toast.LENGTH_SHORT).show();
-                        }
-
-                        loading = false;
+        ApiVolleyManager.getInstance().addRequest(BarangActivity.this, Constant.URL_HOT_ITEM, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body.create(), new AppRequestCallback(new AppRequestCallback.RequestListener() {
+            @Override
+            public void onSuccess(String result) {
+                try{
+                    JSONArray response = new JSONArray(result);
+                    for(int i = 0; i < response.length(); i++){
+                        JSONObject barang = response.getJSONObject(i);
+                        listBarang.add(new BarangModel(barang.getString("id_barang"), barang.getString("nama"),barang.getString("image"), barang.getDouble("harga"), barang.getString("jenis"), new ArtisModel(barang.getString("penjual"), barang.getString("foto_penjual"), (float)barang.getDouble("rating"))));
+                        last_loaded += 1;
                     }
-                    catch (JSONException e){
-                        Toast.makeText(BarangActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
-                        Log.e("Barang Artis", e.toString());
-                        loading = false;
-                    }
-                }
 
-                @Override
-                public void onError(String result) {
-                    Toast.makeText(BarangActivity.this, R.string.error_database, Toast.LENGTH_SHORT).show();
-                    Log.e("Barang Artis", result);
+                    barangAdapter.notifyDataSetChanged();
                     loading = false;
                 }
-            });
-        }
-        catch (JSONException e){
-            Toast.makeText(BarangActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
-            Log.e("Barang Artis", e.toString());
-            loading = false;
-        }
+                catch (JSONException e){
+                    Toast.makeText(BarangActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
+                    Log.e("Barang Artis", e.toString());
+                    loading = false;
+                }
+            }
+
+            @Override
+            public void onFail(String message) {
+                Toast.makeText(BarangActivity.this, message, Toast.LENGTH_SHORT).show();
+                loading = false;
+            }
+        }));
     }
 
     private void initPreloved(String keyword){
@@ -369,135 +316,98 @@ public class BarangActivity extends AppCompatActivity {
         rv_barang.setVisibility(View.INVISIBLE);
         pb_barang.setVisibility(View.VISIBLE);
 
-        try{
-            JSONObject body = new JSONObject();
-            body.put("start", 0);
-            body.put("count", LOAD_COUNT);
-            body.put("keyword", keyword);
-            body.put("brand", "");
-            body.put("kategori", kategori);
-            body.put("penjual", "");
-            body.put("jenis", "1");
+        JSONBuilder body = new JSONBuilder();
+        body.add("start", 0);
+        body.add("count", LOAD_COUNT);
+        body.add("keyword", keyword);
+        body.add("brand", "");
+        body.add("kategori", kategori);
+        body.add("penjual", "");
+        body.add("jenis", "1");
 
-            ApiVolleyManager.getInstance().addRequest(BarangActivity.this, Constant.URL_BARANG_ARTIS, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body, new ApiVolleyManager.RequestCallback() {
-                @Override
-                public void onSuccess(String result) {
-                    try{
-                        listBarang.clear();
-                        JSONObject jsonnresult = new JSONObject(result);
-                        int status = jsonnresult.getJSONObject("metadata").getInt("status");
-                        String message = jsonnresult.getJSONObject("metadata").getString("message");
+        ApiVolleyManager.getInstance().addRequest(BarangActivity.this, Constant.URL_BARANG_ARTIS, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body.create(), new AppRequestCallback(new AppRequestCallback.RequestListener() {
+            @Override
+            public void onSuccess(String result) {
+                try{
+                    listBarang.clear();
 
-                        if(status == 200 || status == 404){
-                            JSONArray response = jsonnresult.getJSONArray("response");
-                            for(int i = 0; i < response.length(); i++){
-                                JSONObject barang = response.getJSONObject(i);
-                                boolean isfavorit = false;
-                                if(barang.getString("is_favorit").equals("1")){
-                                    isfavorit = true;
-                                }
-
-                                listBarang.add(new BarangModel(barang.getString("id_barang"), barang.getString("nama"),barang.getString("image"), barang.getDouble("harga"), isfavorit, new ArtisModel(barang.getString("penjual"), barang.getString("foto_penjual"), (float)barang.getDouble("rating"))));
-                                last_loaded += 1;
-                            }
-
-                            barangAdapter.notifyDataSetChanged();
-                        }
-                        else{
-                            Toast.makeText(BarangActivity.this, message, Toast.LENGTH_SHORT).show();
+                    JSONArray response = new JSONArray(result);
+                    for(int i = 0; i < response.length(); i++){
+                        JSONObject barang = response.getJSONObject(i);
+                        boolean isfavorit = false;
+                        if(barang.getString("is_favorit").equals("1")){
+                            isfavorit = true;
                         }
 
-                        rv_barang.setVisibility(View.VISIBLE);
-                        pb_barang.setVisibility(View.INVISIBLE);
+                        listBarang.add(new BarangModel(barang.getString("id_barang"), barang.getString("nama"),barang.getString("image"), barang.getDouble("harga"), isfavorit, new ArtisModel(barang.getString("penjual"), barang.getString("foto_penjual"), (float)barang.getDouble("rating"))));
+                        last_loaded += 1;
                     }
-                    catch (JSONException e){
-                        Toast.makeText(BarangActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
-                        Log.e("Barang Artis", e.toString());
 
-                        rv_barang.setVisibility(View.VISIBLE);
-                        pb_barang.setVisibility(View.INVISIBLE);
-                    }
-                }
-
-                @Override
-                public void onError(String result) {
-                    Toast.makeText(BarangActivity.this, R.string.error_database, Toast.LENGTH_SHORT).show();
-                    Log.e("Barang Artis", result);
+                    barangAdapter.notifyDataSetChanged();
 
                     rv_barang.setVisibility(View.VISIBLE);
                     pb_barang.setVisibility(View.INVISIBLE);
                 }
-            });
-        }
-        catch (JSONException e){
-            Toast.makeText(BarangActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
-            Log.e("Barang Artis", e.toString());
+                catch (JSONException e){
+                    Toast.makeText(BarangActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
+                    Log.e("Barang Artis", e.toString());
 
-            rv_barang.setVisibility(View.VISIBLE);
-            pb_barang.setVisibility(View.INVISIBLE);
-        }
+                    rv_barang.setVisibility(View.VISIBLE);
+                    pb_barang.setVisibility(View.INVISIBLE);
+                }
+            }
+
+            @Override
+            public void onFail(String message) {
+                Toast.makeText(BarangActivity.this, message, Toast.LENGTH_SHORT).show();
+                rv_barang.setVisibility(View.VISIBLE);
+                pb_barang.setVisibility(View.INVISIBLE);
+            }
+        }));
     }
 
     private void loadPreloved(){
-        try{
-            JSONObject body = new JSONObject();
-            body.put("start", last_loaded);
-            body.put("count", LOAD_COUNT);
-            body.put("keyword", txt_search.getText().toString());
-            body.put("brand", "");
-            body.put("kategori", kategori);
-            body.put("penjual", "");
-            body.put("jenis", "1");
+        JSONBuilder body = new JSONBuilder();
+        body.add("start", last_loaded);
+        body.add("count", LOAD_COUNT);
+        body.add("keyword", txt_search.getText().toString());
+        body.add("brand", "");
+        body.add("kategori", kategori);
+        body.add("penjual", "");
+        body.add("jenis", "1");
 
-            ApiVolleyManager.getInstance().addRequest(BarangActivity.this, Constant.URL_BARANG_ARTIS, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body, new ApiVolleyManager.RequestCallback() {
-                @Override
-                public void onSuccess(String result) {
-                    try{
-                        JSONObject jsonnresult = new JSONObject(result);
-                        int status = jsonnresult.getJSONObject("metadata").getInt("status");
-                        String message = jsonnresult.getJSONObject("metadata").getString("message");
-
-                        if(status == 200 || status == 404){
-                            JSONArray response = jsonnresult.getJSONArray("response");
-                            for(int i = 0; i < response.length(); i++){
-                                JSONObject barang = response.getJSONObject(i);
-                                boolean isfavorit = false;
-                                if(barang.getString("is_favorit").equals("1")){
-                                    isfavorit = true;
-                                }
-
-                                listBarang.add(new BarangModel(barang.getString("id_barang"), barang.getString("nama"),barang.getString("image"), barang.getDouble("harga"), isfavorit, new ArtisModel(barang.getString("penjual"), barang.getString("foto_penjual"), (float)barang.getDouble("rating"))));
-                                last_loaded += 1;
-                            }
-
-                            barangAdapter.notifyDataSetChanged();
-                            loading = false;
+        ApiVolleyManager.getInstance().addRequest(BarangActivity.this, Constant.URL_BARANG_ARTIS, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body.create(), new AppRequestCallback(new AppRequestCallback.RequestListener() {
+            @Override
+            public void onSuccess(String result) {
+                try{
+                    JSONArray response = new JSONArray(result);
+                    for(int i = 0; i < response.length(); i++){
+                        JSONObject barang = response.getJSONObject(i);
+                        boolean isfavorit = false;
+                        if(barang.getString("is_favorit").equals("1")){
+                            isfavorit = true;
                         }
-                        else{
-                            Toast.makeText(BarangActivity.this, message, Toast.LENGTH_SHORT).show();
-                            loading = false;
-                        }
-                    }
-                    catch (JSONException e){
-                        Toast.makeText(BarangActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
-                        Log.e("Barang Artis", e.toString());
-                        loading = false;
-                    }
-                }
 
-                @Override
-                public void onError(String result) {
-                    Toast.makeText(BarangActivity.this, R.string.error_database, Toast.LENGTH_SHORT).show();
-                    Log.e("Barang Artis", result);
+                        listBarang.add(new BarangModel(barang.getString("id_barang"), barang.getString("nama"),barang.getString("image"), barang.getDouble("harga"), isfavorit, new ArtisModel(barang.getString("penjual"), barang.getString("foto_penjual"), (float)barang.getDouble("rating"))));
+                        last_loaded += 1;
+                    }
+
+                    barangAdapter.notifyDataSetChanged();
                     loading = false;
                 }
-            });
-        }
-        catch (JSONException e){
-            Toast.makeText(BarangActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
-            Log.e("Barang Artis", e.toString());
-            loading = false;
-        }
+                catch (JSONException e){
+                    Toast.makeText(BarangActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
+                    Log.e("Barang Artis", e.toString());
+                    loading = false;
+                }
+            }
+
+            @Override
+            public void onFail(String message) {
+                Toast.makeText(BarangActivity.this, message, Toast.LENGTH_SHORT).show();
+                loading = false;
+            }
+        }));
     }
 
     private void initMerchandise(String keyword){
@@ -506,138 +416,99 @@ public class BarangActivity extends AppCompatActivity {
         rv_barang.setVisibility(View.INVISIBLE);
         pb_barang.setVisibility(View.VISIBLE);
 
-        try{
-            JSONObject body = new JSONObject();
-            body.put("start", 0);
-            body.put("count", LOAD_COUNT);
-            body.put("keyword", keyword);
-            body.put("brand", "");
-            body.put("kategori", kategori);
-            body.put("penjual", "");
-            body.put("jenis", "2");
+        JSONBuilder body = new JSONBuilder();
+        body.add("start", 0);
+        body.add("count", LOAD_COUNT);
+        body.add("keyword", keyword);
+        body.add("brand", "");
+        body.add("kategori", kategori);
+        body.add("penjual", "");
+        body.add("jenis", "2");
 
-            ApiVolleyManager.getInstance().addRequest(BarangActivity.this, Constant.URL_BARANG_ARTIS, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body, new ApiVolleyManager.RequestCallback() {
-                @Override
-                public void onSuccess(String result) {
-                    try{
-                        listBarang.clear();
-                        JSONObject jsonnresult = new JSONObject(result);
-                        int status = jsonnresult.getJSONObject("metadata").getInt("status");
-                        String message = jsonnresult.getJSONObject("metadata").getString("message");
+        ApiVolleyManager.getInstance().addRequest(BarangActivity.this, Constant.URL_BARANG_ARTIS, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body.create(), new AppRequestCallback(new AppRequestCallback.RequestListener() {
+            @Override
+            public void onSuccess(String result) {
+                try{
+                    listBarang.clear();
 
-                        if(status == 200 || status == 404){
-                            JSONArray response = jsonnresult.getJSONArray("response");
-                            for(int i = 0; i < response.length(); i++){
-                                JSONObject barang = response.getJSONObject(i);
-                                boolean isfavorit = false;
-                                if(barang.getString("is_favorit").equals("1")){
-                                    isfavorit = true;
-                                }
-
-                                listBarang.add(new BarangModel(barang.getString("id_barang"), barang.getString("nama"),barang.getString("image"), barang.getDouble("harga"), isfavorit,new ArtisModel(barang.getString("penjual"), barang.getString("foto_penjual"), (float)barang.getDouble("rating"))));
-                                last_loaded += 1;
-                            }
-
-                            barangAdapter.notifyDataSetChanged();
-                        }
-                        else{
-                            Toast.makeText(BarangActivity.this, message, Toast.LENGTH_SHORT).show();
+                    JSONArray response = new JSONArray(result);
+                    for(int i = 0; i < response.length(); i++){
+                        JSONObject barang = response.getJSONObject(i);
+                        boolean isfavorit = false;
+                        if(barang.getString("is_favorit").equals("1")){
+                            isfavorit = true;
                         }
 
-                        rv_barang.setVisibility(View.VISIBLE);
-                        pb_barang.setVisibility(View.INVISIBLE);
+                        listBarang.add(new BarangModel(barang.getString("id_barang"), barang.getString("nama"),barang.getString("image"), barang.getDouble("harga"), isfavorit,new ArtisModel(barang.getString("penjual"), barang.getString("foto_penjual"), (float)barang.getDouble("rating"))));
+                        last_loaded += 1;
                     }
-                    catch (JSONException e){
-                        Toast.makeText(BarangActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
-                        Log.e("Barang Artis", e.toString());
 
-                        rv_barang.setVisibility(View.VISIBLE);
-                        pb_barang.setVisibility(View.INVISIBLE);
-                    }
-                }
-
-                @Override
-                public void onError(String result) {
-                    Toast.makeText(BarangActivity.this, R.string.error_database, Toast.LENGTH_SHORT).show();
-                    Log.e("Barang Artis", result);
+                    barangAdapter.notifyDataSetChanged();
 
                     rv_barang.setVisibility(View.VISIBLE);
                     pb_barang.setVisibility(View.INVISIBLE);
                 }
-            });
-        }
-        catch (JSONException e){
-            Toast.makeText(BarangActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
-            Log.e("Barang Artis", e.toString());
+                catch (JSONException e){
+                    Toast.makeText(BarangActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
+                    Log.e("Barang Artis", e.toString());
 
-            rv_barang.setVisibility(View.VISIBLE);
-            pb_barang.setVisibility(View.INVISIBLE);
-        }
+                    rv_barang.setVisibility(View.VISIBLE);
+                    pb_barang.setVisibility(View.INVISIBLE);
+                }
+            }
+
+            @Override
+            public void onFail(String message) {
+                Toast.makeText(BarangActivity.this, message, Toast.LENGTH_SHORT).show();
+                rv_barang.setVisibility(View.VISIBLE);
+                pb_barang.setVisibility(View.INVISIBLE);
+            }
+        }));
     }
 
     private void loadMerchandise(){
-        try{
-            JSONObject body = new JSONObject();
-            body.put("start", last_loaded);
-            body.put("count", LOAD_COUNT);
-            body.put("keyword", txt_search.getText().toString());
-            body.put("brand", "");
-            body.put("kategori", kategori);
-            body.put("penjual", "");
-            body.put("jenis", "2");
+        JSONBuilder body = new JSONBuilder();
+        body.add("start", last_loaded);
+        body.add("count", LOAD_COUNT);
+        body.add("keyword", txt_search.getText().toString());
+        body.add("brand", "");
+        body.add("kategori", kategori);
+        body.add("penjual", "");
+        body.add("jenis", "2");
 
-            ApiVolleyManager.getInstance().addRequest(BarangActivity.this, Constant.URL_BARANG_ARTIS, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body, new ApiVolleyManager.RequestCallback() {
-                @Override
-                public void onSuccess(String result) {
-                    try{
-                        JSONObject jsonnresult = new JSONObject(result);
-                        int status = jsonnresult.getJSONObject("metadata").getInt("status");
-                        String message = jsonnresult.getJSONObject("metadata").getString("message");
-
-                        if(status == 200 || status == 404){
-                            JSONArray response = jsonnresult.getJSONArray("response");
-                            for(int i = 0; i < response.length(); i++){
-                                JSONObject barang = response.getJSONObject(i);
-                                boolean isfavorit = false;
-                                if(barang.getString("is_favorit").equals("1")){
-                                    isfavorit = true;
-                                }
-
-                                listBarang.add(new BarangModel(barang.getString("id_barang"), barang.getString("nama"),barang.getString("image"), barang.getDouble("harga"), isfavorit));
-                                last_loaded += 1;
-                            }
-
-                            barangAdapter.notifyDataSetChanged();
-                            pb_barang.setVisibility(View.GONE);
+        ApiVolleyManager.getInstance().addRequest(BarangActivity.this, Constant.URL_BARANG_ARTIS, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body.create(), new AppRequestCallback(new AppRequestCallback.RequestListener() {
+            @Override
+            public void onSuccess(String result) {
+                try{
+                    JSONArray response = new JSONArray(result);
+                    for(int i = 0; i < response.length(); i++){
+                        JSONObject barang = response.getJSONObject(i);
+                        boolean isfavorit = false;
+                        if(barang.getString("is_favorit").equals("1")){
+                            isfavorit = true;
                         }
-                        else{
-                            Toast.makeText(BarangActivity.this, message, Toast.LENGTH_SHORT).show();
-                            pb_barang.setVisibility(View.GONE);
-                        }
-                    }
-                    catch (JSONException e){
-                        Toast.makeText(BarangActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
-                        Log.e("Barang Artis", e.toString());
 
-                        pb_barang.setVisibility(View.GONE);
+                        listBarang.add(new BarangModel(barang.getString("id_barang"), barang.getString("nama"),barang.getString("image"), barang.getDouble("harga"), isfavorit));
+                        last_loaded += 1;
                     }
+
+                    barangAdapter.notifyDataSetChanged();
+                    pb_barang.setVisibility(View.GONE);
                 }
-
-                @Override
-                public void onError(String result) {
-                    Toast.makeText(BarangActivity.this, R.string.error_database, Toast.LENGTH_SHORT).show();
-                    Log.e("Barang Artis", result);
+                catch (JSONException e){
+                    Toast.makeText(BarangActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
+                    Log.e("Barang Artis", e.toString());
 
                     pb_barang.setVisibility(View.GONE);
                 }
-            });
-        }
-        catch (JSONException e){
-            Toast.makeText(BarangActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
-            Log.e("Barang Artis", e.toString());
+            }
 
-            pb_barang.setVisibility(View.GONE);
-        }
+            @Override
+            public void onFail(String message) {
+                Toast.makeText(BarangActivity.this, message, Toast.LENGTH_SHORT).show();
+                pb_barang.setVisibility(View.GONE);
+            }
+        }));
     }
 
     @Override

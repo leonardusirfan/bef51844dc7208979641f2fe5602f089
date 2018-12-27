@@ -20,10 +20,10 @@ import com.daimajia.slider.library.SliderTypes.DefaultSliderView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import id.net.gmedia.selby.R;
 import id.net.gmedia.selby.Util.ApiVolleyManager;
+import id.net.gmedia.selby.Util.AppRequestCallback;
 import id.net.gmedia.selby.Util.Constant;
 
 /**
@@ -31,11 +31,12 @@ import id.net.gmedia.selby.Util.Constant;
  */
 public class FragmentHome extends Fragment {
 
+    //Variabel Fragment
     private boolean loaded = false;
-
     private Activity activity;
     private View v;
 
+    //Variabel slider
     private SliderLayout slider;
 
     public FragmentHome() {
@@ -51,7 +52,6 @@ public class FragmentHome extends Fragment {
             v = inflater.inflate(R.layout.fragment_home, container, false);
 
             slider = v.findViewById(R.id.slider);
-            initSlider();
 
             final RelativeLayout layout_search = v.findViewById(R.id.layout_search);
             layout_search.setOnClickListener(new View.OnClickListener() {
@@ -113,7 +113,9 @@ public class FragmentHome extends Fragment {
                 }
             });
         }
-        else if(!loaded){
+
+        //jika slider belum dimuat
+        if(!loaded){
             initSlider();
         }
 
@@ -127,44 +129,34 @@ public class FragmentHome extends Fragment {
     }
 
     private void initSlider(){
-        ApiVolleyManager.getInstance().addRequest(activity, Constant.URL_HOME_SLIDE, ApiVolleyManager.METHOD_GET, Constant.HEADER_AUTH, new ApiVolleyManager.RequestCallback() {
+        //Inisialisasi slider
+        ApiVolleyManager.getInstance().addRequest(activity, Constant.URL_HOME_SLIDE, ApiVolleyManager.METHOD_GET, Constant.HEADER_AUTH, new AppRequestCallback(new AppRequestCallback.RequestListener() {
             @Override
-            public void onSuccess(String result) {
+            public void onSuccess(String response) {
                 try{
-                    JSONObject jsonresult = new JSONObject(result);
-                    int status = jsonresult.getJSONObject("metadata").getInt("status");
-                    String message = jsonresult.getJSONObject("metadata").getString("message");
-
-                    if(status == 200){
-                        JSONArray arrayslider = jsonresult.getJSONArray("response");
-                        for(int i = 0; i < arrayslider.length(); i++){
-                            //Inisialisasi slider
-                            DefaultSliderView sliderView = new DefaultSliderView(activity);
-                            sliderView.image(arrayslider.getJSONObject(i).getString("image")).setScaleType(BaseSliderView.ScaleType.CenterCrop);
-                            slider.addSlider(sliderView);
-                        }
-                        slider.movePrevPosition(false);
-                        slider.setDuration(3000);
-                        slider.setCustomIndicator((PagerIndicator) v.findViewById(R.id.indicator));
-                        loaded = true;
+                    JSONArray arrayslider = new JSONArray(response);
+                    for(int i = 0; i < arrayslider.length(); i++){
+                        //Inisialisasi slider
+                        DefaultSliderView sliderView = new DefaultSliderView(activity);
+                        sliderView.image(arrayslider.getJSONObject(i).getString("image")).setScaleType(BaseSliderView.ScaleType.CenterCrop);
+                        slider.addSlider(sliderView);
                     }
-                    else{
-                        Toast.makeText(activity, message, Toast.LENGTH_SHORT).show();
-                    }
+                    slider.movePrevPosition(false);
+                    slider.setDuration(3000);
+                    slider.setCustomIndicator((PagerIndicator) v.findViewById(R.id.indicator));
+                    loaded = true;
                 }
                 catch (JSONException e){
-                    Toast.makeText(activity, R.string.error_json, Toast.LENGTH_SHORT).show();
                     Log.e("Slider", e.getMessage());
+                    Toast.makeText(activity, R.string.error_json, Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
-            public void onError(String result) {
-                Toast.makeText(activity, R.string.error_database, Toast.LENGTH_SHORT).show();
-                Log.e("Slider", result);
+            public void onFail(String message) {
+                Toast.makeText(activity, message, Toast.LENGTH_SHORT).show();
             }
-        });
-
+        }));
     }
 
     @Override

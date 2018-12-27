@@ -33,14 +33,15 @@
     <string name="menit">"Menit"</string>
     <string name="detik">"Detik"</string>
 
-    <string name="error_database">Terjadi Kesalahan</string>
-    <string name="error_json">Kesalahan Parsing JSON</string>
+    <string name="error_database">Terjadi kesalahan koneksi</string>
+    <string name="error_json">Kesalahan parsing JSON</string>
 
     <string name="artis_lihat_kegiatan">"Lihat Kegiatan"</string>
     <string name="artis_lihat_produk">"Lihat Produk"</string>
     <string name="artis_lelang_hari_ini">"Lelang Hari Ini"</string>
 
     <string name="kosong">"Kosong"</string>
+    <string name="kosong_favorit">"Favorit anda masih kosong"</string>
     <string name="kosong_keranjang">"Keranjang anda masih kosong"</string>
     <string name="kosong_artis_barang">"Barang Jual Kosong"</string>
     <string name="kosong_artis_galeri">"Foto artis kosong"</string>

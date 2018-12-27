@@ -25,7 +25,9 @@ import id.net.gmedia.selby.Barang.Adapter.BidAdapter;
 import id.net.gmedia.selby.Model.BidModel;
 import id.net.gmedia.selby.R;
 import id.net.gmedia.selby.Util.ApiVolleyManager;
+import id.net.gmedia.selby.Util.AppRequestCallback;
 import id.net.gmedia.selby.Util.Constant;
+import id.net.gmedia.selby.Util.JSONBuilder;
 
 public class ActivityBidList extends AppCompatActivity {
     /*
@@ -128,55 +130,39 @@ public class ActivityBidList extends AppCompatActivity {
     }
 
     private void initBid(){
-        try{
-            JSONObject body = new JSONObject();
-            body.put("id", id_lelang);
-            body.put("start", 0);
-            body.put("count", 0);
+        JSONBuilder body = new JSONBuilder();
+        body.add("id", id_lelang);
+        body.add("start", 0);
+        body.add("count", 0);
 
-            ApiVolleyManager.getInstance().addRequest(this, Constant.URL_LIST_BID, ApiVolleyManager.METHOD_POST, Constant.HEADER_AUTH, body, new ApiVolleyManager.RequestCallback() {
-                @Override
-                public void onSuccess(String result) {
-                    try{
-                        System.out.println(result);
-                        JSONObject jsonresult = new JSONObject(result);
-                        int status = jsonresult.getJSONObject("metadata").getInt("status");
-                        String message = jsonresult.getJSONObject("metadata").getString("message");
+        ApiVolleyManager.getInstance().addRequest(this, Constant.URL_LIST_BID, ApiVolleyManager.METHOD_POST, Constant.HEADER_AUTH, body.create(), new AppRequestCallback(new AppRequestCallback.RequestListener() {
+            @Override
+            public void onSuccess(String response) {
+                try{
+                    JSONObject jsonresult = new JSONObject(response);
+                    ArrayList<BidModel> allBid = new ArrayList<>();
+                    total = jsonresult.getInt("total_records");
+                    //txt_jumlah_bid.setText(String.valueOf(total));
+                    JSONArray arraybid = jsonresult.getJSONArray("bid");
 
-                        if(status == 200){
-                            ArrayList<BidModel> allBid = new ArrayList<>();
-                            total = jsonresult.getJSONObject("response").getInt("total_records");
-                            //txt_jumlah_bid.setText(String.valueOf(total));
-                            JSONArray arraybid = jsonresult.getJSONObject("response").getJSONArray("bid");
-
-                            for(int i = 0; i < arraybid.length(); i++){
-                                JSONObject jsonlelang = arraybid.getJSONObject(i);
-                                allBid.add(new BidModel(jsonlelang.getString("profile_name"), jsonlelang.getDouble("nominal")));
-                            }
-
-                            initList(allBid);
-                        }
-                        else if(status != 404){
-                            Toast.makeText(ActivityBidList.this, message, Toast.LENGTH_SHORT).show();
-                        }
+                    for(int i = 0; i < arraybid.length(); i++){
+                        JSONObject jsonlelang = arraybid.getJSONObject(i);
+                        allBid.add(new BidModel(jsonlelang.getString("profile_name"), jsonlelang.getDouble("nominal")));
                     }
-                    catch (JSONException e){
-                        Toast.makeText(ActivityBidList.this, R.string.error_json, Toast.LENGTH_SHORT).show();
-                        Log.e("ListBid", e.getMessage());
-                    }
-                }
 
-                @Override
-                public void onError(String result) {
-                    Toast.makeText(ActivityBidList.this, R.string.error_database, Toast.LENGTH_SHORT).show();
-                    Log.e("ListBid", result);
+                    initList(allBid);
                 }
-            });
-        }
-        catch (JSONException e){
-            Toast.makeText(this, R.string.error_json, Toast.LENGTH_SHORT).show();
-            Log.e("ListBid", e.getMessage());
-        }
+                catch (JSONException e){
+                    Toast.makeText(ActivityBidList.this, R.string.error_json, Toast.LENGTH_SHORT).show();
+                    Log.e("ListBid", e.getMessage());
+                }
+            }
+
+            @Override
+            public void onFail(String message) {
+                Toast.makeText(ActivityBidList.this, message, Toast.LENGTH_SHORT).show();
+            }
+        }));
     }
 
     private void initList(ArrayList<BidModel> allBid){

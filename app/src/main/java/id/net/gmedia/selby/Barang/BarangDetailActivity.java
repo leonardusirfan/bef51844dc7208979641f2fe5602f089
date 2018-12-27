@@ -39,6 +39,7 @@ import id.net.gmedia.selby.Barang.Fragment.FragmentDetailBarang;
 import id.net.gmedia.selby.Barang.Fragment.FragmentDiskusiBarang;
 import id.net.gmedia.selby.Barang.Fragment.FragmentUlasan;
 import id.net.gmedia.selby.Home.HomeActivity;
+import id.net.gmedia.selby.Util.AppRequestCallback;
 import id.net.gmedia.selby.Util.AppSharedPreferences;
 import id.net.gmedia.selby.Util.Constant;
 import id.net.gmedia.selby.LoginActivity;
@@ -49,6 +50,7 @@ import id.net.gmedia.selby.Util.DialogFactory;
 import id.net.gmedia.selby.Util.ImageContainer;
 import id.net.gmedia.selby.Util.ImageSliderAdapter;
 import id.net.gmedia.selby.Util.ImageSliderViewPager;
+import id.net.gmedia.selby.Util.JSONBuilder;
 import me.relex.circleindicator.CircleIndicator;
 import rjsv.floatingmenu.floatingmenubutton.FloatingMenuButton;
 
@@ -134,7 +136,12 @@ public class BarangDetailActivity extends AppCompatActivity {
         findViewById(R.id.btn_keranjang).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                tambahKeranjang();
+                if(AppSharedPreferences.isLoggedIn(BarangDetailActivity.this)){
+                    tambahKeranjang();
+                }
+                else{
+                    startActivity(new Intent(BarangDetailActivity.this, LoginActivity.class));
+                }
             }
         });
 
@@ -191,51 +198,29 @@ public class BarangDetailActivity extends AppCompatActivity {
     private void followPenjual(){
         //Mengubah status follow/unfollow terhadap penjual
         if(!id_penjual.equals("")){
-            try{
-                JSONObject body = new JSONObject();
-                body.put("id_penjual", id_penjual);
+            JSONBuilder body = new JSONBuilder();
+            body.add("id_penjual", id_penjual);
 
-                ApiVolleyManager.getInstance().addRequest(this, Constant.URL_FOLLOW_PENJUAL, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body, new ApiVolleyManager.RequestCallback() {
-                    @Override
-                    public void onSuccess(String result) {
-                        try{
-                            JSONObject jsonresult = new JSONObject(result);
-                            int status = jsonresult.getJSONObject("metadata").getInt("status");
-                            String message = jsonresult.getJSONObject("metadata").getString("message");
-
-                            if(status == 200){
-                                if(follow){
-                                    Toast.makeText(BarangDetailActivity.this, "Berhenti Follow berhasil", Toast.LENGTH_SHORT).show();
-                                    btn_follow.setText(R.string.penjual_follow);
-                                }
-                                else{
-                                    Toast.makeText(BarangDetailActivity.this, "Follow berhasil", Toast.LENGTH_SHORT).show();
-                                    btn_follow.setText(R.string.penjual_unfollow);
-                                }
-
-                                follow = !follow;
-                            }
-                            else{
-                                Toast.makeText(BarangDetailActivity.this, message, Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                        catch (JSONException e){
-                            Toast.makeText(BarangDetailActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
-                            Log.e("Follow", e.getMessage());
-                        }
+            ApiVolleyManager.getInstance().addRequest(this, Constant.URL_FOLLOW_PENJUAL, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body.create(), new AppRequestCallback(new AppRequestCallback.RequestListener() {
+                @Override
+                public void onSuccess(String response) {
+                    if(follow){
+                        Toast.makeText(BarangDetailActivity.this, "Berhenti Follow berhasil", Toast.LENGTH_SHORT).show();
+                        btn_follow.setText(R.string.penjual_follow);
+                    }
+                    else{
+                        Toast.makeText(BarangDetailActivity.this, "Follow berhasil", Toast.LENGTH_SHORT).show();
+                        btn_follow.setText(R.string.penjual_unfollow);
                     }
 
-                    @Override
-                    public void onError(String result) {
-                        Toast.makeText(BarangDetailActivity.this, R.string.error_database, Toast.LENGTH_SHORT).show();
-                        Log.e("Follow", result);
-                    }
-                });
-            }
-            catch (JSONException e){
-                Toast.makeText(BarangDetailActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
-                Log.e("Follow", e.getMessage());
-            }
+                    follow = !follow;
+                }
+
+                @Override
+                public void onFail(String message) {
+                    Toast.makeText(BarangDetailActivity.this, message, Toast.LENGTH_SHORT).show();
+                }
+            }));
         }
     }
 
@@ -278,86 +263,75 @@ public class BarangDetailActivity extends AppCompatActivity {
 
     private void initBarang(){
         //Membaca detail barang dari Web Service
-        try{
-            JSONObject body = new JSONObject();
-            id = getIntent().getStringExtra("barang");
-            body.put("id", id);
+        JSONBuilder body = new JSONBuilder();
+        id = getIntent().getStringExtra("barang");
+        body.add("id", id);
 
-            ApiVolleyManager.getInstance().addRequest(this, Constant.URL_DETAIL_PRODUK, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body, new ApiVolleyManager.RequestCallback() {
-                @Override
-                public void onSuccess(String result) {
-                    try{
-                        JSONObject jsonresult = new JSONObject(result);
-                        int status = jsonresult.getJSONObject("metadata").getInt("status");
-                        String message = jsonresult.getJSONObject("metadata").getString("message");
+        ApiVolleyManager.getInstance().addRequest(this, Constant.URL_DETAIL_PRODUK, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body.create(), new AppRequestCallback(new AppRequestCallback.AdvancedRequestListener() {
+            @Override
+            public void onEmpty(String message) {
+                Toast.makeText(BarangDetailActivity.this,"Barang tidak ditemukan", Toast.LENGTH_SHORT).show();
+            }
 
-                        if(status == 200){
-                            JSONObject barang = jsonresult.getJSONObject("response");
+            @Override
+            public void onSuccess(String result) {
+                try{
+                    JSONObject barang = new JSONObject(result);
 
-                            nama_barang = barang.getString("nama");
-                            txt_nama.setText(nama_barang);
-                            txt_harga.setText(Converter.doubleToRupiah(barang.getDouble("harga")));
-                            txt_kondisi.setText(barang.getString("kondisi"));
-                            txt_terkirim.setText(barang.getString("terjual"));
-                            txt_dilihat.setText(barang.getString("dilihat"));
+                    nama_barang = barang.getString("nama");
+                    txt_nama.setText(nama_barang);
+                    txt_harga.setText(Converter.doubleToRupiah(barang.getDouble("harga")));
+                    txt_kondisi.setText(barang.getString("kondisi"));
+                    txt_terkirim.setText(barang.getString("terjual"));
+                    txt_dilihat.setText(barang.getString("dilihat"));
 
-                            deskripsi = barang.getString("deskripsi");
-                            kategori = barang.getString("category");
-                            berat = String.valueOf(barang.getInt("berat")) + " " + barang.getString("berat_satuan");
-                            merk = barang.getString("brand");
-                            rating = (float) barang.getDouble("rating");
+                    deskripsi = barang.getString("deskripsi");
+                    kategori = barang.getString("category");
+                    berat = String.valueOf(barang.getInt("berat")) + " " + barang.getString("berat_satuan");
+                    merk = barang.getString("brand");
+                    rating = (float) barang.getDouble("rating");
 
-                            favorit = barang.getString("is_favorit").equals("1");
-                            if(favorit){
-                                menu.getItem(1).setIcon(R.drawable.ic_favorit_isi);
-                            }
-                            else{
-                                menu.getItem(1).setIcon(R.drawable.ic_favorit_kosong);
-                            }
-
-                            id_penjual = barang.getJSONObject("penjual").getString("id");
-                            if(!barang.getJSONObject("penjual").getString("uid").equals(FirebaseAuth.getInstance().getUid())){
-                                layout_pelapak.setVisibility(View.VISIBLE);
-                            }
-                            Glide.with(BarangDetailActivity.this).load(barang.getJSONObject("penjual").getString("image")).apply(new RequestOptions().circleCrop().priority(Priority.LOW)).thumbnail(0.1f).into((ImageView)findViewById(R.id.img_artis));
-                            follow = barang.getJSONObject("penjual").getInt("followed") == 1;
-                            if(follow){
-                                btn_follow.setText(R.string.penjual_unfollow);
-                            }
-
-                            ImageContainer imageContainer = new ImageContainer();
-                            imageContainer.setImage(barang.getString("image"));
-                            listImage.add(imageContainer);
-                            JSONArray galeri = barang.getJSONArray("gallery");
-                            for(int i = 0; i < galeri.length(); i++){
-                                imageContainer = new ImageContainer();
-                                imageContainer.setImage(galeri.getJSONObject(i).getString("image"));
-                                listImage.add(imageContainer);
-                            }
-
-                            initSlider();
-                        }
-                        else{
-                            Toast.makeText(BarangDetailActivity.this, message, Toast.LENGTH_SHORT).show();
-                        }
+                    favorit = barang.getString("is_favorit").equals("1");
+                    if(favorit){
+                        menu.getItem(1).setIcon(R.drawable.ic_favorit_isi);
                     }
-                    catch (JSONException e){
-                        Toast.makeText(BarangDetailActivity.this, R.string.error_database, Toast.LENGTH_SHORT).show();
-                        Log.e("Barang Detail", e.toString());
+                    else{
+                        menu.getItem(1).setIcon(R.drawable.ic_favorit_kosong);
                     }
+
+                    id_penjual = barang.getJSONObject("penjual").getString("id");
+                    if(!barang.getJSONObject("penjual").getString("uid").equals(FirebaseAuth.getInstance().getUid())){
+                        layout_pelapak.setVisibility(View.VISIBLE);
+                    }
+                    Glide.with(BarangDetailActivity.this).load(barang.getJSONObject("penjual").getString("image")).apply(new RequestOptions().circleCrop().priority(Priority.LOW)).thumbnail(0.1f).into((ImageView)findViewById(R.id.img_artis));
+                    follow = barang.getJSONObject("penjual").getInt("followed") == 1;
+                    if(follow){
+                        btn_follow.setText(R.string.penjual_unfollow);
+                    }
+
+                    ImageContainer imageContainer = new ImageContainer();
+                    imageContainer.setImage(barang.getString("image"));
+                    listImage.add(imageContainer);
+                    JSONArray galeri = barang.getJSONArray("gallery");
+                    for(int i = 0; i < galeri.length(); i++){
+                        imageContainer = new ImageContainer();
+                        imageContainer.setImage(galeri.getJSONObject(i).getString("image"));
+                        listImage.add(imageContainer);
+                    }
+
+                    initSlider();
                 }
-
-                @Override
-                public void onError(String result) {
+                catch (JSONException e){
                     Toast.makeText(BarangDetailActivity.this, R.string.error_database, Toast.LENGTH_SHORT).show();
-                    Log.e("Barang Detail", result);
+                    Log.e("Barang Detail", e.toString());
                 }
-            });
-        }
-        catch (JSONException e){
-            Toast.makeText(BarangDetailActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
-            Log.e("Barang Detail", e.toString());
-        }
+            }
+
+            @Override
+            public void onFail(String message) {
+                Toast.makeText(BarangDetailActivity.this, message, Toast.LENGTH_SHORT).show();
+            }
+        }));
     }
 
     private void tambahKeranjang(){
@@ -397,49 +371,22 @@ public class BarangDetailActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(!id.equals("")){
                     //bar_loading.setVisibility(View.VISIBLE);
+                    JSONBuilder body = new JSONBuilder();
+                    body.add("id_barang", id);
+                    body.add("jumlah", Integer.parseInt(txt_jumlah.getText().toString()));
 
-                    try{
-                        JSONObject body = new JSONObject();
-                        body.put("id_barang", id);
-                        body.put("jumlah", Integer.parseInt(txt_jumlah.getText().toString()));
+                    ApiVolleyManager.getInstance().addRequest(BarangDetailActivity.this, Constant.URL_TAMBAH_KERANJANG, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body.create(), new AppRequestCallback(new AppRequestCallback.RequestListener() {
+                        @Override
+                        public void onSuccess(String response) {
+                            Toast.makeText(BarangDetailActivity.this, "Barang berhasil ditambahkan", Toast.LENGTH_SHORT).show();
+                            dialog.dismiss();
+                        }
 
-                        ApiVolleyManager.getInstance().addRequest(BarangDetailActivity.this, Constant.URL_TAMBAH_KERANJANG, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body, new ApiVolleyManager.RequestCallback() {
-                            @Override
-                            public void onSuccess(String result) {
-                                try {
-                                    JSONObject jsonresult = new JSONObject(result);
-                                    int status = jsonresult.getJSONObject("metadata").getInt("status");
-                                    String message = jsonresult.getJSONObject("metadata").getString("message");
-
-                                    if(status == 200){
-                                        Toast.makeText(BarangDetailActivity.this, "Barang berhasil ditambahkan", Toast.LENGTH_SHORT).show();
-                                        dialog.dismiss();
-                                    }
-                                    else if(status == 401){
-                                        startActivity(new Intent(BarangDetailActivity.this, LoginActivity.class));
-                                    }
-                                    else{
-                                        Toast.makeText(BarangDetailActivity.this, message, Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-                                catch (JSONException e){
-                                    Toast.makeText(BarangDetailActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
-                                    Log.e("Tambah Keranjang", e.toString());
-                                }
-                            }
-
-                            @Override
-                            public void onError(String result) {
-                                Toast.makeText(BarangDetailActivity.this, R.string.error_database, Toast.LENGTH_SHORT).show();
-                                Log.e("Tambah Keranjang",result);
-                            }
-                        });
-                    }
-                    catch (JSONException e){
-                        Toast.makeText(BarangDetailActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
-                        Log.e("Tambah Keranjang", e.toString());
-                    }
-
+                        @Override
+                        public void onFail(String message) {
+                            Toast.makeText(BarangDetailActivity.this, message, Toast.LENGTH_SHORT).show();
+                        }
+                    }));
                     //bar_loading.setVisibility(View.INVISIBLE);
                 }
             }
@@ -502,7 +449,7 @@ public class BarangDetailActivity extends AppCompatActivity {
 
             }
         });
-        sliderAdapter.startTimer();
+        //sliderAdapter.startTimer();
 
         setupViewPager(viewPager);
         tabLayout.setupWithViewPager(viewPager);
@@ -554,6 +501,57 @@ public class BarangDetailActivity extends AppCompatActivity {
         icon.setDrawableByLayerId(R.id.ic_group_count, badge);
     }*/
 
+    private void ubahFavorit(final MenuItem item){
+        if(!favorit){
+            JSONBuilder body = new JSONBuilder();
+            body.add("id_barang", id);
+
+            ApiVolleyManager.getInstance().addRequest(this, Constant.URL_TAMBAH_FAVORIT, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body.create(), new AppRequestCallback(new AppRequestCallback.RequestListener() {
+                @Override
+                public void onSuccess(String response) {
+                    final Dialog dialog = DialogFactory.getInstance().createDialog(BarangDetailActivity.this, R.layout.popup_message, 65, 30);
+                    TextView txt_pesan = dialog.findViewById(R.id.txt_pesan);
+                    dialog.findViewById(R.id.img_close).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dialog.dismiss();
+                        }
+                    });
+
+                    favorit = true;
+                    item.setIcon(R.drawable.ic_favorit_isi);
+                    txt_pesan.setText(R.string.barang_tambah_favorit);
+                    dialog.show();
+                }
+
+                @Override
+                public void onFail(String message) {
+                    Toast.makeText(BarangDetailActivity.this, message, Toast.LENGTH_SHORT).show();
+                }
+            }));
+        }
+        else {
+            JSONBuilder body = new JSONBuilder();
+            List<String> listId = new ArrayList<>();
+            listId.add(id);
+            body.add("id_barang", new JSONArray(listId));
+
+            ApiVolleyManager.getInstance().addRequest(BarangDetailActivity.this, Constant.URL_HAPUS_FAVORIT, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body.create(), new AppRequestCallback(new AppRequestCallback.RequestListener() {
+                @Override
+                public void onSuccess(String response) {
+                    Toast.makeText(BarangDetailActivity.this, "Barang berhasil dihapus", Toast.LENGTH_SHORT).show();
+                    favorit = false;
+                    menu.getItem(1).setIcon(R.drawable.ic_favorit_kosong);
+                }
+
+                @Override
+                public void onFail(String message) {
+                    Toast.makeText(BarangDetailActivity.this, message, Toast.LENGTH_SHORT).show();
+                }
+            }));
+        }
+    }
+
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
         switch (item.getItemId()){
@@ -565,103 +563,11 @@ public class BarangDetailActivity extends AppCompatActivity {
                 startActivity(i);
                 return true;
             case R.id.action_favorit:
-                if(!favorit){
-                    //Mengubah status favorit
-                    try{
-                        JSONObject body = new JSONObject();
-                        body.put("id_barang", id);
-
-                        ApiVolleyManager.getInstance().addRequest(this, Constant.URL_TAMBAH_FAVORIT, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body, new ApiVolleyManager.RequestCallback() {
-                            @Override
-                            public void onSuccess(String result) {
-                                try {
-                                    JSONObject jsonresult = new JSONObject(result);
-                                    int status = jsonresult.getJSONObject("metadata").getInt("status");
-                                    String message = jsonresult.getJSONObject("metadata").getString("message");
-
-                                    if(status == 200){
-                                        //Toast.makeText(BarangDetailActivity.this, "Barang berhasil ditambah", Toast.LENGTH_SHORT).show();
-                                        final Dialog dialog = DialogFactory.getInstance().createDialog(BarangDetailActivity.this, R.layout.popup_message, 65, 30);
-                                        TextView txt_pesan = dialog.findViewById(R.id.txt_pesan);
-                                        dialog.findViewById(R.id.img_close).setOnClickListener(new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View v) {
-                                                dialog.dismiss();
-                                            }
-                                        });
-
-                                        //img_pesan.setImageResource(R.drawable.lovepink);
-                                        favorit = true;
-                                        item.setIcon(R.drawable.ic_favorit_isi);
-                                        txt_pesan.setText(R.string.barang_tambah_favorit);
-                                        dialog.show();
-                                    }
-                                    else if(status == 401){
-                                        startActivity(new Intent(BarangDetailActivity.this, LoginActivity.class));
-                                    }
-                                    else{
-                                        Toast.makeText(BarangDetailActivity.this, message, Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-                                catch (JSONException e){
-                                    Toast.makeText(BarangDetailActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
-                                    Log.e("Tambah Favorit", e.toString());
-                                }
-                            }
-
-                            @Override
-                            public void onError(String result) {
-                                Toast.makeText(BarangDetailActivity.this, R.string.error_database, Toast.LENGTH_SHORT).show();
-                                Log.e("Tambah Favorit",result);
-                            }
-                        });
-                    }
-                    catch (JSONException e){
-                        Toast.makeText(BarangDetailActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
-                        Log.e("Hapus Favorit", e.toString());
-                    }
+                if(AppSharedPreferences.isLoggedIn(this)){
+                    ubahFavorit(item);
                 }
-                else{
-                    try{
-                        JSONObject body = new JSONObject();
-                        List<String> listId = new ArrayList<>();
-                        listId.add(id);
-                        body.put("id_barang", new JSONArray(listId));
-
-                        ApiVolleyManager.getInstance().addRequest(BarangDetailActivity.this, Constant.URL_HAPUS_FAVORIT, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body, new ApiVolleyManager.RequestCallback() {
-                            @Override
-                            public void onSuccess(String result) {
-                                try {
-                                    JSONObject jsonresult = new JSONObject(result);
-                                    int status = jsonresult.getJSONObject("metadata").getInt("status");
-                                    String message = jsonresult.getJSONObject("metadata").getString("message");
-
-                                    if(status == 200){
-                                        Toast.makeText(BarangDetailActivity.this, "Barang berhasil dihapus", Toast.LENGTH_SHORT).show();
-                                        favorit = false;
-                                        menu.getItem(1).setIcon(R.drawable.ic_favorit_kosong);
-                                    }
-                                    else{
-                                        Toast.makeText(BarangDetailActivity.this, message, Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-                                catch (JSONException e){
-                                    Toast.makeText(BarangDetailActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
-                                    Log.e("Hapus Favorit", e.toString());
-                                }
-                            }
-
-                            @Override
-                            public void onError(String result) {
-                                Toast.makeText(BarangDetailActivity.this, R.string.error_database, Toast.LENGTH_SHORT).show();
-                                Log.e("Hapus Favorit",result);
-                            }
-                        });
-                    }
-                    catch (JSONException e){
-                        Toast.makeText(BarangDetailActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
-                        Log.e("Hapus Favorit", e.toString());
-                    }
+                else {
+                   startActivity(new Intent(this, LoginActivity.class));
                 }
                 return true;
         }

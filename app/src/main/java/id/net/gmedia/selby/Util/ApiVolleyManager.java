@@ -136,5 +136,4 @@ public class ApiVolleyManager {
     public void cancelRequest(){
         requestQueue.cancelAll(REQ_TAG);
     }
-
 }

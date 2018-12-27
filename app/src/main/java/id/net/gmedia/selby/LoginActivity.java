@@ -39,8 +39,10 @@ import java.util.Arrays;
 
 import id.net.gmedia.selby.Home.HomeActivity;
 import id.net.gmedia.selby.Util.ApiVolleyManager;
+import id.net.gmedia.selby.Util.AppRequestCallback;
 import id.net.gmedia.selby.Util.AppSharedPreferences;
 import id.net.gmedia.selby.Util.Constant;
+import id.net.gmedia.selby.Util.JSONBuilder;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -230,73 +232,52 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void loginToSelby(String type){
-        try{
-            JSONObject body = new JSONObject();
-            body.put("uid", FirebaseAuth.getInstance().getUid());
-            if(FirebaseAuth.getInstance().getCurrentUser() != null){
-                body.put("email", FirebaseAuth.getInstance().getCurrentUser().getEmail());
-                body.put("profile_name", FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
-                body.put("foto", FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl());
-            }
-            else{
-                body.put("email", "");
-                body.put("profile_name", "");
-                body.put("foto", "");
-                Log.w(TAG, "Current User kosong");
-            }
+        JSONBuilder body = new JSONBuilder();
+        body.add("uid", FirebaseAuth.getInstance().getUid());
+        if(FirebaseAuth.getInstance().getCurrentUser() != null){
+            body.add("email", FirebaseAuth.getInstance().getCurrentUser().getEmail());
+            body.add("profile_name", FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
+            body.add("foto", FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl());
+        }
+        else{
+            body.add("email", "");
+            body.add("profile_name", "");
+            body.add("foto", "");
+            Log.w(TAG, "Current User kosong");
+        }
 
-            body.put("type", type);
-            body.put("fcm_id", fcm_id);
+        body.add("type", type);
+        body.add("fcm_id", fcm_id);
 
-            ApiVolleyManager.getInstance().addRequest(this, Constant.URL_AUTENTIFIKASI, ApiVolleyManager.METHOD_POST, Constant.HEADER_AUTH, body, new ApiVolleyManager.RequestCallback() {
-                @Override
-                public void onSuccess(String result) {
-                    try{
-                        System.out.println(result);
-                        JSONObject json = new JSONObject(result);
-                        int status = json.getJSONObject("metadata").getInt("status");
-                        String message = json.getJSONObject("metadata").getString("message");
+        ApiVolleyManager.getInstance().addRequest(this, Constant.URL_AUTENTIFIKASI, ApiVolleyManager.METHOD_POST, Constant.HEADER_AUTH, body.create(), new AppRequestCallback(new AppRequestCallback.RequestListener() {
+            @Override
+            public void onSuccess(String response) {
+                try{
+                    //Masuk halaman home
+                    JSONObject json = new JSONObject(response);
+                    AppSharedPreferences.setLoggedIn(LoginActivity.this, true);
+                    boolean penjual = json.getString("penjual").equals("1");
+                    AppSharedPreferences.setStatusPref(LoginActivity.this, penjual);
+                    Intent i = new Intent(LoginActivity.this, HomeActivity.class);
+                    i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(i);
 
-                        if(status == 200){
-                            //Masuk halaman home
-                            AppSharedPreferences.setLoggedIn(LoginActivity.this, true);
-                            boolean penjual = json.getJSONObject("response").getString("penjual").equals("1");
-                            AppSharedPreferences.setStatusPref(LoginActivity.this, penjual);
-                            Intent i = new Intent(LoginActivity.this, HomeActivity.class);
-                            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            startActivity(i);
-
-                            finish();
-                            setLoading(false);
-                        }
-                        else{
-                            setLoading(false);
-                            Log.e(TAG+"LoginSelby", message);
-                            Toast.makeText(LoginActivity.this, "Autentifikasi gagal", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                    catch (JSONException e){
-                        setLoading(false);
-                        Log.e(TAG+"LoginSelby", e.toString());
-                        e.printStackTrace();
-                        Toast.makeText(LoginActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
-                    }
-                }
-
-                @Override
-                public void onError(String result) {
+                    finish();
                     setLoading(false);
-                    Log.e(TAG+"LoginSelby", result);
-                    Toast.makeText(LoginActivity.this, R.string.error_database, Toast.LENGTH_SHORT).show();
                 }
-            });
-        }
-        catch(JSONException e){
-            setLoading(false);
-            Log.e(TAG+"LoginSelby", e.toString());
-            e.printStackTrace();
-            Toast.makeText(LoginActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
-        }
+                catch (JSONException e){
+                    setLoading(false);
+                    Log.e("Login", e.getMessage());
+                    Toast.makeText(LoginActivity.this, "Autentifikasi gagal", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFail(String message) {
+                setLoading(false);
+                Toast.makeText(LoginActivity.this, message, Toast.LENGTH_SHORT).show();
+            }
+        }));
     }
 }
