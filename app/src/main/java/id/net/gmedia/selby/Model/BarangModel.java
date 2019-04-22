@@ -1,5 +1,7 @@
 package id.net.gmedia.selby.Model;
 
+import android.graphics.Bitmap;
+
 public class BarangModel {
     private String id;
     private String nama;
@@ -7,10 +9,12 @@ public class BarangModel {
     private double harga = 0;
     private boolean favorit = false;
 
-    private int jumlah = 0;
+    private Bitmap imgBitmap;
 
-    private String jenis;
+    private int jenis;
     private ArtisModel penjual;
+
+    private boolean donasi = false;
 
     public BarangModel(String id, String nama, String url){
         this.id = id;
@@ -18,7 +22,7 @@ public class BarangModel {
         this.url = url;
     }
 
-    public BarangModel(String id, String nama, String url, String jenis){
+    public BarangModel(String id, String nama, String url, int jenis){
         this.id = id;
         this.nama = nama;
         this.url = url;
@@ -40,7 +44,7 @@ public class BarangModel {
         this.penjual = penjual;
     }
 
-    public BarangModel(String id, String nama, String url, double harga, boolean favorit, String jenis){
+    public BarangModel(String id, String nama, String url, double harga, boolean favorit, int jenis){
         this.id = id;
         this.nama = nama;
         this.url = url;
@@ -49,7 +53,7 @@ public class BarangModel {
         this.jenis = jenis;
     }
 
-    public BarangModel(String id, String nama, String url, double harga, boolean favorit, String jenis, ArtisModel penjual){
+    public BarangModel(String id, String nama, String url, double harga, boolean favorit, int jenis, ArtisModel penjual, boolean donasi){
         this.id = id;
         this.nama = nama;
         this.url = url;
@@ -57,15 +61,17 @@ public class BarangModel {
         this.favorit = favorit;
         this.jenis = jenis;
         this.penjual = penjual;
+        this.donasi = donasi;
     }
 
-    public BarangModel(String id, String nama, String url, double harga, String jenis, ArtisModel penjual){
+    public BarangModel(String id, String nama, String url, double harga, int jenis, ArtisModel penjual, boolean donasi){
         this.id = id;
         this.nama = nama;
         this.url = url;
         this.harga = harga;
         this.jenis = jenis;
         this.penjual = penjual;
+        this.donasi = donasi;
     }
 
 
@@ -77,7 +83,18 @@ public class BarangModel {
         this.favorit = favorit;
     }
 
-    public BarangModel(String id, String nama, String url, double harga, boolean favorit, ArtisModel penjual){
+    /*public BarangModel(String id, String nama, String url, double harga, boolean favorit, int terpakai, String satuan_terpakai, ArtisModel penjual){
+        this.id = id;
+        this.nama = nama;
+        this.url = url;
+        this.harga = harga;
+        this.favorit = favorit;
+        this.penjual = penjual;
+        this.terpakai = terpakai;
+        this.satuan_terpakai = satuan_terpakai;
+    }*/
+
+    public BarangModel(String id, String nama, String url, double harga, boolean favorit, ArtisModel penjual, boolean donasi){
         this.id = id;
         this.nama = nama;
         this.url = url;
@@ -86,20 +103,28 @@ public class BarangModel {
         this.penjual = penjual;
     }
 
-    public String getJenis() {
+    public BarangModel(String id, String nama, double harga, boolean favorit, ArtisModel penjual){
+        this.id = id;
+        this.nama = nama;
+        this.harga = harga;
+        this.favorit = favorit;
+        this.penjual = penjual;
+    }
+
+    public Bitmap getImgBitmap() {
+        return imgBitmap;
+    }
+
+    public void setImgBitmap(Bitmap imgBitmap) {
+        this.imgBitmap = imgBitmap;
+    }
+
+    public int getJenis() {
         return jenis;
     }
 
     public ArtisModel getPenjual() {
         return penjual;
-    }
-
-    public void setJumlah(int jumlah) {
-        this.jumlah = jumlah;
-    }
-
-    public int getJumlah() {
-        return jumlah;
     }
 
     public String getId() {
@@ -125,4 +150,20 @@ public class BarangModel {
     public double getHarga() {
         return harga;
     }
+
+    public void setHarga(double harga) {
+        this.harga = harga;
+    }
+
+    public boolean isDonasi() {
+        return donasi;
+    }
+
+    public void setDonasi(boolean donasi) {
+        this.donasi = donasi;
+    }
+
+    /*public String getTerpakai(){
+        return terpakai + " " + satuan_terpakai;
+    }*/
 }

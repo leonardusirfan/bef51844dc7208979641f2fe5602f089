@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Selby</string>
+    <string name="app_name">Selbi</string>
     <string name="user">User</string>
     <string name="artis">Artis</string>
     <string name="penjual">Penjual</string>
@@ -70,6 +70,7 @@
     <string name="barang_spesifikasi">Spesifikasi</string>
     <string name="barang_kategori">Kategori</string>
     <string name="barang_berat">Berat</string>
+    <string name="barang_lama_terpakai">Lama Terpakai</string>
     <string name="barang_merk">Merk</string>
     <string name="barang_deskripsi">Deskripsi</string>
     <string name="barang_pesan">Pesan</string>
@@ -141,12 +142,19 @@
 
     <string name="facebook_app_id">330921904309199</string>
     <string name="fb_login_protocol_scheme">fb330921904309199</string>
+
     <string name="lorem_ipsum">"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."</string>
 
     <string-array name="satuan_berat">
         <item>gram</item>
         <item>kilogram</item>
         <item>ton</item>
+    </string-array>
+
+    <string-array name="satuan_lama_terpakai">
+        <item>hari</item>
+        <item>bulan</item>
+        <item>tahun</item>
     </string-array>
 
     <string-array name="item_kondisi">

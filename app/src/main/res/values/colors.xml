@@ -5,7 +5,8 @@
     <color name="colorAccent">#f14b45</color>
 
     <color name="orange">#f14b45</color>
-    <color name="light_orange">#feba04</color>
+    <color name="gold">#FEBB47</color>
+    <color name="dark_gold">#FF7A22</color>
 
     <color name="colorPrimaryPix">#0068AB</color>
     <color name="colorPrimaryLightPix">#3B9ED9</color>
@@ -17,8 +18,6 @@
     <color name="dark_grey">#d2d2d2</color>
     <color name="very_dark_grey">#686868</color>
     <color name="black">#515151</color>
-
-    <color name="gold">#0068AB</color>
 
     <color name="light_blue">#3B9ED9</color>
     <color name="blue">#0068AB</color>

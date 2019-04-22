@@ -13,13 +13,13 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.leonardus.irfan.Converter;
 
 import java.util.List;
 
 import id.net.gmedia.selby.Barang.Fragment.FragmentDiskusiBarang;
 import id.net.gmedia.selby.R;
 import id.net.gmedia.selby.Model.UlasanModel;
-import id.net.gmedia.selby.Util.Converter;
 import id.net.gmedia.selby.Util.LoadMoreViewHolder;
 
 public class DiskusiBarangAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -81,7 +81,7 @@ public class DiskusiBarangAdapter extends RecyclerView.Adapter<RecyclerView.View
             UlasanViewHolder viewHolder = (UlasanViewHolder) holder;
 
             viewHolder.txt_nama.setText(ulasan.getNama());
-            viewHolder.txt_tanggal.setText(Converter.DateToString(ulasan.getTanggal()));
+            viewHolder.txt_tanggal.setText(Converter.DToString(ulasan.getTanggal()));
             viewHolder.txt_ulasan.setText(ulasan.getUlasan());
 
             BalasanAdapter balasan = new BalasanAdapter(ulasan.getListBalasan());

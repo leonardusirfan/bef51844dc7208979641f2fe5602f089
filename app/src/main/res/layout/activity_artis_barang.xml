@@ -3,15 +3,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".Artis.BarangArtisActivity">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="?android:attr/actionBarSize">
-
-    </android.support.v7.widget.Toolbar>
+        android:layout_height="?android:attr/actionBarSize"
+        android:background="#FAFAFA"/>
 
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
@@ -22,7 +22,7 @@
         android:id="@+id/main_appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:expanded="true"
+        app:expanded="false"
         android:fitsSystemWindows="true">
 
         <android.support.design.widget.CollapsingToolbarLayout
@@ -60,48 +60,77 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/toolbar"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        app:layout_behavior="android.support.design.widget.AppBarLayout$ScrollingViewBehavior">
 
-        <LinearLayout
-            android:layout_below="@id/toolbar"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="wrap_content">
 
-            <FrameLayout
+            <LinearLayout
+                android:id="@+id/layout_header"
+                android:layout_width="match_parent"
+                android:gravity="center"
+                android:layout_height="?attr/actionBarSize">
+
+                <EditText
+                    android:id="@+id/txt_search"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.8"
+                    android:layout_marginStart="@dimen/dp10"
+                    android:layout_marginEnd="@dimen/dp10"
+                    android:inputType="textPersonName"
+                    android:imeOptions="actionDone"
+                    android:visibility="gone" />
+
+                <android.support.design.widget.TabLayout
+                    android:id="@+id/tab_barang"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:tabSelectedTextColor="@color/dark_blue"
+                    app:tabIndicatorColor="@color/dark_blue"
+                    app:tabTextColor="@color/black"
+                    android:background="@color/white"
+                    android:layout_weight="1"/>
+
+                <ImageView
+                    android:id="@+id/btn_search"
+                    android:layout_width="@dimen/medium_icon_size"
+                    android:layout_height="@dimen/medium_icon_size"
+                    android:layout_margin="@dimen/dp10"
+                    android:src="@drawable/search"/>
+
+                <ImageView
+                    android:id="@+id/btn_filter"
+                    android:layout_width="@dimen/medium_icon_size"
+                    android:layout_height="@dimen/medium_icon_size"
+                    android:layout_margin="@dimen/dp10"
+                    android:src="@drawable/menu"/>
+            </LinearLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_barang"
+                android:layout_below="@id/layout_header"
+                android:paddingEnd="@dimen/padding20"
+                android:paddingStart="@dimen/padding20"
+                android:paddingTop="@dimen/padding20"
+                android:clipToPadding="false"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/rv_barang"
-                    android:paddingEnd="@dimen/padding20"
-                    android:paddingStart="@dimen/padding20"
-                    android:paddingTop="@dimen/padding20"
-                    android:clipToPadding="false"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+            </android.support.v7.widget.RecyclerView>
 
-                </android.support.v7.widget.RecyclerView>
-
-                <TextView
-                    android:id="@+id/txt_kosong"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/textview_height"
-                    android:text="@string/kosong_artis_barang"
-                    android:gravity="center"
-                    android:textStyle="bold"
-                    android:textColor="@color/dark_grey"
-                    android:textSize="@dimen/text20"
-                    android:visibility="gone"/>
-            </FrameLayout>
-
-            <ProgressBar
-                android:id="@+id/pb_barang"
+            <TextView
+                android:id="@+id/txt_kosong"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="invisible"/>
-
-        </LinearLayout>
+                android:layout_height="@dimen/textview_height"
+                android:text="@string/kosong_artis_barang"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:textColor="@color/dark_grey"
+                android:textSize="@dimen/text20"
+                android:visibility="gone"/>
+        </RelativeLayout>
     </android.support.v4.widget.NestedScrollView>
     </android.support.design.widget.CoordinatorLayout>
 

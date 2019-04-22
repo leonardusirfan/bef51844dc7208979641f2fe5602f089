@@ -2,13 +2,13 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/action_home"
-        android:icon="@drawable/home"
+        android:icon="@drawable/homeblack"
         android:orderInCategory="1"
         android:title="@string/menu_home" />
     <item
         android:id="@+id/action_akun"
         android:orderInCategory="5"
         android:title="@string/menu_akun"
-        android:icon="@drawable/akun" />
+        android:icon="@drawable/akunblack" />
 
 </menu>

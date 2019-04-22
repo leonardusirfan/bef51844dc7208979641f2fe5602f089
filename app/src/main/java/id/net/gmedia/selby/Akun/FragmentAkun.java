@@ -19,11 +19,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.NetworkResponse;
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
@@ -31,24 +27,22 @@ import com.bumptech.glide.request.RequestOptions;
 import com.fxn.pix.Pix;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.gson.Gson;
+import com.leonardus.irfan.ApiVolleyManager;
+import com.leonardus.irfan.AppRequestCallback;
+import com.leonardus.irfan.Converter;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 import id.net.gmedia.selby.Home.HomeActivity;
-import id.net.gmedia.selby.Util.AppRequestCallback;
 import id.net.gmedia.selby.Util.AppSharedPreferences;
 import id.net.gmedia.selby.Util.Constant;
 import id.net.gmedia.selby.Model.UserModel;
 import id.net.gmedia.selby.R;
-import id.net.gmedia.selby.Util.ApiVolleyManager;
-import id.net.gmedia.selby.Util.VolleyMultipartRequest;
+import com.leonardus.irfan.TopCropCircularImageView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -62,7 +56,8 @@ public class FragmentAkun extends Fragment {
 
     //Variabel UI
     private View v;
-    private ImageView img_akun, img_akun_album;
+    private TopCropCircularImageView img_akun;
+    private ImageView img_akun_album;
     private TextView txt_alamat, txt_telepon, txt_email, txt_akun, txt_berlangganan;
 
     private RequestQueue requestQueue;
@@ -70,7 +65,6 @@ public class FragmentAkun extends Fragment {
     public FragmentAkun() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -91,31 +85,35 @@ public class FragmentAkun extends Fragment {
             txt_berlangganan = v.findViewById(R.id.txt_berlangganan);
 
             //Inisialisasi Profil
-            ApiVolleyManager.getInstance().addRequest(activity, Constant.URL_PROFIL, ApiVolleyManager.METHOD_GET, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), new AppRequestCallback(new AppRequestCallback.RequestListener() {
+            ApiVolleyManager.getInstance().addRequest(activity, Constant.URL_PROFIL,
+                    ApiVolleyManager.METHOD_GET, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()),
+                    new AppRequestCallback(new AppRequestCallback.SimpleRequestListener() {
                 @Override
                 public void onSuccess(String response) {
                     try{
                         JSONObject akun = new JSONObject(response);
 
-                        user = new UserModel(akun.getString("id"), akun.getString("profile_name"), akun.getString("alamat"), akun.getString("no_telp"));
+                        user = new UserModel(akun.getString("id"), akun.getString("profile_name"),
+                                akun.getString("alamat"), akun.getString("no_telp"));
                         txt_akun.setText(user.getNama());
 
                         String berlangganan = "Berlangganan : " + akun.getInt("jumlah_following");
                         txt_berlangganan.setText(berlangganan);
 
-                        Glide.with(activity).load(akun.getString("sampul")).transition(DrawableTransitionOptions.withCrossFade()).apply(new RequestOptions().placeholder(R.color.grey)).thumbnail(0.5f).into(img_akun_album);
+                        Glide.with(activity).load(akun.getString("sampul")).
+                                transition(DrawableTransitionOptions.withCrossFade()).apply(new RequestOptions().
+                                placeholder(R.color.grey)).thumbnail(0.5f).into(img_akun_album);
                         Glide.with(activity)
                                 .load(akun.getString("foto"))
                                 .thumbnail(0.2f)
                                 .transition(DrawableTransitionOptions.withCrossFade())
-                                .apply(new RequestOptions().circleCrop())
                                 .into(img_akun);
                         txt_telepon.setText(user.getTelepon());
                         txt_email.setText(akun.getString("email"));
                         txt_alamat.setText(user.getAlamat());
                     }
                     catch (JSONException e){
-                        Log.e("Profil", e.getMessage());
+                        Log.e(Constant.TAG, e.getMessage());
                         Toast.makeText(activity, R.string.error_json, Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -148,7 +146,7 @@ public class FragmentAkun extends Fragment {
                 public void onClick(View v) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(activity);
                     builder.setTitle("Log Out");
-                    builder.setMessage("Yakin ingin keluar Selby?");
+                    builder.setMessage("Yakin ingin keluar Selbi?");
                     builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -205,70 +203,33 @@ public class FragmentAkun extends Fragment {
 
         try{
             final Bitmap bitmap = MediaStore.Images.Media.getBitmap(activity.getContentResolver(), Uri.fromFile(new File(path)));
-
-            VolleyMultipartRequest volleyMultipartRequest = new VolleyMultipartRequest(Request.Method.POST, url, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()),new Response.Listener<NetworkResponse>() {
-                @Override
-                public void onResponse(NetworkResponse response) {
-                    try{
-                        JSONObject jsonresult = new JSONObject(new String(response.data));
-                        System.out.println(jsonresult);
-                        int status = jsonresult.getJSONObject("metadata").getInt("status");
-                        String message = jsonresult.getJSONObject("metadata").getString("message");
-
-                        if(status == 200){
+            ApiVolleyManager.getInstance().addMultipartRequest(activity, url, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()),
+                    Converter.getFileDataFromDrawable(bitmap), new AppRequestCallback(new AppRequestCallback.SimpleRequestListener() {
+                        @Override
+                        public void onSuccess(String result) {
                             Toast.makeText(activity, "Foto berhasil diubah", Toast.LENGTH_SHORT).show();
                             if(sampul){
-                                Glide.with(activity).load(bitmap).transition(DrawableTransitionOptions.withCrossFade()).apply(new RequestOptions().placeholder(R.color.grey)).thumbnail(0.5f).into(img_akun_album);
+                                Glide.with(activity).load(bitmap).transition(DrawableTransitionOptions.withCrossFade()).
+                                        apply(new RequestOptions().placeholder(R.color.grey)).thumbnail(0.5f).into(img_akun_album);
                             }
                             else{
                                 Glide.with(activity)
                                         .load(bitmap)
                                         .thumbnail(0.2f)
                                         .transition(DrawableTransitionOptions.withCrossFade())
-                                        .apply(new RequestOptions().circleCrop())
                                         .into(img_akun);
                             }
-
                         }
-                        else{
+
+                        @Override
+                        public void onFail(String message) {
                             Toast.makeText(activity, message, Toast.LENGTH_SHORT).show();
                         }
-
-                    }
-                    catch (JSONException e){
-                        Toast.makeText(activity, R.string.error_database, Toast.LENGTH_SHORT).show();
-                        Log.e("UploadGambar", e.getMessage());
-                    }
-
-
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(activity, "Upload gagal", Toast.LENGTH_SHORT).show();
-                    Log.e("UploadGambar",error.toString());
-                }
-            }){
-                @Override
-                protected Map<String, DataPart> getByteData(){
-                    Map<String, DataPart> params = new HashMap<>();
-                    long imageName = System.currentTimeMillis();
-                    params.put("pic", new DataPart(imageName + ".jpg", getFileDataFromDrawable(bitmap)));
-                    return params;
-                }
-            };
-
-            requestQueue.add(volleyMultipartRequest);
+                    }));
         }
         catch (IOException e){
             Toast.makeText(activity, "File tidak ditemukan", Toast.LENGTH_SHORT).show();
-            Log.e("UploadGambar", e.toString());
+            Log.e(Constant.TAG, e.toString());
         }
-    }
-
-    private byte[] getFileDataFromDrawable(Bitmap bitmap){
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
-        return byteArrayOutputStream.toByteArray();
     }
 }

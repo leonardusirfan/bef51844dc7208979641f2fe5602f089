@@ -7,6 +7,7 @@
     android:layout_height="match_parent"
     tools:context=".Barang.BarangDetailActivity"
     android:fitsSystemWindows="true"
+    android:background="#FBFBFB"
     android:focusableInTouchMode="true">
 
     <android.support.design.widget.CoordinatorLayout
@@ -28,32 +29,14 @@
                 app:layout_scrollFlags="scroll|exitUntilCollapsed"
                 app:expandedTitleTextAppearance="@android:color/transparent"
                 android:fitsSystemWindows="true"
-                app:contentScrim="@color/grey"
-                android:background="@color/grey">
+                app:contentScrim="#FBFBFB"
+                android:background="#FBFBFB">
 
-                <RelativeLayout
+                <com.leonardus.irfan.ImageSlider.ImageSlider
+                    android:id="@+id/slider"
+                    android:transitionName="barang"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <id.net.gmedia.selby.Util.ImageSliderViewPager
-                        android:id="@+id/pager"
-                        android:transitionName="barang"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/image_item_height" />
-
-                    <me.relex.circleindicator.CircleIndicator
-                        android:id="@+id/indicator"
-                        android:layout_width="wrap_content"
-                        android:layout_height="@dimen/circle_indicator_layout_size"
-                        android:layout_alignBottom="@+id/pager"
-                        android:layout_alignStart="@id/pager"
-                        android:layout_marginStart="@dimen/padding20"
-                        android:layout_marginBottom="@dimen/padding20"
-                        app:ci_drawable="@drawable/custom_indicator_selected"
-                        app:ci_drawable_unselected="@drawable/custom_indicator_unselected"
-                        app:ci_height="@dimen/circle_indicator_size"
-                        app:ci_width="@dimen/circle_indicator_size" />
-                </RelativeLayout>
+                    android:layout_height="@dimen/image_item_height"/>
 
                 <android.support.v7.widget.Toolbar
                     android:id="@+id/toolbar"
@@ -110,7 +93,7 @@
                         android:id="@+id/txt_harga"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/orange"
+                        android:textColor="@color/black"
                         android:layout_marginTop="@dimen/padding20"
                         android:textSize="@dimen/text24"
                         android:textStyle="bold" />
@@ -130,11 +113,11 @@
                     android:id="@+id/tabs"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:tabIndicatorColor="@color/gold"
-                    app:tabSelectedTextColor="#000000"
-                    android:background="#EDEDED"
+                    app:tabIndicatorColor="@color/dark_blue"
+                    app:tabSelectedTextColor="@color/dark_blue"
+                    android:background="#FBFBFB"
                     app:tabTextAppearance="@style/MyCustomTabText"
-                    app:tabTextColor="#70605f5f"
+                    app:tabTextColor="@color/black"
                     app:tabGravity="fill"
                     app:tabMode="fixed">
 
@@ -181,7 +164,7 @@
             android:layout_weight="0.3"
             android:padding="@dimen/padding10"
             android:src="@drawable/tambahcart"
-            android:background="@color/gold">
+            android:background="#FBFBFB">
         </ImageView>
 
         <include layout="@layout/view_divider_black"
@@ -195,7 +178,7 @@
             android:layout_weight="0.7"
             android:text="@string/barang_beli_langsung"
             android:textColor="#fff"
-            android:background="@color/gold">
+            android:background="@color/dark_blue">
         </Button>
 
     </LinearLayout>

@@ -17,8 +17,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.firebase.auth.FirebaseAuth;
+import com.leonardus.irfan.ApiVolleyManager;
+import com.leonardus.irfan.AppRequestCallback;
+import com.leonardus.irfan.Converter;
+import com.leonardus.irfan.JSONBuilder;
 
 import java.util.List;
 
@@ -27,13 +32,10 @@ import id.net.gmedia.selby.Home.HomeActivity;
 import id.net.gmedia.selby.LoginActivity;
 import id.net.gmedia.selby.Model.BarangModel;
 import id.net.gmedia.selby.R;
-import id.net.gmedia.selby.Util.ApiVolleyManager;
-import id.net.gmedia.selby.Util.AppRequestCallback;
 import id.net.gmedia.selby.Util.AppSharedPreferences;
 import id.net.gmedia.selby.Util.Constant;
-import id.net.gmedia.selby.Util.Converter;
-import id.net.gmedia.selby.Util.DialogFactory;
-import id.net.gmedia.selby.Util.JSONBuilder;
+import com.leonardus.irfan.DialogFactory;
+import com.leonardus.irfan.TopCropCircularImageView;
 
 public class BarangAdapter extends RecyclerView.Adapter<BarangAdapter.BarangViewHolder> {
 
@@ -60,11 +62,18 @@ public class BarangAdapter extends RecyclerView.Adapter<BarangAdapter.BarangView
         //Barang
         barangViewHolder.txt_nama.setText(barang.getNama());
         barangViewHolder.txt_harga.setText(Converter.doubleToRupiah(barang.getHarga()));
-        Glide.with(context).load(barang.getUrl()).thumbnail(0.5f).into(barangViewHolder.img_barang);
+        Glide.with(context).load(barang.getUrl()).thumbnail(0.5f).
+                transition(DrawableTransitionOptions.withCrossFade()).
+                into(barangViewHolder.img_barang);
+        if(barang.isDonasi()){
+            barangViewHolder.img_donasi.setVisibility(View.VISIBLE);
+        }
 
         //Pelapak
         barangViewHolder.txt_nama_pelapak.setText(barang.getPenjual().getNama());
-        Glide.with(context).load(barang.getPenjual().getImage()).thumbnail(0.5f).apply(new RequestOptions().circleCrop()).into(barangViewHolder.img_pelapak);
+        Glide.with(context).load(barang.getPenjual().getImage()).thumbnail(0.5f).
+                apply(new RequestOptions()).
+                into(barangViewHolder.img_pelapak);
         barangViewHolder.rate_pelapak.setRating(barang.getPenjual().getRating());
 
         barangViewHolder.layout_barang.setOnClickListener(new View.OnClickListener() {
@@ -116,7 +125,9 @@ public class BarangAdapter extends RecyclerView.Adapter<BarangAdapter.BarangView
                             JSONBuilder body = new JSONBuilder();
                             body.add("id_barang", barang.getId());
                             body.add("jumlah", txt_jumlah.getText().toString());
-                            ApiVolleyManager.getInstance().addRequest(activity, Constant.URL_TAMBAH_KERANJANG, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body.create(), new AppRequestCallback(new AppRequestCallback.RequestListener() {
+                            ApiVolleyManager.getInstance().addRequest(activity, Constant.URL_TAMBAH_KERANJANG,
+                                    ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()),
+                                    body.create(), new AppRequestCallback(new AppRequestCallback.SimpleRequestListener() {
                                 @Override
                                 public void onSuccess(String response) {
                                     Toast.makeText(activity, "Barang berhasil ditambahkan", Toast.LENGTH_SHORT).show();
@@ -146,7 +157,9 @@ public class BarangAdapter extends RecyclerView.Adapter<BarangAdapter.BarangView
                     body.add("id_barang", barang.getId());
                     body.add("jumlah", 1);
 
-                    ApiVolleyManager.getInstance().addRequest(activity, Constant.URL_TAMBAH_KERANJANG, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body.create(), new AppRequestCallback(new AppRequestCallback.RequestListener() {
+                    ApiVolleyManager.getInstance().addRequest(activity, Constant.URL_TAMBAH_KERANJANG, ApiVolleyManager.METHOD_POST,
+                            Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body.create(),
+                            new AppRequestCallback(new AppRequestCallback.SimpleRequestListener() {
                         @Override
                         public void onSuccess(String response) {
                             Intent i = new Intent(activity, HomeActivity.class);
@@ -182,16 +195,18 @@ public class BarangAdapter extends RecyclerView.Adapter<BarangAdapter.BarangView
         TextView txt_nama, txt_harga;
 
         //Variabel pelapak
-        public ImageView img_pelapak, img_keranjang;
-        public TextView txt_nama_pelapak;
-        public RatingBar rate_pelapak;
+        ImageView img_keranjang, img_donasi;
+        TopCropCircularImageView img_pelapak;
+        TextView txt_nama_pelapak;
+        RatingBar rate_pelapak;
 
-        public Button btn_beli;
+        Button btn_beli;
 
         BarangViewHolder(@NonNull View view) {
             super(view);
             layout_barang = view.findViewById(R.id.layout_barang);
             img_barang = view.findViewById(R.id.img_barang);
+            img_donasi = view.findViewById(R.id.img_donasi);
             txt_nama = view.findViewById(R.id.txt_nama);
             txt_harga = view.findViewById(R.id.txt_harga);
             img_pelapak = view.findViewById(R.id.img_pelapak);

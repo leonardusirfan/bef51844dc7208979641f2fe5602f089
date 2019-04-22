@@ -4,8 +4,9 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayout;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,13 +18,14 @@ import com.daimajia.slider.library.Indicators.PagerIndicator;
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.daimajia.slider.library.SliderTypes.DefaultSliderView;
+import com.leonardus.irfan.ApiVolleyManager;
+import com.leonardus.irfan.AppRequestCallback;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import id.net.gmedia.selby.HotNewsActivity;
 import id.net.gmedia.selby.R;
-import id.net.gmedia.selby.Util.ApiVolleyManager;
-import id.net.gmedia.selby.Util.AppRequestCallback;
 import id.net.gmedia.selby.Util.Constant;
 
 /**
@@ -35,6 +37,8 @@ public class FragmentHome extends Fragment {
     private boolean loaded = false;
     private Activity activity;
     private View v;
+
+    private RelativeLayout layout_search;
 
     //Variabel slider
     private SliderLayout slider;
@@ -53,17 +57,26 @@ public class FragmentHome extends Fragment {
 
             slider = v.findViewById(R.id.slider);
 
-            final RelativeLayout layout_search = v.findViewById(R.id.layout_search);
+            layout_search = v.findViewById(R.id.layout_search);
             layout_search.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent i = new Intent(activity, SearchActivity.class);
 
-                    ActivityOptionsCompat options = ActivityOptionsCompat.
+                    /*ActivityOptionsCompat options = ActivityOptionsCompat.
                             makeSceneTransitionAnimation(activity, layout_search, "search");
-                    activity.startActivity(i, options.toBundle());
+                    activity.startActivity(i, options.toBundle());*/
+                    activity.startActivity(i);
                 }
             });
+
+            DisplayMetrics metrics = activity.getResources().getDisplayMetrics();
+            float device_TotalWidth = metrics.widthPixels;
+            int  px = (int) (getResources().getDimension(R.dimen.home_icon_width) / metrics.density);
+
+            if(device_TotalWidth * 0.9 < px * 4){
+                ((GridLayout)v.findViewById(R.id.layout_grid)).setColumnCount(3);
+            }
 
             v.findViewById(R.id.img_artis).setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -92,7 +105,7 @@ public class FragmentHome extends Fragment {
                 @Override
                 public void onClick(View v) {
                     Intent i = new Intent(activity, BarangActivity.class);
-                    i.putExtra("jenis", "Merchandise");
+                    i.putExtra(Constant.EXTRA_JENIS_BARANG, Constant.BARANG_MERCHANDISE);
                     startActivity(i);
                 }
             });
@@ -108,7 +121,32 @@ public class FragmentHome extends Fragment {
                 @Override
                 public void onClick(View v) {
                     Intent i = new Intent(activity, BarangActivity.class);
-                    i.putExtra("jenis", "Preloved");
+                    i.putExtra(Constant.EXTRA_JENIS_BARANG, Constant.BARANG_PRELOVED);
+                    startActivity(i);
+                }
+            });
+
+            /*v.findViewById(R.id.btn_greeting).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent i = new Intent(activity, OrderGreetingActivity.class);
+                    startActivity(i);
+                }
+            });*/
+
+            v.findViewById(R.id.btn_donasi).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent i = new Intent(activity, BarangActivity.class);
+                    i.putExtra(Constant.EXTRA_JENIS_BARANG, Constant.BARANG_DONASI);
+                    startActivity(i);
+                }
+            });
+
+            v.findViewById(R.id.btn_news).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent i = new Intent(activity, HotNewsActivity.class);
                     startActivity(i);
                 }
             });
@@ -130,7 +168,8 @@ public class FragmentHome extends Fragment {
 
     private void initSlider(){
         //Inisialisasi slider
-        ApiVolleyManager.getInstance().addRequest(activity, Constant.URL_HOME_SLIDE, ApiVolleyManager.METHOD_GET, Constant.HEADER_AUTH, new AppRequestCallback(new AppRequestCallback.RequestListener() {
+        ApiVolleyManager.getInstance().addRequest(activity, Constant.URL_HOME_SLIDE, ApiVolleyManager.METHOD_GET,
+                Constant.HEADER_AUTH, new AppRequestCallback(new AppRequestCallback.SimpleRequestListener() {
             @Override
             public void onSuccess(String response) {
                 try{
@@ -138,7 +177,8 @@ public class FragmentHome extends Fragment {
                     for(int i = 0; i < arrayslider.length(); i++){
                         //Inisialisasi slider
                         DefaultSliderView sliderView = new DefaultSliderView(activity);
-                        sliderView.image(arrayslider.getJSONObject(i).getString("image")).setScaleType(BaseSliderView.ScaleType.CenterCrop);
+                        sliderView.image(arrayslider.getJSONObject(i).getString("image")).
+                                setScaleType(BaseSliderView.ScaleType.CenterCrop);
                         slider.addSlider(sliderView);
                     }
                     slider.movePrevPosition(false);
@@ -147,7 +187,7 @@ public class FragmentHome extends Fragment {
                     loaded = true;
                 }
                 catch (JSONException e){
-                    Log.e("Slider", e.getMessage());
+                    Log.e(Constant.TAG, e.getMessage());
                     Toast.makeText(activity, R.string.error_json, Toast.LENGTH_SHORT).show();
                 }
             }

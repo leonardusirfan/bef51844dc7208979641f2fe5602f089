@@ -22,6 +22,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.leonardus.irfan.ApiVolleyManager;
+import com.leonardus.irfan.AppRequestCallback;
+import com.leonardus.irfan.Converter;
+import com.leonardus.irfan.JSONBuilder;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -35,15 +39,11 @@ import java.util.List;
 import id.net.gmedia.selby.Barang.Adapter.RatingAdapter;
 import id.net.gmedia.selby.Barang.Adapter.UlasanAdapter;
 import id.net.gmedia.selby.LoginActivity;
-import id.net.gmedia.selby.Util.AppRequestCallback;
 import id.net.gmedia.selby.Util.AppSharedPreferences;
 import id.net.gmedia.selby.Util.Constant;
 import id.net.gmedia.selby.R;
 import id.net.gmedia.selby.Model.UlasanModel;
-import id.net.gmedia.selby.Util.ApiVolleyManager;
-import id.net.gmedia.selby.Util.Converter;
-import id.net.gmedia.selby.Util.DialogFactory;
-import id.net.gmedia.selby.Util.JSONBuilder;
+import com.leonardus.irfan.DialogFactory;
 
 public class FragmentUlasan extends Fragment {
 
@@ -163,7 +163,8 @@ public class FragmentUlasan extends Fragment {
         JSONBuilder body = new JSONBuilder();
         body.add("id_barang", id);
 
-        ApiVolleyManager.getInstance().addRequest(activity, Constant.URL_BARANG_RATING, ApiVolleyManager.METHOD_POST, Constant.HEADER_AUTH, body.create(), new AppRequestCallback(new AppRequestCallback.RequestListener() {
+        ApiVolleyManager.getInstance().addRequest(activity, Constant.URL_BARANG_RATING, ApiVolleyManager.METHOD_POST,
+                Constant.HEADER_AUTH, body.create(), new AppRequestCallback(new AppRequestCallback.SimpleRequestListener() {
             @Override
             public void onSuccess(String response) {
                 try{
@@ -216,7 +217,8 @@ public class FragmentUlasan extends Fragment {
         body.add("count", count);
         body.add("rating", bintang);
 
-        ApiVolleyManager.getInstance().addRequest(activity, Constant.URL_DETAIL_PRODUK_REVIEW, ApiVolleyManager.METHOD_POST, Constant.HEADER_AUTH, body.create(), new AppRequestCallback(new AppRequestCallback.RequestListener() {
+        ApiVolleyManager.getInstance().addRequest(activity, Constant.URL_DETAIL_PRODUK_REVIEW, ApiVolleyManager.METHOD_POST,
+                Constant.HEADER_AUTH, body.create(), new AppRequestCallback(new AppRequestCallback.SimpleRequestListener() {
             @Override
             public void onSuccess(String response) {
                 try{
@@ -231,13 +233,16 @@ public class FragmentUlasan extends Fragment {
                         for(int i = 0; i < ulasanlist.length(); i++){
                             JSONObject obj = ulasanlist.getJSONObject(i);
                             float rating = (float) obj.getDouble("rating");
-                            UlasanModel ulasan = new UlasanModel(obj.getString("id"), obj.getString("foto"), obj.getString("profile_name"), obj.getString("deskripsi"), rating, Converter.stringDTTToDate(obj.getString("waktu")));
+                            UlasanModel ulasan = new UlasanModel(obj.getString("id"), obj.getString("foto"),
+                                    obj.getString("profile_name"), obj.getString("deskripsi"), rating,
+                                    Converter.stringDTToDate(obj.getString("waktu")));
 
                             if(obj.has("child")){
                                 JSONArray balasan = obj.getJSONArray("child");
                                 for(int j = 0; j < balasan.length(); j++){
                                     ulasan.addBalasan(new UlasanModel(balasan.getJSONObject(j).getString("foto"),
-                                            balasan.getJSONObject(j).getString("profile_name"), balasan.getJSONObject(j).getString("deskripsi"), Converter.stringDTTToDate(balasan.getJSONObject(j).getString("waktu"))));
+                                            balasan.getJSONObject(j).getString("profile_name"), balasan.getJSONObject(j).getString("deskripsi"),
+                                            Converter.stringDTToDate(balasan.getJSONObject(j).getString("waktu"))));
                                 }
                             }
 
@@ -272,7 +277,8 @@ public class FragmentUlasan extends Fragment {
         body.add("count", LOAD_COUNT);
         body.add("rating", bintang);
 
-        ApiVolleyManager.getInstance().addRequest(activity, Constant.URL_DETAIL_PRODUK_REVIEW, ApiVolleyManager.METHOD_POST, Constant.HEADER_AUTH, body.create(), new AppRequestCallback(new AppRequestCallback.RequestListener() {
+        ApiVolleyManager.getInstance().addRequest(activity, Constant.URL_DETAIL_PRODUK_REVIEW, ApiVolleyManager.METHOD_POST,
+                Constant.HEADER_AUTH, body.create(), new AppRequestCallback(new AppRequestCallback.SimpleRequestListener() {
             @Override
             public void onSuccess(String response) {
                 try{
@@ -285,13 +291,17 @@ public class FragmentUlasan extends Fragment {
                         for(int i = 0; i < ulasanlist.length(); i++){
                             JSONObject obj = ulasanlist.getJSONObject(i);
                             float rating = (float) obj.getDouble("rating");
-                            UlasanModel ulasan = new UlasanModel(obj.getString("id"), obj.getString("foto"), obj.getString("profile_name"), obj.getString("deskripsi"), rating, Converter.stringDTTToDate(obj.getString("waktu")));
+                            UlasanModel ulasan = new UlasanModel(obj.getString("id"), obj.getString("foto"),
+                                    obj.getString("profile_name"), obj.getString("deskripsi"), rating,
+                                    Converter.stringDTToDate(obj.getString("waktu")));
 
                             if(obj.has("child")){
                                 JSONArray balasan = obj.getJSONArray("child");
                                 for(int j = 0; j < balasan.length(); j++){
                                     ulasan.addBalasan(new UlasanModel(balasan.getJSONObject(j).getString("foto"),
-                                            balasan.getJSONObject(j).getString("profile_name"), balasan.getJSONObject(j).getString("deskripsi"), Converter.stringDTTToDate(balasan.getJSONObject(j).getString("waktu"))));
+                                            balasan.getJSONObject(j).getString("profile_name"),
+                                            balasan.getJSONObject(j).getString("deskripsi"),
+                                            Converter.stringDTToDate(balasan.getJSONObject(j).getString("waktu"))));
                                 }
                             }
 
@@ -307,7 +317,7 @@ public class FragmentUlasan extends Fragment {
                 }
                 catch (JSONException e){
                     Toast.makeText(activity, R.string.error_json, Toast.LENGTH_SHORT).show();
-                    Log.e("Ulasan", e.toString());
+                    Log.e(Constant.TAG, e.toString());
                 }
             }
 
@@ -367,7 +377,8 @@ public class FragmentUlasan extends Fragment {
         body.add("rating", rating);
         body.add("deskripsi", teks);
 
-        ApiVolleyManager.getInstance().addRequest(activity, Constant.URL_TAMBAH_ULASAN, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(id_user), body.create(), new AppRequestCallback(new AppRequestCallback.RequestListener() {
+        ApiVolleyManager.getInstance().addRequest(activity, Constant.URL_TAMBAH_ULASAN, ApiVolleyManager.METHOD_POST,
+                Constant.getTokenHeader(id_user), body.create(), new AppRequestCallback(new AppRequestCallback.SimpleRequestListener() {
             @Override
             public void onSuccess(String response) {
                 Toast.makeText(activity, "Ulasan berhasil ditambahkan", Toast.LENGTH_SHORT).show();
@@ -389,7 +400,8 @@ public class FragmentUlasan extends Fragment {
         }
         else{
             //Buka dialog balas ulasan
-            dialogBalas = DialogFactory.getInstance().createDialog(activity, R.layout.popup_barang_balas, 70, 45);
+            dialogBalas = DialogFactory.getInstance().createDialog(activity, R.layout.popup_barang_balas,
+                    70, 45);
             final EditText dialog_txt_ulasan = dialogBalas.findViewById(R.id.txt_ulasan);
             Button btn_kirim = dialogBalas.findViewById(R.id.btn_kirim);
 
@@ -408,7 +420,9 @@ public class FragmentUlasan extends Fragment {
                         body.add("rating", 0);
                         body.add("deskripsi", dialog_txt_ulasan.getText().toString());
 
-                        ApiVolleyManager.getInstance().addRequest(activity, Constant.URL_TAMBAH_ULASAN, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(id_user), body.create(), new AppRequestCallback(new AppRequestCallback.RequestListener() {
+                        ApiVolleyManager.getInstance().addRequest(activity, Constant.URL_TAMBAH_ULASAN,
+                                ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(id_user), body.create(),
+                                new AppRequestCallback(new AppRequestCallback.SimpleRequestListener() {
                             @Override
                             public void onSuccess(String response) {
                                 Toast.makeText(activity, "Ulasan berhasil ditambahkan", Toast.LENGTH_SHORT).show();

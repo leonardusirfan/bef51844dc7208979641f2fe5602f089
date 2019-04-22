@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Selby</string>
+    <string name="app_name">Selbi</string>
     <string name="user">User</string>
     <string name="artis">Artist</string>
     <string name="penjual">Seller</string>
@@ -64,6 +64,7 @@
     <string name="barang_asuransi">"Insurance"</string>
     <string name="barang_beli_langsung">"Buy Now"</string>
     <string name="barang_pesan_sekarang">"Order Now"</string>
+    <string name="barang_lama_terpakai">Used</string>
     <string name="barang_spesifikasi">Specification</string>
     <string name="barang_kategori">Category</string>
     <string name="barang_berat">Weight</string>
@@ -146,6 +147,12 @@
         <item>gram</item>
         <item>kilogram</item>
         <item>ton</item>
+    </string-array>
+
+    <string-array name="satuan_lama_terpakai">
+        <item>days</item>
+        <item>months</item>
+        <item>years</item>
     </string-array>
 
     <string-array name="item_kondisi">

@@ -16,12 +16,11 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.5" />
 
-    <ImageView
+    <com.leonardus.irfan.TopCropImageView
         android:id="@+id/img_artis"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:contentDescription="@string/artis"
-        android:scaleType="centerCrop"
         android:transitionName="artis"
         app:layout_constraintBottom_toTopOf="@+id/guideline3"
         app:layout_constraintEnd_toEndOf="parent"
@@ -42,7 +41,9 @@
         android:layout_width="match_parent"
         android:layout_height="?android:attr/actionBarSize"
         android:background="@android:color/transparent"
-        android:elevation="0dp">
+        android:elevation="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
     </android.support.v7.widget.Toolbar>
 
@@ -64,48 +65,60 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <LinearLayout
+            <com.leonardus.irfan.LockableScrollView
+                android:id="@+id/scroll"
+                android:scrollbars="none"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:padding="@dimen/padding20">
+                android:layout_height="match_parent">
 
-                <TextView
-                    android:id="@+id/txt_artis"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:textSize="@dimen/text24"
-                    android:textStyle="bold" />
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:layout_marginTop="@dimen/padding10">
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:paddingTop="@dimen/padding20"
+                    android:paddingStart="@dimen/padding20"
+                    android:paddingEnd="@dimen/padding20"
+                    android:paddingBottom="@dimen/text_gradient_height">
 
                     <TextView
-                        android:id="@+id/txt_detail"
-                        android:layout_height="match_parent"
+                        android:id="@+id/txt_artis"
                         android:layout_width="match_parent"
-                        android:transitionName="detail"
-                        android:textSize="@dimen/text14" />
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:textSize="@dimen/text24"
+                        android:textStyle="bold" />
 
-                    <ImageView
-                        android:contentDescription="@null"
-                        android:src="@drawable/style_rectangle_gradient"
+                    <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/text_gradient_height"
-                        android:layout_alignParentBottom="true"/>
-                </RelativeLayout>
-            </LinearLayout>
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:layout_marginTop="@dimen/padding10">
+
+                        <TextView
+                            android:id="@+id/txt_detail"
+                            android:layout_height="match_parent"
+                            android:layout_width="match_parent"
+                            android:transitionName="detail"
+                            android:textSize="@dimen/text14" />
+
+                    </RelativeLayout>
+                </LinearLayout>
+            </com.leonardus.irfan.LockableScrollView>
+
+            <ImageView
+                android:id="@+id/img_gradient"
+                android:contentDescription="@null"
+                android:src="@drawable/style_rectangle_gradient"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/text_gradient_height"
+                android:layout_alignParentBottom="true"/>
 
             <Button
                 android:id="@+id/btn_detail"
                 android:layout_width="@dimen/button_size"
                 android:layout_height="@dimen/button_size"
                 android:layout_margin="@dimen/text20"
-                android:background="@drawable/upicon"
+                android:background="@drawable/viewlessprofile"
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentEnd="true"/>
 
@@ -141,8 +154,8 @@
                 android:layout_weight="0.5"
                 android:gravity="center"
                 android:text="@string/artis_lihat_kegiatan"
-                android:textColor="#fff"
-                android:background="@color/orange"
+                android:textColor="@color/dark_blue"
+                android:background="@color/white"
                 android:textSize="@dimen/text12" />
 
             <Button
@@ -152,7 +165,8 @@
                 android:layout_weight="0.5"
                 android:gravity="center"
                 android:text="@string/artis_lihat_produk"
-                android:background="#fff"
+                android:textColor="@color/white"
+                android:background="@color/dark_blue"
                 android:textSize="@dimen/text12" />
         </LinearLayout>
 

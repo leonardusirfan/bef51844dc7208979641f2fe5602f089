@@ -20,6 +20,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.gson.Gson;
+import com.leonardus.irfan.Converter;
 
 import java.util.List;
 
@@ -36,7 +37,7 @@ import id.net.gmedia.selby.Feed.FeedItem.RekomendasiItemModel;
 import id.net.gmedia.selby.Feed.FeedItem.TextItemModel;
 import id.net.gmedia.selby.Home.HomeActivity;
 import id.net.gmedia.selby.R;
-import id.net.gmedia.selby.Util.Converter;
+import com.leonardus.irfan.TopCropCircularImageView;
 
 public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -89,10 +90,10 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             final TextItemModel item = (TextItemModel)listItem.get(i);
             final TextViewHolder holder = (TextViewHolder)viewHolder;
 
-            Glide.with(context).load(item.getArtis().getImage()).apply(new RequestOptions().circleCrop()).thumbnail(0.5f).into(holder.img_user);
+            Glide.with(context).load(item.getArtis().getImage()).apply(new RequestOptions()).thumbnail(0.5f).into(holder.img_user);
             holder.txt_user.setText(item.getArtis().getNama());
             holder.txt_detail.setText(R.string.feed_status);
-            holder.txt_tanggal.setText(Converter.DateToString(item.getTimestamp()));
+            holder.txt_tanggal.setText(Converter.DToString(item.getTimestamp()));
             holder.txt_status.setText(item.getStatus());
 
             holder.layout_user.setOnClickListener(new View.OnClickListener() {
@@ -110,10 +111,10 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             final BarangItemModel item = (BarangItemModel)listItem.get(i);
             final BarangViewHolder holder = (BarangViewHolder)viewHolder;
 
-            Glide.with(context).load(item.getArtis().getImage()).apply(new RequestOptions().circleCrop()).thumbnail(0.5f).into(holder.img_user);
+            Glide.with(context).load(item.getArtis().getImage()).apply(new RequestOptions()).thumbnail(0.5f).into(holder.img_user);
             holder.txt_user.setText(item.getArtis().getNama());
             holder.txt_detail.setText(R.string.feed_barang);
-            holder.txt_tanggal.setText(Converter.DateToString(item.getTimestamp()));
+            holder.txt_tanggal.setText(Converter.DToString(item.getTimestamp()));
 
             BarangItemAdapter adapter = new BarangItemAdapter(item.getListBarang());
             holder.rv_barang.setItemAnimator(new DefaultItemAnimator());
@@ -147,9 +148,9 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             final Gambar1ViewHolder holder = (Gambar1ViewHolder) viewHolder;
 
             holder.txt_user.setText(item.getArtis().getNama());
-            holder.txt_tanggal.setText(Converter.DateToString(item.getTimestamp()));
+            holder.txt_tanggal.setText(Converter.DToString(item.getTimestamp()));
             holder.txt_detail.setText(R.string.feed_gambar1);
-            Glide.with(context).load(item.getArtis().getImage()).apply(new RequestOptions().circleCrop()).thumbnail(0.5f).into(holder.img_user);
+            Glide.with(context).load(item.getArtis().getImage()).apply(new RequestOptions()).thumbnail(0.5f).into(holder.img_user);
             Glide.with(context).load(item.getListGambar().get(0)).transition(DrawableTransitionOptions.withCrossFade()).into(holder.img_artis);
 
             if(!item.getStatus().equals("")){
@@ -192,9 +193,9 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             final Gambar2ViewHolder holder = (Gambar2ViewHolder) viewHolder;
 
             holder.txt_user.setText(item.getArtis().getNama());
-            holder.txt_tanggal.setText(Converter.DateToString(item.getTimestamp()));
+            holder.txt_tanggal.setText(Converter.DToString(item.getTimestamp()));
             holder.txt_detail.setText(context.getResources().getString(R.string.feed_gambar, 2));
-            Glide.with(context).load(item.getArtis().getImage()).apply(new RequestOptions().circleCrop()).thumbnail(0.5f).into(holder.img_user);
+            Glide.with(context).load(item.getArtis().getImage()).apply(new RequestOptions()).thumbnail(0.5f).into(holder.img_user);
             Glide.with(context).load(item.getListGambar().get(0)).transition(DrawableTransitionOptions.withCrossFade()).into(holder.img_artis1);
             Glide.with(context).load(item.getListGambar().get(1)).transition(DrawableTransitionOptions.withCrossFade()).into(holder.img_artis2);
 
@@ -245,11 +246,11 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             final Gambar3ViewHolder holder = (Gambar3ViewHolder) viewHolder;
 
             holder.txt_user.setText(item.getArtis().getNama());
-            holder.txt_tanggal.setText(Converter.DateToString(item.getTimestamp()));
+            holder.txt_tanggal.setText(Converter.DToString(item.getTimestamp()));
 
             String detail = context.getResources().getString(R.string.feed_gambar, item.getListGambar().size());
             holder.txt_detail.setText(detail);
-            Glide.with(context).load(item.getArtis().getImage()).apply(new RequestOptions().circleCrop()).thumbnail(0.5f).into(holder.img_user);
+            Glide.with(context).load(item.getArtis().getImage()).apply(new RequestOptions()).thumbnail(0.5f).into(holder.img_user);
             Glide.with(context).load(item.getListGambar().get(0)).transition(DrawableTransitionOptions.withCrossFade()).into(holder.img_artis1);
             Glide.with(context).load(item.getListGambar().get(1)).transition(DrawableTransitionOptions.withCrossFade()).into(holder.img_artis2);
             Glide.with(context).load(item.getListGambar().get(2)).transition(DrawableTransitionOptions.withCrossFade()).into(holder.img_artis3);
@@ -307,10 +308,10 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             final LelangItemModel item = (LelangItemModel)listItem.get(i);
             final LelangViewHolder holder = (LelangViewHolder)viewHolder;
 
-            Glide.with(context).load(item.getArtis().getImage()).apply(new RequestOptions().circleCrop()).thumbnail(0.5f).into(holder.img_user);
+            Glide.with(context).load(item.getArtis().getImage()).apply(new RequestOptions()).thumbnail(0.5f).into(holder.img_user);
             holder.txt_user.setText(item.getArtis().getNama());
             holder.txt_detail.setText(R.string.feed_lelang);
-            holder.txt_tanggal.setText(Converter.DateToString(item.getTimestamp()));
+            holder.txt_tanggal.setText(Converter.DToString(item.getTimestamp()));
             holder.txt_barang.setText(item.getLelang().getNama());
             Glide.with(context).load(item.getLelang().getUrl()).thumbnail(0.3f).into(holder.img_barang);
 
@@ -349,14 +350,14 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             final KegiatanItemModel item = (KegiatanItemModel) listItem.get(i);
             final KegiatanViewHolder holder = (KegiatanViewHolder) viewHolder;
 
-            Glide.with(context).load(item.getArtis().getImage()).apply(new RequestOptions().circleCrop()).thumbnail(0.5f).into(holder.img_user);
+            Glide.with(context).load(item.getArtis().getImage()).apply(new RequestOptions()).thumbnail(0.5f).into(holder.img_user);
             holder.txt_user.setText(item.getArtis().getNama());
             holder.txt_detail.setText(R.string.feed_kegiatan);
-            holder.txt_tanggal.setText(Converter.DateToString(item.getTimestamp()));
+            holder.txt_tanggal.setText(Converter.DToString(item.getTimestamp()));
 
             holder.txt_judul_kegiatan.setText(item.getKegiatan().getJudul());
             holder.txt_tempat_kegiatan.setText(item.getKegiatan().getTempat());
-            holder.txt_tanggal_kegiatan.setText(Converter.DateToString(item.getKegiatan().getTanggal()));
+            holder.txt_tanggal_kegiatan.setText(Converter.DToString(item.getKegiatan().getTanggal()));
             holder.txt_deskripsi_kegiatan.setText(item.getKegiatan().getDeskripsi());
 
             holder.btn_lihat_semua.setOnClickListener(new View.OnClickListener() {
@@ -400,7 +401,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     class TextViewHolder extends RecyclerView.ViewHolder{
 
         TextView txt_user, txt_status, txt_tanggal, txt_detail;
-        ImageView img_user;
+        TopCropCircularImageView img_user;
         RelativeLayout layout_user;
 
         TextViewHolder(@NonNull View itemView) {
@@ -427,7 +428,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     class BarangViewHolder extends RecyclerView.ViewHolder{
 
         TextView txt_user, txt_tanggal, txt_detail;
-        ImageView img_user;
+        TopCropCircularImageView img_user;
         RecyclerView rv_barang;
         LinearLayout btn_lihat_semua;
         RelativeLayout layout_user;
@@ -447,7 +448,8 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     class LelangViewHolder extends RecyclerView.ViewHolder{
 
         TextView txt_user, txt_tanggal, txt_barang, txt_detail;
-        ImageView img_user, img_barang;
+        TopCropCircularImageView img_user;
+        ImageView img_barang;
         LinearLayout btn_lihat_semua;
         MaterialCardView layout_barang;
         RelativeLayout layout_user;
@@ -469,7 +471,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     class Gambar1ViewHolder extends RecyclerView.ViewHolder{
 
         TextView txt_user, txt_tanggal, txt_detail;
-        ImageView img_user;
+        TopCropCircularImageView img_user;
         ImageView img_artis;
         TextView txt_status;
         LinearLayout btn_lihat_semua;
@@ -491,7 +493,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     class Gambar2ViewHolder extends RecyclerView.ViewHolder{
 
         TextView txt_user, txt_tanggal, txt_detail;
-        ImageView img_user;
+        TopCropCircularImageView img_user;
         ImageView img_artis1;
         ImageView img_artis2;
         TextView txt_status;
@@ -515,7 +517,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     class Gambar3ViewHolder extends RecyclerView.ViewHolder{
 
         TextView txt_user, txt_tanggal, txt_detail;
-        ImageView img_user;
+        TopCropCircularImageView img_user;
         ImageView img_artis1, img_artis2, img_artis3;
         TextView txt_status;
         LinearLayout btn_lihat_semua;
@@ -538,7 +540,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     class KegiatanViewHolder extends RecyclerView.ViewHolder{
         TextView txt_user, txt_tanggal, txt_detail;
-        ImageView img_user;
+        TopCropCircularImageView img_user;
         TextView txt_judul_kegiatan, txt_tempat_kegiatan, txt_tanggal_kegiatan, txt_deskripsi_kegiatan;
         LinearLayout btn_lihat_semua;
         RelativeLayout layout_user;

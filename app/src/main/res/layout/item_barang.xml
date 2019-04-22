@@ -16,13 +16,28 @@
         android:layout_height="@dimen/barang_item_height_small"
         app:cardCornerRadius="@dimen/padding10">
 
-        <ImageView
-            android:id="@+id/img_barang"
-            android:contentDescription="@string/barang"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@drawable/artis2"
-            android:scaleType="centerCrop"/>
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/img_barang"
+                android:contentDescription="@string/barang"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"/>
+
+            <ImageView
+                android:id="@+id/img_donasi"
+                android:layout_width="@dimen/medium_icon_size"
+                android:layout_height="@dimen/medium_icon_size"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentTop="true"
+                android:layout_margin="@dimen/dp10"
+                android:visibility="invisible"
+                android:src="@drawable/donasi"/>
+
+        </RelativeLayout>
 
     </android.support.v7.widget.CardView>
 
@@ -59,14 +74,13 @@
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/padding10">
 
-        <ImageView
+        <com.leonardus.irfan.TopCropCircularImageView
             android:id="@+id/img_pelapak"
             android:contentDescription="@string/penjual"
             android:layout_width="@dimen/item_barang_icon_size"
             android:layout_height="@dimen/item_barang_icon_size"
             android:layout_alignParentStart="true"
-            android:scaleType="centerCrop"
-            android:src="@drawable/artis2"/>
+            android:scaleType="centerCrop" />
 
         <RatingBar
             android:id="@+id/rate_pelapak"
@@ -111,8 +125,9 @@
         android:layout_marginEnd="@dimen/padding10"
         android:layout_height="@dimen/item_barang_button_height"
         android:layout_marginTop="@dimen/padding5"
+        android:layout_marginBottom="@dimen/dp5"
         android:text="@string/barang_beli_langsung"
-        android:background="@drawable/style_fullrounded_gold_rectangle"
+        android:background="@drawable/style_fullrounded_dark_blue_rectangle"
         android:textColor="@color/white"
         android:textSize="@dimen/text10"
         android:textAllCaps="false"

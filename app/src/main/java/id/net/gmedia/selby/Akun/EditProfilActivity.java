@@ -14,14 +14,14 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.gson.Gson;
+import com.leonardus.irfan.ApiVolleyManager;
+import com.leonardus.irfan.AppRequestCallback;
+import com.leonardus.irfan.JSONBuilder;
 
 import id.net.gmedia.selby.Home.HomeActivity;
 import id.net.gmedia.selby.Model.UserModel;
 import id.net.gmedia.selby.R;
-import id.net.gmedia.selby.Util.ApiVolleyManager;
-import id.net.gmedia.selby.Util.AppRequestCallback;
 import id.net.gmedia.selby.Util.Constant;
-import id.net.gmedia.selby.Util.JSONBuilder;
 
 public class EditProfilActivity extends AppCompatActivity {
 
@@ -74,7 +74,9 @@ public class EditProfilActivity extends AppCompatActivity {
         body.add("alamat", txt_alamat.getText().toString());
         body.add("no_telp", txt_telepon.getText().toString());
 
-        ApiVolleyManager.getInstance().addRequest(this, Constant.URL_EDIT_PROFIL, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body.create(), new AppRequestCallback(new AppRequestCallback.RequestListener() {
+        ApiVolleyManager.getInstance().addRequest(this, Constant.URL_EDIT_PROFIL, ApiVolleyManager.METHOD_POST,
+                Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body.create(),
+                new AppRequestCallback(new AppRequestCallback.SimpleRequestListener() {
             @Override
             public void onSuccess(String response) {
                 Toast.makeText(EditProfilActivity.this, "Edit Profil Berhasil", Toast.LENGTH_SHORT).show();

@@ -9,6 +9,7 @@
     <dimen name="text20">30sp</dimen>
     <dimen name="text24">36sp</dimen>
     <dimen name="text50">75sp</dimen>
+    <dimen name="text70">105sp</dimen>
     <dimen name="padding1">1.5dp</dimen>
     <dimen name="padding2">3dp</dimen>
     <dimen name="padding5">7.5dp</dimen>
@@ -17,7 +18,7 @@
     <dimen name="padding20">30dp</dimen>
     <dimen name="button_height">69dp</dimen>
 
-    <dimen name="artis_item_height_thumbnail">300dp</dimen>
+    <dimen name="artis_item_height_thumbnail">240dp</dimen>
     <dimen name="lelang_item_height">330dp</dimen>
     <dimen name="barang_item_height_small">225dp</dimen>
     <dimen name="barang_item_width_small">150dp</dimen>
@@ -26,10 +27,12 @@
 
     <dimen name="favorit_size">36dp</dimen>
     <dimen name="button_size">75dp</dimen>
+    <dimen name="home_button_size">105dp</dimen>
     <dimen name="small_button_size">60dp</dimen>
     <dimen name="button_width">150dp</dimen>
     <dimen name="profile_size">110dp</dimen>
     <dimen name="profile_size_small">60dp</dimen>
+    <dimen name="news_image_height">450dp</dimen>
 
     <dimen name="textview_height">750dp</dimen>
 
@@ -50,6 +53,7 @@
 
     <dimen name="rounded_radius">300dp</dimen>
     <dimen name="padding35">55dp</dimen>
+    <dimen name="padding30">45dp</dimen>
     <dimen name="item_kategori_width">180dp</dimen>
 
     <dimen name="item_barang_icon_size">36dp</dimen>
@@ -57,9 +61,10 @@
 
     <dimen name="detail_barang_button_width">180dp</dimen>
     <dimen name="detail_barang_button_height">45dp</dimen>
+    <dimen name="detail_barang_profile_size">90dp</dimen>
 
     <dimen name="item_barang_button_height">45dp</dimen>
-    <dimen name="home_icon_width">90dp</dimen>
+    <dimen name="home_icon_width">96dp</dimen>
 
     <dimen name="popup_icon_size">120dp</dimen>
     <dimen name="popup_icon_padding">60dp</dimen>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/bg_chat"
+        android:scaleType="centerCrop"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_chat"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:clipToPadding="false"
+        android:padding="@dimen/dp10"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout5"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <include
+        android:id="@+id/include"
+        layout="@layout/view_divider"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/padding1"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout5" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout5"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <EditText
+            android:id="@+id/txt_chat"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.8"
+            android:minLines="1"
+            android:background="@color/white"
+            android:hint="Tulis pesan"
+            android:inputType="textMultiLine"
+            android:padding="@dimen/dp20"
+            android:textSize="@dimen/sp16" />
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.2"
+            android:layout_margin="@dimen/dp15">
+
+            <ImageView
+                android:id="@+id/img_kirim"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/sent"/>
+
+            <ProgressBar
+                android:id="@+id/pb_kirim"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="invisible"/>
+
+        </FrameLayout>
+
+
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>

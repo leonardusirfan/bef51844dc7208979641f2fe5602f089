@@ -13,9 +13,14 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.leonardus.irfan.ApiVolleyManager;
+import com.leonardus.irfan.AppRequestCallback;
+import com.leonardus.irfan.JSONBuilder;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONTokener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,10 +29,7 @@ import java.util.Locale;
 import id.net.gmedia.selby.Barang.Adapter.BidAdapter;
 import id.net.gmedia.selby.Model.BidModel;
 import id.net.gmedia.selby.R;
-import id.net.gmedia.selby.Util.ApiVolleyManager;
-import id.net.gmedia.selby.Util.AppRequestCallback;
 import id.net.gmedia.selby.Util.Constant;
-import id.net.gmedia.selby.Util.JSONBuilder;
 
 public class ActivityBidList extends AppCompatActivity {
     /*
@@ -135,26 +137,33 @@ public class ActivityBidList extends AppCompatActivity {
         body.add("start", 0);
         body.add("count", 0);
 
-        ApiVolleyManager.getInstance().addRequest(this, Constant.URL_LIST_BID, ApiVolleyManager.METHOD_POST, Constant.HEADER_AUTH, body.create(), new AppRequestCallback(new AppRequestCallback.RequestListener() {
+        ApiVolleyManager.getInstance().addRequest(this, Constant.URL_LIST_BID, ApiVolleyManager.METHOD_POST,
+                Constant.HEADER_AUTH, body.create(), new AppRequestCallback(new AppRequestCallback.SimpleRequestListener() {
             @Override
             public void onSuccess(String response) {
                 try{
-                    JSONObject jsonresult = new JSONObject(response);
-                    ArrayList<BidModel> allBid = new ArrayList<>();
-                    total = jsonresult.getInt("total_records");
-                    //txt_jumlah_bid.setText(String.valueOf(total));
-                    JSONArray arraybid = jsonresult.getJSONArray("bid");
+                    Object json = new JSONTokener(response).nextValue();
 
-                    for(int i = 0; i < arraybid.length(); i++){
-                        JSONObject jsonlelang = arraybid.getJSONObject(i);
-                        allBid.add(new BidModel(jsonlelang.getString("profile_name"), jsonlelang.getDouble("nominal")));
+                    if(json instanceof JSONObject){
+                        JSONObject jsonresult = new JSONObject(response);
+                        ArrayList<BidModel> allBid = new ArrayList<>();
+                        total = jsonresult.getInt("total_records");
+                        //txt_jumlah_bid.setText(String.valueOf(total));
+                        JSONArray arraybid = jsonresult.getJSONArray("bid");
+
+                        for(int i = 0; i < arraybid.length(); i++){
+                            JSONObject jsonlelang = arraybid.getJSONObject(i);
+                            allBid.add(new BidModel(jsonlelang.getString("profile_name"),
+                                    jsonlelang.getString("foto"),
+                                    jsonlelang.getDouble("nominal")));
+                        }
+
+                        initList(allBid);
                     }
-
-                    initList(allBid);
                 }
                 catch (JSONException e){
                     Toast.makeText(ActivityBidList.this, R.string.error_json, Toast.LENGTH_SHORT).show();
-                    Log.e("ListBid", e.getMessage());
+                    Log.e(Constant.TAG, e.getMessage());
                 }
             }
 
@@ -184,7 +193,8 @@ public class ActivityBidList extends AppCompatActivity {
         listShow = listBid.get(page);
         adapter = new BidAdapter(listShow);
         rv_bid.setAdapter(adapter);
-        txt_info_bid.setText(String.format(Locale.getDefault(), "Showing %d to %d of %d entries", 10 * page, 10 * page + listShow.size(), total));
+        txt_info_bid.setText(String.format(Locale.getDefault(), "Showing %d to %d of %d entries",
+                10 * page, 10 * page + listShow.size(), total));
     }
 
     //FUNGSI MENU ACTION BAR

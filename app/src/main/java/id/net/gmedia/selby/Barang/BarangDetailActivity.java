@@ -17,7 +17,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,6 +25,13 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.gson.Gson;
+import com.leonardus.irfan.ApiVolleyManager;
+import com.leonardus.irfan.AppRequestCallback;
+import com.leonardus.irfan.Converter;
+import com.leonardus.irfan.ImageSlider.ImageSlider;
+import com.leonardus.irfan.ImageSlider.ImageSliderAdapter;
+import com.leonardus.irfan.JSONBuilder;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -38,20 +44,15 @@ import id.net.gmedia.selby.Barang.Adapter.DetailBarangViewPagerAdapter;
 import id.net.gmedia.selby.Barang.Fragment.FragmentDetailBarang;
 import id.net.gmedia.selby.Barang.Fragment.FragmentDiskusiBarang;
 import id.net.gmedia.selby.Barang.Fragment.FragmentUlasan;
+import id.net.gmedia.selby.Chat.ChatDetailActivity;
+import id.net.gmedia.selby.Chat.UserModel;
 import id.net.gmedia.selby.Home.HomeActivity;
-import id.net.gmedia.selby.Util.AppRequestCallback;
 import id.net.gmedia.selby.Util.AppSharedPreferences;
 import id.net.gmedia.selby.Util.Constant;
 import id.net.gmedia.selby.LoginActivity;
 import id.net.gmedia.selby.R;
-import id.net.gmedia.selby.Util.ApiVolleyManager;
-import id.net.gmedia.selby.Util.Converter;
-import id.net.gmedia.selby.Util.DialogFactory;
-import id.net.gmedia.selby.Util.ImageContainer;
-import id.net.gmedia.selby.Util.ImageSliderAdapter;
-import id.net.gmedia.selby.Util.ImageSliderViewPager;
-import id.net.gmedia.selby.Util.JSONBuilder;
-import me.relex.circleindicator.CircleIndicator;
+import com.leonardus.irfan.DialogFactory;
+import com.leonardus.irfan.TopCropCircularImageView;
 import rjsv.floatingmenu.floatingmenubutton.FloatingMenuButton;
 
 public class BarangDetailActivity extends AppCompatActivity {
@@ -65,7 +66,6 @@ public class BarangDetailActivity extends AppCompatActivity {
     //Variabel atribut barang
     private String nama_barang;
     private String id = "";
-    private String id_penjual = "";
     private String deskripsi = "";
     private String kategori = "";
     private String berat = "";
@@ -74,24 +74,23 @@ public class BarangDetailActivity extends AppCompatActivity {
     private boolean favorit = false;
     private boolean follow = false;
 
+    //Variabel atribut penjual
+    private String penjual_uid;
+    private UserModel penjual;
+
     //Variabel UI
     private TabLayout tabLayout;
     private ViewPager viewPager;
-    private ImageSliderViewPager sliderView;
-    private CircleIndicator indicator;
+    private ImageSlider slider;
     private FloatingMenuButton fab_tambah;
     private Toolbar toolbar;
     private Button btn_follow;
     private CollapsingToolbarLayout collapsingToolbar;
     //private ImageView btn_chat;
-    private Button btn_chat;
     private TextView txt_title, txt_nama, txt_harga, txt_kondisi, txt_dilihat, txt_terkirim;
     private LinearLayout layout_pelapak;
 
     private DetailBarangViewPagerAdapter adapter;
-
-    //Variabel list gambar slider barang
-    ArrayList<ImageContainer> listImage = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,13 +106,11 @@ public class BarangDetailActivity extends AppCompatActivity {
         viewPager = findViewById(R.id.viewPager);
         tabLayout = findViewById(R.id.tabs);
         toolbar = findViewById(R.id.toolbar);
-        sliderView = findViewById(R.id.pager);
-        indicator = findViewById(R.id.indicator);
+        slider = findViewById(R.id.slider);
         fab_tambah = findViewById(R.id.fab_tambah);
         txt_dilihat = findViewById(R.id.txt_dilihat);
         txt_terkirim = findViewById(R.id.txt_terkirim);
         btn_follow = findViewById(R.id.btn_follow);
-        btn_chat = findViewById(R.id.btn_chat);
         layout_pelapak = findViewById(R.id.layout_pelapak);
 
         //Inisialisasi Toolbar
@@ -159,6 +156,17 @@ public class BarangDetailActivity extends AppCompatActivity {
         if(AppSharedPreferences.isLoggedIn(this)){
             initFloatingActionButton();
         }
+
+        findViewById(R.id.btn_chat).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Gson gson = new Gson();
+                Intent i = new Intent(BarangDetailActivity.this, ChatDetailActivity.class);
+                i.putExtra(Constant.EXTRA_USER, gson.toJson(penjual));
+                i.putExtra(Constant.EXTRA_CHAT_FROM, penjual_uid);
+                startActivity(i);
+            }
+        });
     }
 
     private void initFloatingActionButton(){
@@ -197,11 +205,13 @@ public class BarangDetailActivity extends AppCompatActivity {
 
     private void followPenjual(){
         //Mengubah status follow/unfollow terhadap penjual
-        if(!id_penjual.equals("")){
+        if(!penjual.getId().equals("")){
             JSONBuilder body = new JSONBuilder();
-            body.add("id_penjual", id_penjual);
+            body.add("id_penjual", penjual.getId());
 
-            ApiVolleyManager.getInstance().addRequest(this, Constant.URL_FOLLOW_PENJUAL, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body.create(), new AppRequestCallback(new AppRequestCallback.RequestListener() {
+            ApiVolleyManager.getInstance().addRequest(this, Constant.URL_FOLLOW_PENJUAL,
+                    ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()),
+                    body.create(), new AppRequestCallback(new AppRequestCallback.SimpleRequestListener() {
                 @Override
                 public void onSuccess(String response) {
                     if(follow){
@@ -245,16 +255,18 @@ public class BarangDetailActivity extends AppCompatActivity {
 
                 @Override
                 public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                    if (appBarLayout.getTotalScrollRange() + verticalOffset <= getActionBarHeight()) {
-                        if(nama_barang != null){
-                            txt_title.setText(nama_barang);
+                    if(getSupportActionBar() != null){
+                        if (appBarLayout.getTotalScrollRange() + verticalOffset <= getActionBarHeight()) {
+                            if(nama_barang != null){
+                                txt_title.setText(nama_barang);
+                            }
+                            isShow = true;
+                            getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                        } else if (isShow) {
+                            txt_title.setText("");
+                            isShow = false;
+                            getSupportActionBar().setBackgroundDrawable(getDrawable(R.drawable.style_rectangle_gradient_black));
                         }
-                        isShow = true;
-                        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                    } else if (isShow) {
-                        txt_title.setText("");
-                        isShow = false;
-                        getSupportActionBar().setBackgroundDrawable(getDrawable(R.drawable.style_rectangle_gradient_black));
                     }
                 }
             });
@@ -267,7 +279,9 @@ public class BarangDetailActivity extends AppCompatActivity {
         id = getIntent().getStringExtra("barang");
         body.add("id", id);
 
-        ApiVolleyManager.getInstance().addRequest(this, Constant.URL_DETAIL_PRODUK, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body.create(), new AppRequestCallback(new AppRequestCallback.AdvancedRequestListener() {
+        ApiVolleyManager.getInstance().addRequest(this, Constant.URL_DETAIL_PRODUK,
+                ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()),
+                body.create(), new AppRequestCallback(new AppRequestCallback.RequestListener() {
             @Override
             public void onEmpty(String message) {
                 Toast.makeText(BarangDetailActivity.this,"Barang tidak ditemukan", Toast.LENGTH_SHORT).show();
@@ -299,31 +313,33 @@ public class BarangDetailActivity extends AppCompatActivity {
                         menu.getItem(1).setIcon(R.drawable.ic_favorit_kosong);
                     }
 
-                    id_penjual = barang.getJSONObject("penjual").getString("id");
-                    if(!barang.getJSONObject("penjual").getString("uid").equals(FirebaseAuth.getInstance().getUid())){
+                    penjual = new UserModel(barang.getJSONObject("penjual").getString("id"),
+                            barang.getJSONObject("penjual").getString("nama"),
+                            barang.getJSONObject("penjual").getString("image"));
+                    penjual_uid = barang.getJSONObject("penjual").getString("uid");
+                    if(!penjual_uid.equals(FirebaseAuth.getInstance().getUid())){
                         layout_pelapak.setVisibility(View.VISIBLE);
                     }
-                    Glide.with(BarangDetailActivity.this).load(barang.getJSONObject("penjual").getString("image")).apply(new RequestOptions().circleCrop().priority(Priority.LOW)).thumbnail(0.1f).into((ImageView)findViewById(R.id.img_artis));
+                    Glide.with(BarangDetailActivity.this).load(penjual.getImage()).
+                            apply(new RequestOptions().priority(Priority.LOW)).
+                            into((TopCropCircularImageView) findViewById(R.id.img_artis));
                     follow = barang.getJSONObject("penjual").getInt("followed") == 1;
                     if(follow){
                         btn_follow.setText(R.string.penjual_unfollow);
                     }
 
-                    ImageContainer imageContainer = new ImageContainer();
-                    imageContainer.setImage(barang.getString("image"));
-                    listImage.add(imageContainer);
+                    List<String> listImage = new ArrayList<>();
+                    listImage.add(barang.getString("image"));
                     JSONArray galeri = barang.getJSONArray("gallery");
                     for(int i = 0; i < galeri.length(); i++){
-                        imageContainer = new ImageContainer();
-                        imageContainer.setImage(galeri.getJSONObject(i).getString("image"));
-                        listImage.add(imageContainer);
+                        listImage.add(galeri.getJSONObject(i).getString("image"));
                     }
 
-                    initSlider();
+                    initSlider(listImage);
                 }
                 catch (JSONException e){
                     Toast.makeText(BarangDetailActivity.this, R.string.error_database, Toast.LENGTH_SHORT).show();
-                    Log.e("Barang Detail", e.toString());
+                    Log.e(Constant.TAG, e.toString());
                 }
             }
 
@@ -375,7 +391,10 @@ public class BarangDetailActivity extends AppCompatActivity {
                     body.add("id_barang", id);
                     body.add("jumlah", Integer.parseInt(txt_jumlah.getText().toString()));
 
-                    ApiVolleyManager.getInstance().addRequest(BarangDetailActivity.this, Constant.URL_TAMBAH_KERANJANG, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body.create(), new AppRequestCallback(new AppRequestCallback.RequestListener() {
+                    ApiVolleyManager.getInstance().addRequest(BarangDetailActivity.this,
+                            Constant.URL_TAMBAH_KERANJANG, ApiVolleyManager.METHOD_POST,
+                            Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body.create(),
+                            new AppRequestCallback(new AppRequestCallback.SimpleRequestListener() {
                         @Override
                         public void onSuccess(String response) {
                             Toast.makeText(BarangDetailActivity.this, "Barang berhasil ditambahkan", Toast.LENGTH_SHORT).show();
@@ -424,32 +443,10 @@ public class BarangDetailActivity extends AppCompatActivity {
         viewPager.setAdapter(adapter);
     }
 
-    private void initSlider(){
+    private void initSlider(List<String> listImage){
         //Inisialisasi Slider
-        ImageSliderAdapter sliderAdapter = new ImageSliderAdapter(this, sliderView, listImage, true);
-        sliderView.setAdapter(sliderAdapter);
-
-        indicator.setViewPager(sliderView);
-
-        sliderView.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                if(sliderView.getAdapter()!=null){
-                    ((ImageSliderAdapter)sliderView.getAdapter()).setPosition(position);
-                }
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
-        //sliderAdapter.startTimer();
+        ImageSliderAdapter sliderAdapter = new ImageSliderAdapter(this, listImage, true);
+        slider.setAdapter(sliderAdapter);
 
         setupViewPager(viewPager);
         tabLayout.setupWithViewPager(viewPager);
@@ -506,7 +503,9 @@ public class BarangDetailActivity extends AppCompatActivity {
             JSONBuilder body = new JSONBuilder();
             body.add("id_barang", id);
 
-            ApiVolleyManager.getInstance().addRequest(this, Constant.URL_TAMBAH_FAVORIT, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body.create(), new AppRequestCallback(new AppRequestCallback.RequestListener() {
+            ApiVolleyManager.getInstance().addRequest(this, Constant.URL_TAMBAH_FAVORIT, ApiVolleyManager.METHOD_POST,
+                    Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body.create(),
+                    new AppRequestCallback(new AppRequestCallback.SimpleRequestListener() {
                 @Override
                 public void onSuccess(String response) {
                     final Dialog dialog = DialogFactory.getInstance().createDialog(BarangDetailActivity.this, R.layout.popup_message, 65, 30);
@@ -536,7 +535,9 @@ public class BarangDetailActivity extends AppCompatActivity {
             listId.add(id);
             body.add("id_barang", new JSONArray(listId));
 
-            ApiVolleyManager.getInstance().addRequest(BarangDetailActivity.this, Constant.URL_HAPUS_FAVORIT, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body.create(), new AppRequestCallback(new AppRequestCallback.RequestListener() {
+            ApiVolleyManager.getInstance().addRequest(BarangDetailActivity.this, Constant.URL_HAPUS_FAVORIT,
+                    ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()),
+                    body.create(), new AppRequestCallback(new AppRequestCallback.SimpleRequestListener() {
                 @Override
                 public void onSuccess(String response) {
                     Toast.makeText(BarangDetailActivity.this, "Barang berhasil dihapus", Toast.LENGTH_SHORT).show();

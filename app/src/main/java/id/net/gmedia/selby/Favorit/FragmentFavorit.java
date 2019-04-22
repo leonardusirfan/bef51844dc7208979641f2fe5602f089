@@ -14,10 +14,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.leonardus.irfan.ApiVolleyManager;
+import com.leonardus.irfan.AppRequestCallback;
+import com.leonardus.irfan.JSONBuilder;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -28,12 +32,9 @@ import java.util.List;
 
 import id.net.gmedia.selby.Home.Adapter.BarangAdapter;
 import id.net.gmedia.selby.Model.ArtisModel;
-import id.net.gmedia.selby.Util.AppRequestCallback;
 import id.net.gmedia.selby.Util.Constant;
 import id.net.gmedia.selby.Model.BarangModel;
 import id.net.gmedia.selby.R;
-import id.net.gmedia.selby.Util.ApiVolleyManager;
-import id.net.gmedia.selby.Util.JSONBuilder;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -65,6 +66,7 @@ public class FragmentFavorit extends Fragment {
 
                 TextView txt_kosong = v.findViewById(R.id.txt_kosong);
                 txt_kosong.setText(R.string.kosong_favorit);
+                ((ImageView)v.findViewById(R.id.img_kosong)).setImageResource(R.drawable.wishlistkosong);
             } else {
                 v = inflater.inflate(R.layout.fragment_favorit, container, false);
 
@@ -84,7 +86,8 @@ public class FragmentFavorit extends Fragment {
         body.add("start", 0);
         body.add("count", 0);
 
-        ApiVolleyManager.getInstance().addRequest(activity, Constant.URL_FAVORIT, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), new AppRequestCallback(new AppRequestCallback.RequestListener() {
+        ApiVolleyManager.getInstance().addRequest(activity, Constant.URL_FAVORIT, ApiVolleyManager.METHOD_POST,
+                Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), new AppRequestCallback(new AppRequestCallback.SimpleRequestListener() {
             @Override
             public void onSuccess(String response) {
                 try{
@@ -99,7 +102,7 @@ public class FragmentFavorit extends Fragment {
                 }
                 catch (JSONException e){
                     Toast.makeText(activity, R.string.error_json, Toast.LENGTH_SHORT).show();
-                    Log.e("Favorit", e.toString());
+                    Log.e(Constant.TAG, e.toString());
                 }
             }
 

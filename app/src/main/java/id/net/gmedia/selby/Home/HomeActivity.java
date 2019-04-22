@@ -13,10 +13,8 @@ import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
-import android.util.TypedValue;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
@@ -26,9 +24,10 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.fxn.pix.Pix;
-import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton;
-import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu;
-import com.oguzdev.circularfloatingactionmenu.library.SubActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.leonardus.irfan.ApiVolleyManager;
+import com.leonardus.irfan.AppRequestCallback;
+import com.leonardus.irfan.JSONBuilder;
 import com.otaliastudios.zoom.ZoomLayout;
 
 import java.util.ArrayList;
@@ -40,17 +39,15 @@ import id.net.gmedia.selby.Feed.FragmentFeed;
 import id.net.gmedia.selby.Keranjang.FragmentKeranjang;
 import id.net.gmedia.selby.LoginActivity;
 import id.net.gmedia.selby.R;
-import id.net.gmedia.selby.Upload.UploadBarangActivity;
-import id.net.gmedia.selby.Upload.UploadGambarActivity;
-import id.net.gmedia.selby.Upload.UploadKegiatanActivity;
 import id.net.gmedia.selby.Util.AppSharedPreferences;
+import id.net.gmedia.selby.Util.Constant;
 
 public class HomeActivity extends AppCompatActivity {
 
     //flag untuk double klik exit
     private boolean exit = false;
     //flag untuk tab/fragment yang aktif
-    private boolean fab_visible = false;
+    //private boolean fab_visible = false;
 
     //flag apakah user dalam kondisi sudah login atau belum
     private boolean login = false;
@@ -66,8 +63,8 @@ public class HomeActivity extends AppCompatActivity {
     private ConstraintLayout layout_overlay;
     private CardView layout_galeri_selected;
     private ZoomLayout layout_zoom;
-    private FloatingActionButton fab_post;
-    private SubActionButton button1, button2, button3;
+    /*private FloatingActionButton fab_post;
+    private SubActionButton button1, button2, button3;*/
 
     //Variabel UI galeri (animasi, foto tampil)
     private Animation anim_popin, anim_popout;
@@ -100,10 +97,10 @@ public class HomeActivity extends AppCompatActivity {
         int start_page = getIntent().getIntExtra("start", 0);
 
         //Inisialisasi Floating Action Button
-        if(login && AppSharedPreferences.isPenjual(this)){
+        /*if(login && AppSharedPreferences.isPenjual(this)){
             initFloatingAction();
             fab_post.setVisibility(View.INVISIBLE);
-        }
+        }*/
 
         //Inisialisasi toolbar
         setSupportActionBar(toolbar);
@@ -130,27 +127,32 @@ public class HomeActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()){
                     case R.id.action_home:
+                        bottombar.setBackgroundColor(getResources().getColor(android.R.color.transparent));
                         loadFragment(fragmentHome);
                         break;
                     case R.id.action_feed:
+                        bottombar.setBackgroundColor(getResources().getColor(R.color.white));
                         loadFragment(fragmentFeed);
-                        if(AppSharedPreferences.isPenjual(HomeActivity.this)){
+                        /*if(AppSharedPreferences.isPenjual(HomeActivity.this)){
                             fab_post.setVisibility(View.VISIBLE);
                             button1.setVisibility(View.VISIBLE);
                             button2.setVisibility(View.VISIBLE);
                             button3.setVisibility(View.VISIBLE);
                             fab_visible = true;
-                        }
+                        }*/
                         break;
                     case R.id.action_favorit:
+                        bottombar.setBackgroundColor(getResources().getColor(R.color.white));
                         loadFragment(new FragmentFavorit());
                         break;
                     case R.id.action_keranjang:
+                        bottombar.setBackgroundColor(getResources().getColor(R.color.white));
                         loadFragment(new FragmentKeranjang());
                         break;
                     case R.id.action_akun:
                         if(login){
                             //Jika sudah login, masuk ke menu akun
+                            bottombar.setBackgroundColor(getResources().getColor(R.color.white));
                             loadFragment(fragmentAkun);
                         }
                         else{
@@ -242,12 +244,12 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void loadFragment(Fragment fragment){
-        if(fab_visible){
+       /* if(fab_visible){
             fab_post.setVisibility(View.INVISIBLE);
             button1.setVisibility(View.INVISIBLE);
             button2.setVisibility(View.INVISIBLE);
             button3.setVisibility(View.INVISIBLE);
-        }
+        }*/
 
         FragmentTransaction trans = getSupportFragmentManager().beginTransaction();
         trans.replace(R.id.frame_home, fragment);
@@ -319,7 +321,7 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
-    private void initFloatingAction(){
+    /*private void initFloatingAction(){
         //Inisialisasi view tombol floating action button
         ImageView imageView = new ImageView(this);
         imageView.setImageResource(R.drawable.plus);
@@ -382,13 +384,31 @@ public class HomeActivity extends AppCompatActivity {
                 .addSubActionView(button3)
                 .attachTo(fab_post)
                 .build();
-    }
+    }*/
 
     @Override
     protected void onResume() {
         if(bottombar.getSelectedItemId() == R.id.action_favorit){
             loadFragment(new FragmentFavorit());
         }
+
+        //update FCM id
+        JSONBuilder body = new JSONBuilder();
+        body.add("fcm_id", AppSharedPreferences.getFcmId(this));
+
+        ApiVolleyManager.getInstance().addRequest(this, Constant.URL_FCM_UPDATE, ApiVolleyManager.METHOD_POST,
+                Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body.create(), new AppRequestCallback(new AppRequestCallback.SimpleRequestListener() {
+                    @Override
+                    public void onSuccess(String result) {
+
+                    }
+
+                    @Override
+                    public void onFail(String message) {
+
+                    }
+                }));
+
         super.onResume();
     }
 }

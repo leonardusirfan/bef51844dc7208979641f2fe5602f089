@@ -7,11 +7,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.leonardus.irfan.Converter;
+
 import java.util.List;
 
 import id.net.gmedia.selby.R;
 import id.net.gmedia.selby.Model.UlasanModel;
-import id.net.gmedia.selby.Util.Converter;
 
 public class BalasanAdapter extends RecyclerView.Adapter<BalasanAdapter.BalasanViewHolder> {
 
@@ -32,7 +33,7 @@ public class BalasanAdapter extends RecyclerView.Adapter<BalasanAdapter.BalasanV
         UlasanModel ulasan = listUlasan.get(i);
 
         balasanViewHolder.txt_nama.setText(ulasan.getNama());
-        balasanViewHolder.txt_tanggal.setText(Converter.DateToString(ulasan.getTanggal()));
+        balasanViewHolder.txt_tanggal.setText(Converter.DToString(ulasan.getTanggal()));
         balasanViewHolder.txt_balasan.setText(ulasan.getUlasan());
     }
 

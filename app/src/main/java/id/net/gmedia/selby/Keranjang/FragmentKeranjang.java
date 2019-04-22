@@ -1,7 +1,9 @@
 package id.net.gmedia.selby.Keranjang;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -14,11 +16,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.leonardus.irfan.ApiVolleyManager;
+import com.leonardus.irfan.AppRequestCallback;
+import com.leonardus.irfan.Converter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -30,13 +36,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import id.net.gmedia.selby.Util.AppRequestCallback;
+import id.net.gmedia.selby.Model.BarangJualModel;
+import id.net.gmedia.selby.TransaksiDetailActivity;
 import id.net.gmedia.selby.Util.Constant;
 import id.net.gmedia.selby.Model.ArtisModel;
-import id.net.gmedia.selby.Model.BarangModel;
 import id.net.gmedia.selby.R;
-import id.net.gmedia.selby.Util.ApiVolleyManager;
-import id.net.gmedia.selby.Util.Converter;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -44,6 +48,7 @@ import id.net.gmedia.selby.Util.Converter;
 public class FragmentKeranjang extends Fragment {
 
     private View v;
+    private Context context;
     private boolean needLoad = true;
 
     //Variabel UI
@@ -66,6 +71,7 @@ public class FragmentKeranjang extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        context = container.getContext();
         // Inflate the layout for this fragment
         if(v == null || needLoad){
             v = inflater.inflate(R.layout.fragment_loading, container, false);
@@ -78,6 +84,7 @@ public class FragmentKeranjang extends Fragment {
 
                 TextView txt_kosong = v.findViewById(R.id.txt_kosong);
                 txt_kosong.setText(R.string.kosong_keranjang);
+                ((ImageView)v.findViewById(R.id.img_kosong)).setImageResource(R.drawable.keranjangkosong);
             }
             else{
                 v = inflater.inflate(R.layout.fragment_keranjang, container, false);
@@ -92,7 +99,7 @@ public class FragmentKeranjang extends Fragment {
 
                 //inisialisasi keranjang
                 rv_keranjang.setItemAnimator(new DefaultItemAnimator());
-                RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL,false);
+                RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL,false);
                 rv_keranjang.setLayoutManager(layoutManager);
                 keranjangAdapter = new KeranjangAdapter(FragmentKeranjang.this, listItem);
                 rv_keranjang.setAdapter(keranjangAdapter);
@@ -123,14 +130,14 @@ public class FragmentKeranjang extends Fragment {
                                     JSONArray list = new JSONArray(listId);
                                     JSONObject body = new JSONObject();
                                     body.put("id_keranjang", list);
-                                    System.out.println("List ID : " + list);
 
-                                    ApiVolleyManager.getInstance().addRequest(getContext(), Constant.URL_HAPUS_KERANJANG, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body, new ApiVolleyManager.RequestCallback() {
+                                    ApiVolleyManager.getInstance().addRequest(context, Constant.URL_HAPUS_KERANJANG,
+                                            ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()),
+                                            body, new ApiVolleyManager.RequestCallback() {
                                         @Override
                                         public void onSuccess(String result) {
                                             try{
                                                 JSONObject json = new JSONObject(result);
-                                                System.out.println(result);
                                                 int status = json.getJSONObject("metadata").getInt("status");
                                                 String message = json.getJSONObject("metadata").getString("message");
 
@@ -139,12 +146,12 @@ public class FragmentKeranjang extends Fragment {
                                                     resetFragment();
                                                 }
                                                 else{
-                                                    Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
                                                     bar_loading.setVisibility(View.INVISIBLE);
                                                 }
                                             }
                                             catch (JSONException e){
-                                                Toast.makeText(getContext(), R.string.error_json, Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(context, R.string.error_json, Toast.LENGTH_SHORT).show();
                                                 e.printStackTrace();
                                                 bar_loading.setVisibility(View.INVISIBLE);
                                             }
@@ -152,14 +159,14 @@ public class FragmentKeranjang extends Fragment {
 
                                         @Override
                                         public void onError(String result) {
-                                            Toast.makeText(getContext(), R.string.error_database, Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(context, R.string.error_database, Toast.LENGTH_SHORT).show();
                                             bar_loading.setVisibility(View.INVISIBLE);
                                         }
                                     });
 
                                 }
                                 catch (JSONException e){
-                                    Toast.makeText(getContext(), R.string.error_json, Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(context, R.string.error_json, Toast.LENGTH_SHORT).show();
                                     e.printStackTrace();
                                     bar_loading.setVisibility(View.INVISIBLE);
                                 }
@@ -178,6 +185,7 @@ public class FragmentKeranjang extends Fragment {
                     @Override
                     public void onClick(View v) {
                         //bayar item terpilih
+                        startActivity(new Intent(context, TransaksiDetailActivity.class));
                     }
                 });
 
@@ -221,7 +229,7 @@ public class FragmentKeranjang extends Fragment {
         for(BaseListItem item : listItem){
             if(item.getType() == BaseListItem.TYPE_CONTENT){
                 if(((ContentListItem)item).isSelected()){
-                    subtotal += ((ContentListItem) item).getJumlah() * ((ContentListItem) item).getItem().getHarga();
+                    subtotal += ((ContentListItem) item).getItem().getJumlah() * ((ContentListItem) item).getItem().getHarga();
                 }
             }
         }
@@ -240,7 +248,9 @@ public class FragmentKeranjang extends Fragment {
     }
 
     private void initKeranjang(){
-        ApiVolleyManager.getInstance().addRequest(getActivity(), Constant.URL_KERANJANG, ApiVolleyManager.METHOD_GET, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), new AppRequestCallback(new AppRequestCallback.RequestListener() {
+        ApiVolleyManager.getInstance().addRequest(getActivity(), Constant.URL_KERANJANG, ApiVolleyManager.METHOD_GET,
+                Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()),
+                new AppRequestCallback(new AppRequestCallback.SimpleRequestListener() {
             @Override
             public void onSuccess(String result) {
                 try{
@@ -248,16 +258,20 @@ public class FragmentKeranjang extends Fragment {
                     //listItem.clear();
                     listItem = new ArrayList<>();
 
-                    Map<ArtisModel, List<BarangModel>> listKeranjang = new LinkedHashMap<>();
+                    Map<ArtisModel, List<BarangJualModel>> listKeranjang = new LinkedHashMap<>();
                     JSONArray response = new JSONArray(result);
                     for(int i = 0; i < response.length(); i++){
                         ArtisModel pelapak = new ArtisModel(response.getJSONObject(i).getString("penjual"));
                         JSONArray listBarang = response.getJSONObject(i).getJSONArray("barang");
-                        List<BarangModel> barang = new ArrayList<>();
+                        List<BarangJualModel> barang = new ArrayList<>();
 
                         for(int j = 0; j < listBarang.length(); j++){
-                            BarangModel barangbelanja = new BarangModel(listBarang.getJSONObject(j).getString("id"),listBarang.getJSONObject(j).getString("barang"), listBarang.getJSONObject(j).getString("image"),listBarang.getJSONObject(j).getDouble("harga"));
-                            barangbelanja.setJumlah(listBarang.getJSONObject(j).getInt("jumlah"));
+                            BarangJualModel barangbelanja = new BarangJualModel
+                                    (listBarang.getJSONObject(j).getString("id"),
+                                            listBarang.getJSONObject(j).getString("barang"),
+                                            listBarang.getJSONObject(j).getString("image"),
+                                            listBarang.getJSONObject(j).getDouble("harga"),
+                                            listBarang.getJSONObject(j).getInt("jumlah"));
                             barang.add(barangbelanja);
                         }
 
@@ -268,8 +282,8 @@ public class FragmentKeranjang extends Fragment {
                         HeaderListItem header = new HeaderListItem(p);
                         listItem.add(header);
 
-                        for (BarangModel i : Objects.requireNonNull(listKeranjang.get(p))) {
-                            ContentListItem item = new ContentListItem(i, i.getJumlah());
+                        for (BarangJualModel i : Objects.requireNonNull(listKeranjang.get(p))) {
+                            ContentListItem item = new ContentListItem(i);
                             listItem.add(item);
                         }
 
@@ -287,13 +301,13 @@ public class FragmentKeranjang extends Fragment {
 
             @Override
             public void onFail(String message) {
-                Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
             }
         }));
     }
 
     private void showError(String message){
-        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
         if(bar_loading != null){
             bar_loading.setVisibility(View.INVISIBLE);
         }

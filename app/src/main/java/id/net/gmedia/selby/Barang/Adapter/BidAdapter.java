@@ -10,13 +10,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+import com.leonardus.irfan.Converter;
+
 import java.util.List;
 
 import id.net.gmedia.selby.Model.BidModel;
 import id.net.gmedia.selby.R;
-import id.net.gmedia.selby.Util.Converter;
+import com.leonardus.irfan.TopCropCircularImageView;
 
-public class BidAdapter  extends RecyclerView.Adapter<BidAdapter.BidViewHolder> {
+public class BidAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
+    private final int HEADER_TYPE = 999;
 
     private Context context;
     private List<BidModel> listBid;
@@ -27,32 +33,43 @@ public class BidAdapter  extends RecyclerView.Adapter<BidAdapter.BidViewHolder> 
 
     @NonNull
     @Override
-    public BidViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         context = viewGroup.getContext();
-        return new BidViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_bid, viewGroup, false));
+        if(i == HEADER_TYPE){
+            return new BidHeaderViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_bid_text, viewGroup, false));
+        }
+        else{
+            return new BidViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_bid, viewGroup, false));
+        }
     }
 
     @Override
-    public void onBindViewHolder(@NonNull BidViewHolder bidViewHolder, int i) {
-        if(i == 0){
-            bidViewHolder.txt_bidder.setTypeface(Typeface.DEFAULT_BOLD);
-            bidViewHolder.txt_bid.setTypeface(Typeface.DEFAULT_BOLD);
-            bidViewHolder.txt_bidder.setTextSize(TypedValue.COMPLEX_UNIT_PX, context.getResources().getDimension(R.dimen.text16));
-            bidViewHolder.txt_bid.setTextSize(TypedValue.COMPLEX_UNIT_PX, context.getResources().getDimension(R.dimen.text16));
-
-            bidViewHolder.txt_bidder.setText(R.string.user);
-            bidViewHolder.txt_bid.setText(R.string.lelang_bid);
+    public int getItemViewType(int position) {
+        if(position == 0){
+            return HEADER_TYPE;
         }
         else{
-            if(i % 2 != 0){
-                bidViewHolder.txt_bidder.setBackgroundResource(R.color.grey);
-                bidViewHolder.txt_bid.setBackgroundResource(R.color.grey);
-            }
+            return super.getItemViewType(position);
+        }
+    }
 
+    @Override
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder bidViewHolder, int i) {
+        if(bidViewHolder instanceof BidHeaderViewHolder){
+            ((BidHeaderViewHolder)bidViewHolder).txt_bidder.setTypeface(Typeface.DEFAULT_BOLD);
+            ((BidHeaderViewHolder)bidViewHolder).txt_bid.setTypeface(Typeface.DEFAULT_BOLD);
+            ((BidHeaderViewHolder)bidViewHolder).txt_bidder.setTextSize(TypedValue.COMPLEX_UNIT_PX, context.getResources().getDimension(R.dimen.text16));
+            ((BidHeaderViewHolder)bidViewHolder).txt_bid.setTextSize(TypedValue.COMPLEX_UNIT_PX, context.getResources().getDimension(R.dimen.text16));
+
+            ((BidHeaderViewHolder)bidViewHolder).txt_bidder.setText(R.string.user);
+            ((BidHeaderViewHolder)bidViewHolder).txt_bid.setText(R.string.lelang_bid);
+        }
+        else{
             BidModel bid = listBid.get(i - 1);
 
-            bidViewHolder.txt_bidder.setText(bid.getBidder());
-            bidViewHolder.txt_bid.setText(Converter.doubleToRupiah(bid.getNilai()));
+            //((BidViewHolder)bidViewHolder).txt_bidder.setText(bid.getBidder());
+            ((BidViewHolder)bidViewHolder).txt_bid.setText(Converter.doubleToRupiah(bid.getNilai()));
+            Glide.with(context).load(bid.getFoto()).apply(new RequestOptions()).into(((BidViewHolder)bidViewHolder).img_bidder);
         }
     }
 
@@ -63,9 +80,21 @@ public class BidAdapter  extends RecyclerView.Adapter<BidAdapter.BidViewHolder> 
 
     class BidViewHolder extends RecyclerView.ViewHolder{
 
-        TextView txt_bidder, txt_bid;
+        TopCropCircularImageView img_bidder;
+        TextView txt_bid;
 
         BidViewHolder(@NonNull View itemView) {
+            super(itemView);
+            img_bidder = itemView.findViewById(R.id.img_bidder);
+            txt_bid = itemView.findViewById(R.id.txt_bid);
+        }
+    }
+
+    class BidHeaderViewHolder extends RecyclerView.ViewHolder{
+
+        TextView txt_bidder, txt_bid;
+
+        BidHeaderViewHolder(@NonNull View itemView) {
             super(itemView);
             txt_bidder = itemView.findViewById(R.id.txt_bidder);
             txt_bid = itemView.findViewById(R.id.txt_bid);

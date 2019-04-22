@@ -14,6 +14,7 @@ import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+import com.facebook.login.Login;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -31,6 +32,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
+import com.leonardus.irfan.ApiVolleyManager;
+import com.leonardus.irfan.AppRequestCallback;
+import com.leonardus.irfan.JSONBuilder;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -38,17 +42,13 @@ import org.json.JSONObject;
 import java.util.Arrays;
 
 import id.net.gmedia.selby.Home.HomeActivity;
-import id.net.gmedia.selby.Util.ApiVolleyManager;
-import id.net.gmedia.selby.Util.AppRequestCallback;
 import id.net.gmedia.selby.Util.AppSharedPreferences;
 import id.net.gmedia.selby.Util.Constant;
-import id.net.gmedia.selby.Util.JSONBuilder;
 
 public class LoginActivity extends AppCompatActivity {
 
     //Label activity
     private static final int RC_SIGN_IN = 234;
-    private static final String TAG = "Login:";
 
     //Variabel autentifikasi
     private GoogleSignInClient client;
@@ -98,7 +98,7 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(InstanceIdResult instanceIdResult) {
                         fcm_id = instanceIdResult.getToken();
-                        Log.d(TAG+"Token", fcm_id);
+                        Log.d(Constant.TAG, fcm_id);
                     }
                 });
 
@@ -108,7 +108,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onCancel() {
                 setLoading(false);
-                Log.w(TAG, "Login dibatalkan");
+                Log.w(Constant.TAG, "Login dibatalkan");
             }
 
             @Override
@@ -167,7 +167,8 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(InstanceIdResult instanceIdResult) {
                         fcm_id = instanceIdResult.getToken();
-                        Log.d(TAG+"Token", fcm_id);
+                        AppSharedPreferences.setFcmId(LoginActivity.this, fcm_id);
+                        Log.d(Constant.TAG, fcm_id);
                     }
                 });
 
@@ -177,7 +178,7 @@ public class LoginActivity extends AppCompatActivity {
             }
             catch (ApiException e){
                 setLoading(false);
-                Log.e(TAG, e.toString());
+                Log.e(Constant.TAG, e.toString());
                 Toast.makeText(LoginActivity.this, "Autentifikasi Firebase Gagal", Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
             }
@@ -186,7 +187,7 @@ public class LoginActivity extends AppCompatActivity {
 
     //Proses Autentifikasi Google
     private void firebaseAuthWithGoogle(GoogleSignInAccount acc){
-        Log.d(TAG, "FirebaseAuthGoogle : " + acc.getId());
+        Log.d(Constant.TAG, "FirebaseAuthGoogle : " + acc.getId());
 
         AuthCredential credential = GoogleAuthProvider.getCredential(acc.getIdToken(), null);
         auth.signInWithCredential(credential)
@@ -194,14 +195,14 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            Log.d(TAG, "signInWithCredential:success");
+                            Log.d(Constant.TAG, "signInWithCredential:success");
                             client.signOut();
 
                             loginToSelby("Google");
                         } else {
                             // If sign in fails, display a message to the user.
                             setLoading(false);
-                            Log.w(TAG, "signInWithCredential:failure", task.getException());
+                            Log.w(Constant.TAG, "signInWithCredential:failure", task.getException());
                             Toast.makeText(LoginActivity.this, "Autentifikasi Google gagal",
                                     Toast.LENGTH_SHORT).show();
                         }
@@ -216,14 +217,14 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
-                    Log.d(TAG, "signInWithCredential:success");
+                    Log.d(Constant.TAG, "signInWithCredential:success");
                     LoginManager.getInstance().logOut();
 
                     loginToSelby("Facebook");
                 } else {
                     // If sign in fails, display a message to the user.
                     setLoading(false);
-                    Log.w(TAG, "signInWithCredential:failure", task.getException());
+                    Log.w(Constant.TAG, "signInWithCredential:failure", task.getException());
                     Toast.makeText(LoginActivity.this, "Autentifikasi Facebook gagal",
                             Toast.LENGTH_SHORT).show();
                 }
@@ -243,13 +244,14 @@ public class LoginActivity extends AppCompatActivity {
             body.add("email", "");
             body.add("profile_name", "");
             body.add("foto", "");
-            Log.w(TAG, "Current User kosong");
+            Log.w(Constant.TAG, "Current User kosong");
         }
 
         body.add("type", type);
         body.add("fcm_id", fcm_id);
 
-        ApiVolleyManager.getInstance().addRequest(this, Constant.URL_AUTENTIFIKASI, ApiVolleyManager.METHOD_POST, Constant.HEADER_AUTH, body.create(), new AppRequestCallback(new AppRequestCallback.RequestListener() {
+        ApiVolleyManager.getInstance().addRequest(this, Constant.URL_AUTENTIFIKASI, ApiVolleyManager.METHOD_POST,
+                Constant.HEADER_AUTH, body.create(), new AppRequestCallback(new AppRequestCallback.SimpleRequestListener() {
             @Override
             public void onSuccess(String response) {
                 try{
@@ -268,7 +270,7 @@ public class LoginActivity extends AppCompatActivity {
                 }
                 catch (JSONException e){
                     setLoading(false);
-                    Log.e("Login", e.getMessage());
+                    Log.e(Constant.TAG, e.getMessage());
                     Toast.makeText(LoginActivity.this, "Autentifikasi gagal", Toast.LENGTH_SHORT).show();
                 }
             }

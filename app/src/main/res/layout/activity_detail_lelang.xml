@@ -31,29 +31,11 @@
                 app:contentScrim="@color/grey"
                 android:background="@color/grey">
 
-                <RelativeLayout
+                <com.leonardus.irfan.ImageSlider.ImageSlider
+                    android:id="@+id/slider"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <id.net.gmedia.selby.Util.ImageSliderViewPager
-                        android:id="@+id/pager"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/image_item_height" />
-
-                    <me.relex.circleindicator.CircleIndicator
-                        android:id="@+id/indicator"
-                        android:layout_width="wrap_content"
-                        android:layout_height="@dimen/circle_indicator_layout_size"
-                        app:ci_drawable="@drawable/custom_indicator_selected"
-                        app:ci_drawable_unselected="@drawable/custom_indicator_unselected"
-                        app:ci_height="@dimen/circle_indicator_size"
-                        app:ci_width="@dimen/circle_indicator_size"
-                        android:layout_alignBottom="@+id/pager"
-                        android:layout_alignStart="@id/pager"
-                        android:layout_marginStart="@dimen/padding20"
-                        android:layout_marginBottom="@dimen/padding20"/>
-                </RelativeLayout>
+                    android:layout_height="@dimen/image_item_height"
+                    android:orientation="vertical"/>
 
                 <android.support.v7.widget.Toolbar
                     android:id="@+id/toolbar"
@@ -138,7 +120,7 @@
                         android:id="@+id/txt_waktu"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/gold"
+                        android:textColor="@color/dark_gold"
                         android:textSize="@dimen/text24"
                         android:textStyle="bold" />
 
@@ -179,7 +161,7 @@
                             android:paddingEnd="@dimen/padding20"
                             android:text="@string/lelang_list_bid"
                             android:textAllCaps="false"
-                            android:background="@drawable/style_fullrounded_gold_rectangle"
+                            android:background="@drawable/style_fullrounded_dark_blue_rectangle"
                             android:textColor="#fff"
                             android:textSize="@dimen/text10" />
                     </LinearLayout>
@@ -198,10 +180,10 @@
                     android:id="@+id/tabs"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:tabIndicatorColor="@color/gold"
-                    app:tabSelectedTextColor="#000000"
+                    app:tabIndicatorColor="@color/dark_blue"
+                    app:tabSelectedTextColor="@color/dark_blue"
                     app:tabTextAppearance="@style/MyCustomTabText"
-                    app:tabTextColor="#70605f5f"
+                    app:tabTextColor="@color/black"
                     app:tabGravity="fill"
                     app:tabMode="fixed">
 
@@ -240,6 +222,6 @@
         android:layout_alignParentBottom="true"
         android:textColor="#fff"
         android:textAllCaps="false"
-        android:background="@color/gold"
+        android:background="@color/dark_blue"
         android:text="@string/lelang_ajukan_bid"/>
 </RelativeLayout>

@@ -22,16 +22,29 @@ public class Constant {
     //Header Request
     public final static Map<String, String> HEADER_AUTH = new HashMap<String, String>(){{put("Auth-Key", "gmedia"); put("Client-Service", "selby-ecommerce");}};
 
+    //Extra
+    public static final String EXTRA_BITMAP = "bitmap";
+
+    public static final String TAG = "selbi_log";
+
+    public static final String EXTRA_JENIS_BARANG = "jenis_barang";
+    public static final String EXTRA_USER = "user";
+    public static final String EXTRA_CHAT_FROM = "chat_from";
+    public static final String EXTRA_ARTIS = "nama_artis";
+    public static final String EXTRA_BERITA = "berita";
+
+    public static final int BARANG_PRELOVED = 31;
+    public static final int BARANG_MERCHANDISE = 32;
+    public static final int BARANG_LELANG = 33;
+    public static final int BARANG_DONASI = 34;
+
     //URL Request
     private static final String BASE_URL = "http://gmedia.bz/selbi/api/";
     public static final String URL_HOME_SLIDE = BASE_URL + "Slider/index";
     public static final String URL_ARTIS = BASE_URL + "Penjual/index";
-    public static final String URL_HOME_CATEGORY = BASE_URL + "Category/index";
-    public static final String URL_HOME_BRAND = BASE_URL + "Brand/index";
-    public static final String URL_BARANG_ARTIS = BASE_URL + "Produk/index";
+    public static final String URL_BARANG_MASTER = BASE_URL + "Produk/index";
     public static final String URL_DETAIL_PRODUK = BASE_URL + "Produk/details";
     public static final String URL_DETAIL_PRODUK_REVIEW = BASE_URL + "Produk/review";
-    public static final String URL_FLASH_SALE = BASE_URL + "Lelang/flash_sale";
     public static final String URL_LELANG = BASE_URL + "Lelang/index";
     public static final String URL_DETAIL_LELANG = BASE_URL + "Lelang/details";
     public static final String URL_AUTENTIFIKASI = BASE_URL + "Authentication/register";
@@ -45,10 +58,6 @@ public class Constant {
     public static final String URL_HAPUS_KERANJANG = BASE_URL + "Keranjang/hapus_keranjang";
     public static final String URL_FEED = BASE_URL + "Feed/index";
     public static final String URL_GALLERY = BASE_URL + "Feed/gallery";
-    public static final String URL_UPLOAD_GAMBAR = BASE_URL + "Feed/add_image";
-    public static final String URL_POST = BASE_URL + "Feed/add_post";
-    public static final String URL_UPLOAD_BARANG = BASE_URL + "Produk/add_produk";
-    public static final String URL_UPLOAD_GAMBAR_BARANG = BASE_URL + "Produk/add_image";
     public static final String URL_BID = BASE_URL + "Lelang/bid";
     public static final String URL_PROFIL = BASE_URL + "Profile/index";
     public static final String URL_UPLOAD_FOTO_PROFIL = BASE_URL + "Profile/edit_image";
@@ -64,6 +73,15 @@ public class Constant {
     public static final String URL_KATEGORI_ARTIS = BASE_URL + "Pekerjaan/index";
     public static final String URL_BARANG_RATING = BASE_URL + "Produk/jumlah_rating";
     public static final String URL_HOT_ITEM = BASE_URL + "Produk/hot_item";
+    public static final String URL_CHAT = BASE_URL + "Chat/list_chat";
+    public static final String URL_CHAT_DETAIL = BASE_URL + "Chat/detail_chat";
+    public static final String URL_CHAT_TAMBAH = BASE_URL + "Chat/insert";
+    public static final String URL_FCM_UPDATE = BASE_URL + "Authentication/update_fcm_id";
+    public static final String URL_GREETING_ADD = BASE_URL + "Greeting/add_greeting";
+    public static final String URL_HOT_NEWS = BASE_URL + "Hot_News/view";
+    public static final String URL_KURIR_PROVINSI = BASE_URL + "ongkir/provinsi";
+    public static final String URL_KURIR_KOTA = BASE_URL + "ongkir/kota";
+    public static final String URL_KURIR_ONGKIR = BASE_URL + "ongkir/hitung";
 
     //Token heaader dengan enkripsi
     public static Map<String, String> getTokenHeader(String uuid){
@@ -96,6 +114,15 @@ public class Constant {
 
         Log.w("SHA256", "Return string kosong");
         return "";
+    }
+
+    public static String getSatuanWaktu(int i){
+        switch (i){
+            case 0:return "hari";
+            case 1:return "bulan";
+            case 2:return "tahun";
+            default:return "";
+        }
     }
 }
 

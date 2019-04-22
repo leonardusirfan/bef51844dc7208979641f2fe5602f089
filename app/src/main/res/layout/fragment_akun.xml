@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.NestedScrollView
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -26,12 +26,13 @@
                 android:fitsSystemWindows="true"
                 app:layout_collapseMode="parallax" />
 
-            <ImageView
+            <com.leonardus.irfan.TopCropCircularImageView
                 android:id="@+id/img_akun"
-                android:contentDescription="@string/user"
-                android:padding="@dimen/padding10"
                 android:layout_width="@dimen/profile_size"
-                android:layout_height="match_parent" />
+                android:layout_height="@dimen/profile_size"
+                android:layout_centerVertical="true"
+                android:layout_margin="@dimen/padding5"
+                android:contentDescription="@string/user" />
 
             <LinearLayout
                 android:id="@+id/layout_edit"
@@ -64,204 +65,127 @@
             </LinearLayout>
         </RelativeLayout>
 
-        <RelativeLayout
+        <android.support.design.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#ededed"
-            android:padding="@dimen/padding10">
+            android:background="@color/white"
+            android:layout_margin="@dimen/dp20"
+            app:cardCornerRadius="@dimen/dp15">
 
-            <TextView
-                android:id="@+id/txt_berlangganan"
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_toStartOf="@id/txt_lihat_semua"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:text="@string/profil_berlangganan"
-                android:textSize="@dimen/text14"
-                android:textStyle="bold" />
+                android:padding="@dimen/padding15">
 
-            <TextView
-                android:id="@+id/txt_lihat_semua"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/lihat_semua"
-                android:layout_alignParentEnd="true"
-                android:textColor="@color/orange"
-                android:textStyle="bold"
-                android:textSize="@dimen/text12"/>
-        </RelativeLayout>
+                <TextView
+                    android:id="@+id/txt_berlangganan"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_toStartOf="@id/txt_lihat_semua"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="#000"
+                    android:text="@string/profil_berlangganan"
+                    android:textSize="@dimen/text16"
+                    android:textStyle="bold" />
 
-        <LinearLayout
+                <TextView
+                    android:id="@+id/txt_lihat_semua"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/lihat_semua"
+                    android:layout_alignParentEnd="true"
+                    android:textColor="@color/orange"
+                    android:textStyle="bold"
+                    android:visibility="gone"
+                    android:textSize="@dimen/text12"/>
+            </RelativeLayout>
+
+        </android.support.design.card.MaterialCardView>
+
+        <android.support.design.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:background="@color/white"
+            android:layout_marginEnd="@dimen/dp20"
+            android:layout_marginStart="@dimen/dp20"
+            android:layout_marginBottom="@dimen/dp20"
+            app:cardCornerRadius="@dimen/dp15">
 
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/profil_alamat"
-                android:paddingStart="@dimen/padding10"
-                android:paddingEnd="@dimen/padding10"
-                android:paddingTop="@dimen/padding5"
-                android:paddingBottom="@dimen/padding5"
-                android:textStyle="bold"
-                android:textSize="@dimen/text18"/>
+                android:orientation="vertical"
+                android:padding="@dimen/dp10">
 
-            <TextView
-                android:id="@+id/txt_alamat"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingStart="@dimen/padding10"
-                android:paddingTop="@dimen/padding5"
-                android:paddingEnd="@dimen/padding10"
-                android:paddingBottom="@dimen/padding5"
-                android:textSize="@dimen/text14" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/profil_alamat"
+                    android:paddingStart="@dimen/padding10"
+                    android:paddingEnd="@dimen/padding10"
+                    android:paddingTop="@dimen/padding5"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/text14"/>
 
-            <include layout="@layout/view_divider"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/padding1"
-                android:layout_marginTop="@dimen/padding10"
-                android:layout_marginBottom="@dimen/padding5"
-                android:background="#6c6c6c"/>
-        </LinearLayout>
+                <TextView
+                    android:id="@+id/txt_alamat"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="@dimen/padding10"
+                    android:paddingEnd="@dimen/padding10"
+                    android:paddingBottom="@dimen/padding5"
+                    android:textColor="#000"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/text16" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="gone">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/profil_telepon"
+                    android:paddingStart="@dimen/padding10"
+                    android:paddingEnd="@dimen/padding10"
+                    android:paddingTop="@dimen/padding5"
+                    android:layout_marginTop="@dimen/dp5"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/text14"/>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingStart="@dimen/padding10"
-                android:paddingTop="@dimen/padding5"
-                android:paddingEnd="@dimen/padding10"
-                android:paddingBottom="@dimen/padding5"
-                android:text="@string/profil_pembayaran"
-                android:textSize="@dimen/text18"
-                android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/txt_telepon"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="@dimen/padding10"
+                    android:paddingEnd="@dimen/padding10"
+                    android:paddingBottom="@dimen/padding5"
+                    android:textColor="#000"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/text16" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingStart="@dimen/padding10"
-                android:paddingTop="@dimen/padding5"
-                android:paddingEnd="@dimen/padding10"
-                android:paddingBottom="@dimen/padding5"
-                android:textSize="@dimen/text14" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/profil_email"
+                    android:paddingStart="@dimen/padding10"
+                    android:paddingEnd="@dimen/padding10"
+                    android:paddingTop="@dimen/padding5"
+                    android:layout_marginTop="@dimen/dp5"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/text14"/>
 
-            <include
-                layout="@layout/view_divider"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/padding1"
-                android:layout_marginTop="@dimen/padding10"
-                android:layout_marginBottom="@dimen/padding5"
-                android:background="#6c6c6c" />
-        </LinearLayout>
+                <TextView
+                    android:id="@+id/txt_email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="@dimen/padding10"
+                    android:paddingEnd="@dimen/padding10"
+                    android:paddingBottom="@dimen/padding5"
+                    android:textColor="#000"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/text16" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="gone">
+            </LinearLayout>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingStart="@dimen/padding10"
-                android:paddingTop="@dimen/padding5"
-                android:paddingEnd="@dimen/padding10"
-                android:paddingBottom="@dimen/padding5"
-                android:textSize="@dimen/text18"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingStart="@dimen/padding10"
-                android:paddingTop="@dimen/padding5"
-                android:paddingEnd="@dimen/padding10"
-                android:paddingBottom="@dimen/padding5"
-                android:textSize="@dimen/text14" />
-
-            <include
-                layout="@layout/view_divider"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/padding1"
-                android:layout_marginTop="@dimen/padding10"
-                android:layout_marginBottom="@dimen/padding5"
-                android:background="#6c6c6c" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/profil_telepon"
-                android:paddingStart="@dimen/padding10"
-                android:paddingEnd="@dimen/padding10"
-                android:paddingTop="@dimen/padding5"
-                android:paddingBottom="@dimen/padding5"
-                android:textStyle="bold"
-                android:textSize="@dimen/text18"/>
-
-            <TextView
-                android:id="@+id/txt_telepon"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingStart="@dimen/padding10"
-                android:paddingTop="@dimen/padding5"
-                android:paddingEnd="@dimen/padding10"
-                android:paddingBottom="@dimen/padding5"
-                android:textSize="@dimen/text14" />
-
-            <include layout="@layout/view_divider"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/padding1"
-                android:layout_marginTop="@dimen/padding10"
-                android:layout_marginBottom="@dimen/padding5"
-                android:background="#6c6c6c"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/profil_email"
-                android:paddingStart="@dimen/padding10"
-                android:paddingEnd="@dimen/padding10"
-                android:paddingTop="@dimen/padding5"
-                android:paddingBottom="@dimen/padding5"
-                android:textStyle="bold"
-                android:textSize="@dimen/text18"/>
-
-            <TextView
-                android:id="@+id/txt_email"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingStart="@dimen/padding10"
-                android:paddingTop="@dimen/padding5"
-                android:paddingEnd="@dimen/padding10"
-                android:paddingBottom="@dimen/padding5"
-                android:textSize="@dimen/text14" />
-
-            <include layout="@layout/view_divider"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/padding1"
-                android:layout_marginTop="@dimen/padding10"
-                android:layout_marginBottom="@dimen/padding5"
-                android:background="#6c6c6c"/>
-        </LinearLayout>
+        </android.support.design.card.MaterialCardView>
 
        <!-- <LinearLayout
             android:layout_width="match_parent"
@@ -297,23 +221,25 @@
                 android:background="#6c6c6c"/>
         </LinearLayout>-->
 
-        <LinearLayout
+        <android.support.design.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/padding10"
-            android:layout_marginBottom="@dimen/padding10"
-            android:orientation="vertical">
+            android:background="@color/white"
+            android:layout_marginEnd="@dimen/dp20"
+            android:layout_marginStart="@dimen/dp20"
+            android:layout_marginBottom="@dimen/dp20"
+            app:cardCornerRadius="@dimen/dp15">
 
             <TextView
                 android:id="@+id/txt_logout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/padding10"
+                android:padding="@dimen/padding15"
                 android:textColor="@color/orange"
                 android:text="@string/profil_logout"
                 android:textStyle="bold"
                 android:textSize="@dimen/text18"/>
-        </LinearLayout>
-    </LinearLayout>
+        </android.support.design.card.MaterialCardView>
 
-</android.support.v4.widget.NestedScrollView>
+    </LinearLayout>
+</ScrollView>

@@ -16,6 +16,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.leonardus.irfan.ApiVolleyManager;
+import com.leonardus.irfan.AppRequestCallback;
+import com.leonardus.irfan.Converter;
+import com.leonardus.irfan.JSONBuilder;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 
@@ -26,11 +31,7 @@ import id.net.gmedia.selby.Artis.Adapter.KegiatanAdapter;
 import id.net.gmedia.selby.Artis.EventActivity;
 import id.net.gmedia.selby.Model.KegiatanModel;
 import id.net.gmedia.selby.R;
-import id.net.gmedia.selby.Util.ApiVolleyManager;
-import id.net.gmedia.selby.Util.AppRequestCallback;
 import id.net.gmedia.selby.Util.Constant;
-import id.net.gmedia.selby.Util.Converter;
-import id.net.gmedia.selby.Util.JSONBuilder;
 
 
 /**
@@ -96,7 +97,8 @@ public class FragmentKegiatan extends Fragment {
         body.add("id", "");
         body.add("id_penjual", id);
 
-        ApiVolleyManager.getInstance().addRequest(activity, Constant.URL_KEGIATAN, ApiVolleyManager.METHOD_POST, Constant.HEADER_AUTH, body.create(), new AppRequestCallback(new AppRequestCallback.RequestListener() {
+        ApiVolleyManager.getInstance().addRequest(activity, Constant.URL_KEGIATAN, ApiVolleyManager.METHOD_POST,
+                Constant.HEADER_AUTH, body.create(), new AppRequestCallback(new AppRequestCallback.SimpleRequestListener() {
             @Override
             public void onSuccess(String response) {
                 try{
@@ -113,7 +115,7 @@ public class FragmentKegiatan extends Fragment {
                 }
                 catch (JSONException e){
                     Toast.makeText(activity, R.string.error_json, Toast.LENGTH_SHORT).show();
-                    Log.e("Galeri", e.toString());
+                    Log.e(Constant.TAG, e.toString());
                 }
             }
 

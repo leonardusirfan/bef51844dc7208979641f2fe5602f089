@@ -19,6 +19,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,16 +28,18 @@ import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.gson.Gson;
+import com.leonardus.irfan.ApiVolleyManager;
+import com.leonardus.irfan.AppRequestCallback;
+import com.leonardus.irfan.JSONBuilder;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import id.net.gmedia.selby.Util.AppRequestCallback;
 import id.net.gmedia.selby.Util.Constant;
 import id.net.gmedia.selby.Model.ArtisModel;
 import id.net.gmedia.selby.R;
-import id.net.gmedia.selby.Util.ApiVolleyManager;
-import id.net.gmedia.selby.Util.JSONBuilder;
+import com.leonardus.irfan.LockableScrollView;
+import com.leonardus.irfan.TopCropImageView;
 
 public class ArtisDetailActivity extends AppCompatActivity {
     /*
@@ -55,7 +58,9 @@ public class ArtisDetailActivity extends AppCompatActivity {
     private CardView layout_button;
     private FrameLayout layout_detail_artis;
     private TextView txt_detail, txt_artis;
-    private ImageView img_artis;
+    private TopCropImageView img_artis;
+    private LockableScrollView scrollView;
+    private ImageView img_gradient;
 
     //Variabel gesture UI
     private GestureDetector mDetector;
@@ -75,6 +80,8 @@ public class ArtisDetailActivity extends AppCompatActivity {
         txt_detail = findViewById(R.id.txt_detail);
         btn_detail = findViewById(R.id.btn_detail);
         Toolbar toolbar = findViewById(R.id.toolbar);
+        scrollView = findViewById(R.id.scroll);
+        img_gradient = findViewById(R.id.img_gradient);
 
         //Inisialisasi Toolbar
         setSupportActionBar(toolbar);
@@ -133,10 +140,15 @@ public class ArtisDetailActivity extends AppCompatActivity {
                 if(!detail){
                     constraintSet.clone(ArtisDetailActivity.this, R.layout.activity_artis_detail_info);
                     rotate = AnimationUtils.loadAnimation(ArtisDetailActivity.this, R.anim.anim_rotate);
+                    scrollView.setScrollingEnabled(true);
+                    img_gradient.setVisibility(View.INVISIBLE);
                 }
                 else{
                     constraintSet.clone(ArtisDetailActivity.this, R.layout.activity_artis_detail);
                     rotate = AnimationUtils.loadAnimation(ArtisDetailActivity.this, R.anim.anim_rotate_reverse);
+                    scrollView.setScrollingEnabled(false);
+                    img_gradient.setVisibility(View.VISIBLE);
+                    scrollView.fullScroll(ScrollView.FOCUS_UP);
                 }
 
                 detail = !detail;
@@ -149,6 +161,8 @@ public class ArtisDetailActivity extends AppCompatActivity {
         //gesture agar detail artis bisa dibuka dengan fling
         mDetector = new GestureDetector(this, new MyGestureListener());
         layout_detail_artis.setOnTouchListener(touchListener);
+        scrollView.setScrollingEnabled(false);
+        img_gradient.setVisibility(View.VISIBLE);
 
         //Menuju Activity Barang
         btn_lihat_produk.setOnClickListener(new View.OnClickListener() {
@@ -181,7 +195,10 @@ public class ArtisDetailActivity extends AppCompatActivity {
             artis = gson.fromJson(getIntent().getStringExtra("artis"), ArtisModel.class);
 
             //Inisialisasi UI terkait artis
-            Glide.with(this).load(artis.getImage()).thumbnail(0.3f).apply(new RequestOptions().dontTransform().dontAnimate().priority(Priority.IMMEDIATE).override(500, 300)).transition(DrawableTransitionOptions.withCrossFade()).into(img_artis);
+            Glide.with(this).load(artis.getImage()).thumbnail(0.3f).apply(new RequestOptions().dontTransform().
+                    dontAnimate().priority(Priority.IMMEDIATE).override(500, 300)).
+                    transition(DrawableTransitionOptions.withCrossFade()).into(img_artis);
+
             txt_artis.setText(artis.getNama());
             txt_detail.setText(artis.getDeskripsi());
 
@@ -190,7 +207,9 @@ public class ArtisDetailActivity extends AppCompatActivity {
             body.add("start", 0);
             body.add("count", 0);
 
-            ApiVolleyManager.getInstance().addRequest(ArtisDetailActivity.this, Constant.URL_ARTIS, ApiVolleyManager.METHOD_POST, Constant.HEADER_AUTH, body.create(), new AppRequestCallback(new AppRequestCallback.RequestListener() {
+            ApiVolleyManager.getInstance().addRequest(ArtisDetailActivity.this, Constant.URL_ARTIS,
+                    ApiVolleyManager.METHOD_POST, Constant.HEADER_AUTH, body.create(),
+                    new AppRequestCallback(new AppRequestCallback.SimpleRequestListener() {
                 @Override
                 public void onSuccess(String response) {
                     try{
@@ -199,7 +218,7 @@ public class ArtisDetailActivity extends AppCompatActivity {
                     }
                     catch (JSONException e){
                         Toast.makeText(ArtisDetailActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
-                        Log.e("Artis", e.getMessage());
+                        Log.e(Constant.TAG, e.getMessage());
                     }
                 }
 
@@ -228,6 +247,9 @@ public class ArtisDetailActivity extends AppCompatActivity {
             TransitionManager.beginDelayedTransition(constraintLayout);
             btn_detail.startAnimation(AnimationUtils.loadAnimation(ArtisDetailActivity.this, R.anim.anim_rotate_reverse));
             constraintSet.applyTo(constraintLayout);
+            scrollView.setScrollingEnabled(false);
+            img_gradient.setVisibility(View.VISIBLE);
+            scrollView.fullScroll(ScrollView.FOCUS_UP);
         }
     }
 
@@ -275,7 +297,6 @@ public class ArtisDetailActivity extends AppCompatActivity {
         @Override
         public boolean onFling(MotionEvent event1, MotionEvent event2,
                                float velocityX, float velocityY) {
-            Log.d("TAG", "onFling: ");
             if(!detail){
                 if(event1.getY() - event2.getY() > 200){
                     ConstraintLayout constraintLayout = findViewById(R.id.layout_root);
@@ -289,7 +310,8 @@ public class ArtisDetailActivity extends AppCompatActivity {
                     TransitionManager.beginDelayedTransition(constraintLayout);
                     btn_detail.startAnimation(rotate);
                     constraintSet.applyTo(constraintLayout);
-
+                    scrollView.setScrollingEnabled(true);
+                    img_gradient.setVisibility(View.INVISIBLE);
                 }
             }
             else{
@@ -305,6 +327,9 @@ public class ArtisDetailActivity extends AppCompatActivity {
                     TransitionManager.beginDelayedTransition(constraintLayout);
                     btn_detail.startAnimation(rotate);
                     constraintSet.applyTo(constraintLayout);
+                    scrollView.setScrollingEnabled(false);
+                    img_gradient.setVisibility(View.VISIBLE);
+                    scrollView.fullScroll(ScrollView.FOCUS_UP);
                 }
             }
 

@@ -1,10 +1,14 @@
 package id.net.gmedia.selby.Model;
 
+import android.graphics.Bitmap;
+
 public class ArtisModel {
 
     private String id = "";
     private String nama = "";
     private String image = "";
+
+    private Bitmap bitmap;
 
     private String tempat_lahir = "";
     private String tgl_lahir = "";
@@ -37,6 +41,14 @@ public class ArtisModel {
         this.tgl_lahir = tgl_lahir;
         this.tinggi = tinggi;
         this.deskripsi = deskripsi;
+    }
+
+    public Bitmap getBitmap() {
+        return bitmap;
+    }
+
+    public void setBitmap(Bitmap bitmap) {
+        this.bitmap = bitmap;
     }
 
     public String getId() {

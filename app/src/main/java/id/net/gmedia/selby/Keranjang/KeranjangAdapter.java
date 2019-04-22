@@ -15,6 +15,8 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.google.firebase.auth.FirebaseAuth;
+import com.leonardus.irfan.ApiVolleyManager;
+import com.leonardus.irfan.Converter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -25,8 +27,6 @@ import java.util.List;
 
 import id.net.gmedia.selby.Util.Constant;
 import id.net.gmedia.selby.R;
-import id.net.gmedia.selby.Util.ApiVolleyManager;
-import id.net.gmedia.selby.Util.Converter;
 
 
 public class KeranjangAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -112,16 +112,17 @@ public class KeranjangAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
             viewholder.txt_nama.setText(item.getItem().getNama());
             viewholder.txt_harga.setText(Converter.doubleToRupiah(item.getItem().getHarga()));
-            viewholder.txt_jumlah.setText(String.valueOf(item.getJumlah()));
+            viewholder.txt_jumlah.setText(String.valueOf(item.getItem().getJumlah()));
 
-            Glide.with(context).load(item.getItem().getUrl()).transition(DrawableTransitionOptions.withCrossFade()).thumbnail(0.3f).into((viewholder.img_item));
+            Glide.with(context).load(item.getItem().getUrl()).transition(DrawableTransitionOptions.withCrossFade()).
+                    thumbnail(0.3f).into((viewholder.img_item));
 
             viewholder.txt_plus.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(item.getJumlah() < 20){
-                        item.increase();
-                        viewholder.txt_jumlah.setText(String.valueOf(item.getJumlah()));
+                    if(item.getItem().getJumlah() < 20){
+                        item.getItem().increase();
+                        viewholder.txt_jumlah.setText(String.valueOf(item.getItem().getJumlah()));
                         if(viewholder.cb_item.isChecked()){
                             ((FragmentKeranjang)fragment).updateView();
                         }
@@ -132,9 +133,9 @@ public class KeranjangAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             viewholder.txt_minus.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(item.getJumlah() > 1){
-                        item.decrease();
-                        viewholder.txt_jumlah.setText(String.valueOf(item.getJumlah()));
+                    if(item.getItem().getJumlah() > 1){
+                        item.getItem().decrease();
+                        viewholder.txt_jumlah.setText(String.valueOf(item.getItem().getJumlah()));
                         if(viewholder.cb_item.isChecked()){
                             ((FragmentKeranjang)fragment).updateView();
                         }
@@ -184,7 +185,9 @@ public class KeranjangAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         body.put("id_keranjang", list);
                         System.out.println("List ID : " + list);
 
-                        ApiVolleyManager.getInstance().addRequest(context, Constant.URL_HAPUS_KERANJANG, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body, new ApiVolleyManager.RequestCallback() {
+                        ApiVolleyManager.getInstance().addRequest(context, Constant.URL_HAPUS_KERANJANG,
+                                ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()),
+                                body, new ApiVolleyManager.RequestCallback() {
                             @Override
                             public void onSuccess(String result) {
                                 try{

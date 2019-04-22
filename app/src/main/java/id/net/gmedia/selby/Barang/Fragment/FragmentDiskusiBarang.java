@@ -18,6 +18,10 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.leonardus.irfan.ApiVolleyManager;
+import com.leonardus.irfan.AppRequestCallback;
+import com.leonardus.irfan.Converter;
+import com.leonardus.irfan.JSONBuilder;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -31,13 +35,9 @@ import id.net.gmedia.selby.Barang.Adapter.DiskusiBarangAdapter;
 import id.net.gmedia.selby.LoginActivity;
 import id.net.gmedia.selby.R;
 import id.net.gmedia.selby.Model.UlasanModel;
-import id.net.gmedia.selby.Util.ApiVolleyManager;
-import id.net.gmedia.selby.Util.AppRequestCallback;
 import id.net.gmedia.selby.Util.AppSharedPreferences;
 import id.net.gmedia.selby.Util.Constant;
-import id.net.gmedia.selby.Util.Converter;
-import id.net.gmedia.selby.Util.DialogFactory;
-import id.net.gmedia.selby.Util.JSONBuilder;
+import com.leonardus.irfan.DialogFactory;
 
 
 public class FragmentDiskusiBarang extends Fragment {
@@ -105,7 +105,9 @@ public class FragmentDiskusiBarang extends Fragment {
                     body.add("rating", 0);
                     body.add("deskripsi", dialog_txt_ulasan.getText().toString());
 
-                    ApiVolleyManager.getInstance().addRequest(activity, Constant.URL_TAMBAH_DISKUSI_BARANG, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(id_user), body.create(), new AppRequestCallback(new AppRequestCallback.RequestListener() {
+                    ApiVolleyManager.getInstance().addRequest(activity, Constant.URL_TAMBAH_DISKUSI_BARANG, ApiVolleyManager.METHOD_POST,
+                            Constant.getTokenHeader(id_user), body.create(),
+                            new AppRequestCallback(new AppRequestCallback.SimpleRequestListener() {
                         @Override
                         public void onSuccess(String response) {
                             Toast.makeText(activity, "Diskusi Barang berhasil ditambahkan", Toast.LENGTH_SHORT).show();
@@ -151,7 +153,9 @@ public class FragmentDiskusiBarang extends Fragment {
                         body.add("rating", 0);
                         body.add("deskripsi", dialog_txt_ulasan.getText().toString());
 
-                        ApiVolleyManager.getInstance().addRequest(activity, Constant.URL_TAMBAH_DISKUSI_BARANG, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(id_user), body.create(), new AppRequestCallback(new AppRequestCallback.RequestListener() {
+                        ApiVolleyManager.getInstance().addRequest(activity, Constant.URL_TAMBAH_DISKUSI_BARANG,
+                                ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(id_user), body.create(),
+                                new AppRequestCallback(new AppRequestCallback.SimpleRequestListener() {
                             @Override
                             public void onSuccess(String response) {
                                 Toast.makeText(activity, "Balasan Diskusi berhasil ditambahkan", Toast.LENGTH_SHORT).show();
@@ -182,7 +186,8 @@ public class FragmentDiskusiBarang extends Fragment {
         body.add("start", 0);
         body.add("count", count);
 
-        ApiVolleyManager.getInstance().addRequest(activity, Constant.URL_DISKUSI_BARANG, ApiVolleyManager.METHOD_POST, Constant.HEADER_AUTH, body.create(), new AppRequestCallback(new AppRequestCallback.RequestListener() {
+        ApiVolleyManager.getInstance().addRequest(activity, Constant.URL_DISKUSI_BARANG, ApiVolleyManager.METHOD_POST,
+                Constant.HEADER_AUTH, body.create(), new AppRequestCallback(new AppRequestCallback.SimpleRequestListener() {
             @Override
             public void onSuccess(String response) {
                 try{
@@ -195,13 +200,17 @@ public class FragmentDiskusiBarang extends Fragment {
 
                         for(int i = 0; i < arrayDiskusi.length(); i++){
                             JSONObject diskusi = arrayDiskusi.getJSONObject(i);
-                            UlasanModel ulasan = new UlasanModel(diskusi.getString("id"), diskusi.getString("foto"), diskusi.getString("profile_name"), diskusi.getString("deskripsi"), Converter.stringDTTToDate(diskusi.getString("waktu")));
+                            UlasanModel ulasan = new UlasanModel(diskusi.getString("id"), diskusi.getString("foto"),
+                                    diskusi.getString("profile_name"), diskusi.getString("deskripsi"),
+                                    Converter.stringDTToDate(diskusi.getString("waktu")));
 
                             if(diskusi.has("child")){
                                 JSONArray arrayChild = diskusi.getJSONArray("child");
                                 for(int j = 0; j < arrayChild.length(); j++){
                                     ulasan.addBalasan(new UlasanModel(arrayChild.getJSONObject(j).getString("foto"),
-                                            arrayChild.getJSONObject(j).getString("profile_name"), arrayChild.getJSONObject(j).getString("deskripsi"), Converter.stringDTTToDate(arrayChild.getJSONObject(j).getString("waktu"))));
+                                            arrayChild.getJSONObject(j).getString("profile_name"),
+                                            arrayChild.getJSONObject(j).getString("deskripsi"),
+                                            Converter.stringDTToDate(arrayChild.getJSONObject(j).getString("waktu"))));
                                 }
                             }
 
@@ -218,7 +227,7 @@ public class FragmentDiskusiBarang extends Fragment {
                 }
                 catch (JSONException e){
                     Toast.makeText(activity, R.string.error_json, Toast.LENGTH_SHORT).show();
-                    Log.e("Ulasan", e.toString());
+                    Log.e(Constant.TAG, e.toString());
                 }
             }
 
@@ -237,7 +246,8 @@ public class FragmentDiskusiBarang extends Fragment {
         body.add("start", last_loaded);
         body.add("count", LOAD_COUNT);
 
-        ApiVolleyManager.getInstance().addRequest(activity, Constant.URL_DISKUSI_BARANG, ApiVolleyManager.METHOD_POST, Constant.HEADER_AUTH, body.create(), new AppRequestCallback(new AppRequestCallback.RequestListener() {
+        ApiVolleyManager.getInstance().addRequest(activity, Constant.URL_DISKUSI_BARANG, ApiVolleyManager.METHOD_POST,
+                Constant.HEADER_AUTH, body.create(), new AppRequestCallback(new AppRequestCallback.SimpleRequestListener() {
             @Override
             public void onSuccess(String response) {
                 try{
@@ -250,13 +260,17 @@ public class FragmentDiskusiBarang extends Fragment {
 
                         for(int i = 0; i < arrayDiskusi.length(); i++){
                             JSONObject diskusi = arrayDiskusi.getJSONObject(i);
-                            UlasanModel ulasan = new UlasanModel(diskusi.getString("id"), diskusi.getString("foto"), diskusi.getString("profile_name"), diskusi.getString("deskripsi"), Converter.stringDTTToDate(diskusi.getString("waktu")));
+                            UlasanModel ulasan = new UlasanModel(diskusi.getString("id"), diskusi.getString("foto"),
+                                    diskusi.getString("profile_name"), diskusi.getString("deskripsi"),
+                                    Converter.stringDTToDate(diskusi.getString("waktu")));
 
                             if(diskusi.has("child")){
                                 JSONArray arrayChild = diskusi.getJSONArray("child");
                                 for(int j = 0; j < arrayChild.length(); j++){
                                     ulasan.addBalasan(new UlasanModel(arrayChild.getJSONObject(j).getString("foto"),
-                                            arrayChild.getJSONObject(j).getString("profile_name"), arrayChild.getJSONObject(j).getString("deskripsi"), Converter.stringDTTToDate(arrayChild.getJSONObject(j).getString("waktu"))));
+                                            arrayChild.getJSONObject(j).getString("profile_name"),
+                                            arrayChild.getJSONObject(j).getString("deskripsi"),
+                                            Converter.stringDTToDate(arrayChild.getJSONObject(j).getString("waktu"))));
                                 }
                             }
 
@@ -272,7 +286,7 @@ public class FragmentDiskusiBarang extends Fragment {
                 }
                 catch (JSONException e){
                     Toast.makeText(activity, R.string.error_json, Toast.LENGTH_SHORT).show();
-                    Log.e("Ulasan", e.toString());
+                    Log.e(Constant.TAG, e.toString());
                 }
             }
 

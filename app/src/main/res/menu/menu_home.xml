@@ -2,28 +2,28 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/action_home"
-        android:icon="@drawable/home"
+        android:icon="@drawable/homeblack"
         android:orderInCategory="1"
         android:title="@string/menu_home" />
     <item
         android:id="@+id/action_feed"
         android:orderInCategory="2"
         android:title="@string/menu_feed"
-        android:icon="@drawable/feed" />
+        android:icon="@drawable/feedblack" />
     <item
         android:id="@+id/action_favorit"
         android:orderInCategory="3"
         android:title="@string/menu_favorit"
-        android:icon="@drawable/loveline" />
+        android:icon="@drawable/loveblack" />
     <item
         android:id="@+id/action_keranjang"
         android:orderInCategory="4"
         android:title="@string/menu_keranjang"
-        android:icon="@drawable/cart" />
+        android:icon="@drawable/cartblack" />
     <item
         android:id="@+id/action_akun"
         android:orderInCategory="5"
         android:title="@string/menu_akun"
-        android:icon="@drawable/akun" />
+        android:icon="@drawable/akunblack" />
 
 </menu>

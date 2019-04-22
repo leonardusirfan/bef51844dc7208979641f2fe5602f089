@@ -45,17 +45,6 @@ public class BarangItemAdapter extends RecyclerView.Adapter<BarangItemAdapter.Ba
         barangSmallViewHolder.layout_root.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               /* if(item.getJenis().equals("Preloved")){
-                    Intent i = new Intent(context, BarangDetailActivity.class);
-                    i.putExtra("barang", item.getId());
-                    context.startActivity(i);
-                }
-                else if(item.getJenis().equals("Merchandise")){
-                    Intent i = new Intent(context, MerchandiseDetailActivity.class);
-                    i.putExtra("merchandise", item.getId());
-                    context.startActivity(i);
-                }*/
-
                 Intent i = new Intent(context, BarangDetailActivity.class);
                 i.putExtra("barang", item.getId());
                 context.startActivity(i);

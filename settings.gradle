@@ -1,1 +1,3 @@
 include ':app'
+include ':appcustommodule'
+project (":appcustommodule").projectDir = new File("D:\\GMEDIA\\AppCustomModule\\appcustommodule")

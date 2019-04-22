@@ -1,12 +1,16 @@
 package id.net.gmedia.selby.Home;
 
-import android.support.annotation.NonNull;
+import android.net.Uri;
+
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SnapHelper;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -14,10 +18,12 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.leonardus.irfan.ApiVolleyManager;
+import com.leonardus.irfan.AppRequestCallback;
+import com.leonardus.irfan.JSONBuilder;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -28,44 +34,45 @@ import java.util.List;
 
 import id.net.gmedia.selby.Home.Adapter.BarangAdapter;
 import id.net.gmedia.selby.Home.Adapter.KategoriAdapter;
+import id.net.gmedia.selby.Home.Adapter.MerchandiseAdapter;
+import id.net.gmedia.selby.Home.Adapter.PrelovedAdapter;
+import id.net.gmedia.selby.Home.Adapter.SliderAdapter;
 import id.net.gmedia.selby.Model.ArtisModel;
 import id.net.gmedia.selby.Model.BarangModel;
-import id.net.gmedia.selby.Model.ObjectModel;
+import id.net.gmedia.selby.Model.DonasiModel;
+import id.net.gmedia.selby.Model.PrelovedModel;
 import id.net.gmedia.selby.R;
-import id.net.gmedia.selby.Util.ApiVolleyManager;
-import id.net.gmedia.selby.Util.AppRequestCallback;
+import com.leonardus.irfan.AppLoading;
 import id.net.gmedia.selby.Util.Constant;
-import id.net.gmedia.selby.Util.JSONBuilder;
+import com.leonardus.irfan.LoadMoreScrollListener;
+import com.leonardus.irfan.SimpleObjectModel;
 
 public class BarangActivity extends AppCompatActivity {
 
     //flag activity
     //apakah preloved, merchandise, atau hot item
-    private String jenis = "";
+    private int JENIS_BARANG;
 
     //Variabel pencarian barang
     private String kategori = "";
 
     //variabel load more
-    private boolean loading = false;
-    private final int LOAD_COUNT = 4;
-    private int last_loaded = 0;
+    private final int LOAD_COUNT = 12;
+    private String search = "";
 
     //Variabel list dan adapter
     private List<BarangModel> listBarang = new ArrayList<>();
-    private List<ObjectModel> listKategori = new ArrayList<>();
+    private List<SimpleObjectModel> listKategori = new ArrayList<>();
     private KategoriAdapter kategoriAdapter;
-    private BarangAdapter barangAdapter;
-    private GridLayoutManager layoutManager;
+    private RecyclerView.Adapter barangAdapter;
+    private LoadMoreScrollListener loadMoreScrollListener;
+    private RecyclerView.LayoutManager layoutManager;
     private RecyclerView rv_barang;
-
-    private ProgressBar pb_barang;
-    private EditText txt_search;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_barang);
+        setContentView(R.layout.activity_home_list);
 
         //Inisialisasi Toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -76,12 +83,13 @@ public class BarangActivity extends AppCompatActivity {
         }
 
         //Inisialisasi UI
-        pb_barang = findViewById(R.id.pb_barang);
         RecyclerView rv_kategori = findViewById(R.id.rv_kategori);
-        rv_barang = findViewById(R.id.rv_barang);
-        txt_search = findViewById(R.id.txt_search);
+        rv_barang = findViewById(R.id.rv_list);
+        EditText txt_search = findViewById(R.id.txt_search);
+        txt_search.setHint(R.string.cari_barang);
 
         //Init Recycler View dan Adapter
+        listKategori.add(new SimpleObjectModel("", "Semua Kategori"));
         kategoriAdapter = new KategoriAdapter(this, listKategori);
         rv_kategori.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         rv_kategori.setItemAnimator(new DefaultItemAnimator());
@@ -91,66 +99,87 @@ public class BarangActivity extends AppCompatActivity {
         initKategori();
 
         //Inisialisasi Jenis Barang
-        if(getIntent().hasExtra("jenis")){
-            jenis = getIntent().getStringExtra("jenis");
+        if(getIntent().hasExtra(Constant.EXTRA_JENIS_BARANG)){
+            JENIS_BARANG = getIntent().getIntExtra(Constant.EXTRA_JENIS_BARANG, 0);
         }
 
-        //Inisialisasi Recycler View & Adapter
-        layoutManager = new GridLayoutManager(BarangActivity.this, 2);
-        barangAdapter = new BarangAdapter(BarangActivity.this, listBarang);
-        rv_barang.setItemAnimator(new DefaultItemAnimator());
-        rv_barang.setLayoutManager(layoutManager);
-        rv_barang.setAdapter(barangAdapter);
+        switch (JENIS_BARANG) {
+            case Constant.BARANG_PRELOVED:{
+                //Inisialisasi Recycler View & Adapter
+                layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+                //layoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);
+                barangAdapter = new PrelovedAdapter(this, listBarang);
+                rv_barang.setLayoutManager(layoutManager);
+                rv_barang.setAdapter(barangAdapter);
+                //rv_barang.setAnimation(null);
 
-        switch (jenis) {
-            case "Preloved":
-                rv_barang.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                loadMoreScrollListener = new LoadMoreScrollListener(){
                     @Override
-                    public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                        super.onScrolled(recyclerView, dx, dy);
-                        if (dy > 0) { // scroll down
-                            if (!loading && (layoutManager.getItemCount() - layoutManager.getChildCount() <= layoutManager.findFirstVisibleItemPosition())) {
-                                loading = true;
-                                loadPreloved();
-                            }
-                        }
+                    public void onLoadMore() {
+                        loadPreloved(false, search, false);
                     }
-                });
+                };
+                rv_barang.addOnScrollListener(loadMoreScrollListener);
 
-                initPreloved("");
+                loadPreloved(true, search, true);
                 break;
-            case "Merchandise":
-                rv_barang.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            }
+            case Constant.BARANG_MERCHANDISE:{
+                //Inisialisasi Recycler View & Adapter
+                layoutManager = new GridLayoutManager(BarangActivity.this, 2);
+                barangAdapter = new MerchandiseAdapter(BarangActivity.this, listBarang);
+                rv_barang.setItemAnimator(new DefaultItemAnimator());
+                rv_barang.setLayoutManager(layoutManager);
+                rv_barang.setAdapter(barangAdapter);
+
+                loadMoreScrollListener = new LoadMoreScrollListener(){
                     @Override
-                    public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                        super.onScrolled(recyclerView, dx, dy);
-                        if (dy > 0) { // scroll down
-                            if (!loading && (layoutManager.getItemCount() - layoutManager.getChildCount() <= layoutManager.findFirstVisibleItemPosition())) {
-                                loading = true;
-                                loadMerchandise();
-                            }
-                        }
+                    public void onLoadMore() {
+                        loadMerchandise(false, search, false);
                     }
-                });
+                };
+                rv_barang.addOnScrollListener(loadMoreScrollListener);
 
-                initMerchandise("");
+                loadMerchandise(true, search, true);
                 break;
-            default:
-                rv_barang.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            }
+            case Constant.BARANG_DONASI:{
+                //Inisialisasi Recycler View & Adapter
+                layoutManager = new GridLayoutManager(BarangActivity.this, 2);
+                barangAdapter = new MerchandiseAdapter(BarangActivity.this, listBarang);
+                rv_barang.setItemAnimator(new DefaultItemAnimator());
+                rv_barang.setLayoutManager(layoutManager);
+                rv_barang.setAdapter(barangAdapter);
+
+                loadMoreScrollListener = new LoadMoreScrollListener(){
                     @Override
-                    public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                        super.onScrolled(recyclerView, dx, dy);
-                        if (dy > 0) { // scroll down
-                            if (!loading && (layoutManager.getItemCount() - layoutManager.getChildCount() <= layoutManager.findFirstVisibleItemPosition())) {
-                                loading = true;
-                                loadHotItem();
-                            }
-                        }
+                    public void onLoadMore() {
+                        loadDonasi(false, search, false);
                     }
-                });
+                };
+                rv_barang.addOnScrollListener(loadMoreScrollListener);
 
-                initHotItem("");
+                loadDonasi(true, search, true);
                 break;
+            }
+            default:{
+                //Inisialisasi Recycler View & Adapter
+                layoutManager = new GridLayoutManager(BarangActivity.this, 2);
+                barangAdapter = new BarangAdapter(BarangActivity.this, listBarang);
+                rv_barang.setItemAnimator(new DefaultItemAnimator());
+                rv_barang.setLayoutManager(layoutManager);
+                rv_barang.setAdapter(barangAdapter);
+                loadMoreScrollListener = new LoadMoreScrollListener() {
+                    @Override
+                    public void onLoadMore() {
+                        loadHotItem(false, search, false);
+                    }
+                };
+                rv_barang.addOnScrollListener(loadMoreScrollListener);
+
+                loadHotItem(true, search, true);
+                break;
+            }
         }
 
         //Melakukan search ketika edittext searching diubah
@@ -167,33 +196,42 @@ public class BarangActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                switch (jenis) {
-                    case "Preloved":
-                        initPreloved(s.toString());
+                search = s.toString();
+                switch (JENIS_BARANG) {
+                    case Constant.BARANG_PRELOVED:
+                        loadPreloved(true, search, false);
                         break;
-                    case "Merchandise":
-                        initMerchandise(s.toString());
+                    case Constant.BARANG_MERCHANDISE:
+                        loadMerchandise(true, search, false);
+                        break;
+                    case Constant.BARANG_DONASI:
+                        loadDonasi(true, search, true);
                         break;
                     default:
-                        initHotItem(s.toString());
+                        loadHotItem(true, search, false);
                         break;
                 }
             }
         });
+
+        initSlider();
     }
 
     //Mengubah kategori
     public void setKategori(String kategori){
         this.kategori = kategori;
-        switch (jenis) {
-            case "Preloved":
-                initPreloved(txt_search.getText().toString());
+        switch (JENIS_BARANG) {
+            case Constant.BARANG_PRELOVED:
+                loadPreloved(true, search, true);
                 break;
-            case "Merchandise":
-                initMerchandise(txt_search.getText().toString());
+            case Constant.BARANG_MERCHANDISE:
+                loadMerchandise(true, search, true);
+                break;
+            case Constant.BARANG_DONASI:
+                loadDonasi(true, search, true);
                 break;
             default:
-                initHotItem(txt_search.getText().toString());
+                loadHotItem(true, search, true);
                 break;
         }
     }
@@ -203,21 +241,21 @@ public class BarangActivity extends AppCompatActivity {
         body.add("start", 0);
         body.add("count", "");
 
-        ApiVolleyManager.getInstance().addRequest(this, Constant.URL_KATEGORI_BARANG, ApiVolleyManager.METHOD_POST, Constant.HEADER_AUTH, body.create(), new AppRequestCallback(new AppRequestCallback.RequestListener() {
+        ApiVolleyManager.getInstance().addRequest(this, Constant.URL_KATEGORI_BARANG, ApiVolleyManager.METHOD_POST,
+                Constant.HEADER_AUTH, body.create(), new AppRequestCallback(new AppRequestCallback.SimpleRequestListener() {
             @Override
             public void onSuccess(String result) {
                 try{
-                    listKategori.add(new ObjectModel("", "Semua Kategori"));
                     JSONArray arraykategori = new JSONArray(result);
                     for(int i = 0; i < arraykategori.length(); i++){
-                        listKategori.add(new ObjectModel(arraykategori.getJSONObject(i).getString("id"),
+                        listKategori.add(new SimpleObjectModel(arraykategori.getJSONObject(i).getString("id"),
                                 arraykategori.getJSONObject(i).getString("category")));
                     }
                     kategoriAdapter.notifyDataSetChanged();
                 }
                 catch (JSONException e){
                     Toast.makeText(BarangActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
-                    Log.e("Kategori", e.getMessage());
+                    Log.e(Constant.TAG, e.getMessage());
                 }
             }
 
@@ -228,96 +266,72 @@ public class BarangActivity extends AppCompatActivity {
         }));
     }
 
-    private void initHotItem(String keyword){
-        last_loaded = 0;
-
-        rv_barang.setVisibility(View.INVISIBLE);
-        pb_barang.setVisibility(View.VISIBLE);
+    private void loadHotItem(final boolean init, String keyword, boolean show_loading){
+        if(show_loading){
+            AppLoading.getInstance().showLoading(this);
+        }
+        if(init){
+            loadMoreScrollListener.initLoad();
+        }
 
         JSONBuilder body = new JSONBuilder();
-        body.add("start", 0);
+        body.add("start", loadMoreScrollListener.getLoaded());
         body.add("count", LOAD_COUNT);
         body.add("keyword", keyword);
         body.add("kategori", kategori);
 
-        ApiVolleyManager.getInstance().addRequest(BarangActivity.this, Constant.URL_HOT_ITEM, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body.create(), new AppRequestCallback(new AppRequestCallback.RequestListener() {
+        ApiVolleyManager.getInstance().addRequest(BarangActivity.this, Constant.URL_HOT_ITEM,
+                ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()),
+                body.create(), new AppRequestCallback(new AppRequestCallback.SimpleRequestListener() {
             @Override
             public void onSuccess(String result) {
                 try{
-                    listBarang.clear();
+                    if(init){
+                        listBarang.clear();
+                    }
 
                     JSONArray response = new JSONArray(result);
                     for(int i = 0; i < response.length(); i++){
                         JSONObject barang = response.getJSONObject(i);
-                        listBarang.add(new BarangModel(barang.getString("id_barang"), barang.getString("nama"),barang.getString("image"), barang.getDouble("harga"), barang.getString("jenis"), new ArtisModel(barang.getString("penjual"), barang.getString("foto_penjual"), (float)barang.getDouble("rating"))));
-                        last_loaded += 1;
+                        listBarang.add(new BarangModel(barang.getString("id_barang"), barang.getString("nama"),
+                                barang.getString("image"), barang.getDouble("harga"),
+                                barang.getString("jenis").equals("1")?Constant.BARANG_PRELOVED:Constant.BARANG_MERCHANDISE,
+                                new ArtisModel(barang.getString("penjual"), barang.getString("foto_penjual"),
+                                        (float)barang.getDouble("rating")), false));
                     }
 
                     barangAdapter.notifyDataSetChanged();
+                    loadMoreScrollListener.finishLoad(response.length());
                 }
                 catch (JSONException e){
                     Toast.makeText(BarangActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
-                    Log.e("Barang Artis", e.toString());
+                    Log.e(Constant.TAG, e.toString());
+                    loadMoreScrollListener.failedLoad();
                 }
-                finally {
-                    rv_barang.setVisibility(View.VISIBLE);
-                    pb_barang.setVisibility(View.INVISIBLE);
-                }
+
+                AppLoading.getInstance().stopLoading();
             }
 
             @Override
             public void onFail(String message) {
                 Toast.makeText(BarangActivity.this, message, Toast.LENGTH_SHORT).show();
-                rv_barang.setVisibility(View.VISIBLE);
-                pb_barang.setVisibility(View.INVISIBLE);
+                AppLoading.getInstance().stopLoading();
+                loadMoreScrollListener.failedLoad();
             }
         }));
     }
 
-    private void loadHotItem(){
-        JSONBuilder body = new JSONBuilder();
-        body.add("start", last_loaded);
-        body.add("count", LOAD_COUNT);
-        body.add("keyword", txt_search.getText().toString());
-        body.add("kategori", kategori);
+    private void loadPreloved(final boolean init, String keyword, boolean show_loading){
+        if(show_loading){
+            AppLoading.getInstance().showLoading(this);
+        }
 
-        ApiVolleyManager.getInstance().addRequest(BarangActivity.this, Constant.URL_HOT_ITEM, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body.create(), new AppRequestCallback(new AppRequestCallback.RequestListener() {
-            @Override
-            public void onSuccess(String result) {
-                try{
-                    JSONArray response = new JSONArray(result);
-                    for(int i = 0; i < response.length(); i++){
-                        JSONObject barang = response.getJSONObject(i);
-                        listBarang.add(new BarangModel(barang.getString("id_barang"), barang.getString("nama"),barang.getString("image"), barang.getDouble("harga"), barang.getString("jenis"), new ArtisModel(barang.getString("penjual"), barang.getString("foto_penjual"), (float)barang.getDouble("rating"))));
-                        last_loaded += 1;
-                    }
-
-                    barangAdapter.notifyDataSetChanged();
-                    loading = false;
-                }
-                catch (JSONException e){
-                    Toast.makeText(BarangActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
-                    Log.e("Barang Artis", e.toString());
-                    loading = false;
-                }
-            }
-
-            @Override
-            public void onFail(String message) {
-                Toast.makeText(BarangActivity.this, message, Toast.LENGTH_SHORT).show();
-                loading = false;
-            }
-        }));
-    }
-
-    private void initPreloved(String keyword){
-        last_loaded = 0;
-
-        rv_barang.setVisibility(View.INVISIBLE);
-        pb_barang.setVisibility(View.VISIBLE);
+        if(init){
+            loadMoreScrollListener.initLoad();
+        }
 
         JSONBuilder body = new JSONBuilder();
-        body.add("start", 0);
+        body.add("start", loadMoreScrollListener.getLoaded());
         body.add("count", LOAD_COUNT);
         body.add("keyword", keyword);
         body.add("brand", "");
@@ -325,12 +339,28 @@ public class BarangActivity extends AppCompatActivity {
         body.add("penjual", "");
         body.add("jenis", "1");
 
-        ApiVolleyManager.getInstance().addRequest(BarangActivity.this, Constant.URL_BARANG_ARTIS, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body.create(), new AppRequestCallback(new AppRequestCallback.RequestListener() {
-            @Override
+        ApiVolleyManager.getInstance().addRequest(BarangActivity.this, Constant.URL_BARANG_MASTER,
+                ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body.create(),
+                new AppRequestCallback(new AppRequestCallback.RequestListener() {
+                    @Override
+                    public void onEmpty(String message) {
+                        if(init){
+                            listBarang.clear();
+                            barangAdapter.notifyDataSetChanged();
+                        }
+
+                        loadMoreScrollListener.finishLoad(0);
+                        AppLoading.getInstance().stopLoading();
+                    }
+
+                    @Override
             public void onSuccess(String result) {
                 try{
-                    listBarang.clear();
+                    if(init){
+                        listBarang.clear();
+                    }
 
+                    int previous_loaded = loadMoreScrollListener.getLoaded();
                     JSONArray response = new JSONArray(result);
                     for(int i = 0; i < response.length(); i++){
                         JSONObject barang = response.getJSONObject(i);
@@ -339,85 +369,79 @@ public class BarangActivity extends AppCompatActivity {
                             isfavorit = true;
                         }
 
-                        listBarang.add(new BarangModel(barang.getString("id_barang"), barang.getString("nama"),barang.getString("image"), barang.getDouble("harga"), isfavorit, new ArtisModel(barang.getString("penjual"), barang.getString("foto_penjual"), (float)barang.getDouble("rating"))));
-                        last_loaded += 1;
+                        PrelovedModel b = new PrelovedModel(barang.getString("id_barang"), barang.getString("nama"),
+                                barang.getString("image"), barang.getDouble("harga"), isfavorit,
+                                new ArtisModel(barang.getString("penjual"), barang.getString("foto_penjual"),
+                                        (float)barang.getDouble("rating")), barang.getInt("pemakaian"),
+                                barang.getString("satuan_pemakaian"), barang.getInt("donasi")==1);
+
+                        listBarang.add(b);
                     }
 
-                    barangAdapter.notifyDataSetChanged();
+                    AppLoading.getInstance().stopLoading();
+                    loadMoreScrollListener.finishLoad(response.length());
 
-                    rv_barang.setVisibility(View.VISIBLE);
-                    pb_barang.setVisibility(View.INVISIBLE);
+                    if(init){
+                        //barangAdapter.notifyDataSetChanged();
+                        layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+                        barangAdapter = new PrelovedAdapter(BarangActivity.this, listBarang);
+                        rv_barang.setLayoutManager(layoutManager);
+                        rv_barang.setAdapter(barangAdapter);
+                    }
+                    else{
+                        barangAdapter.notifyItemRangeInserted(previous_loaded, loadMoreScrollListener.getLoaded());
+                    }
                 }
                 catch (JSONException e){
                     Toast.makeText(BarangActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
-                    Log.e("Barang Artis", e.toString());
+                    Log.e(Constant.TAG, e.toString());
 
-                    rv_barang.setVisibility(View.VISIBLE);
-                    pb_barang.setVisibility(View.INVISIBLE);
+                    AppLoading.getInstance().stopLoading();
+                    loadMoreScrollListener.failedLoad();
                 }
             }
 
             @Override
             public void onFail(String message) {
                 Toast.makeText(BarangActivity.this, message, Toast.LENGTH_SHORT).show();
-                rv_barang.setVisibility(View.VISIBLE);
-                pb_barang.setVisibility(View.INVISIBLE);
+                AppLoading.getInstance().stopLoading();
+                loadMoreScrollListener.failedLoad();
             }
         }));
     }
 
-    private void loadPreloved(){
-        JSONBuilder body = new JSONBuilder();
-        body.add("start", last_loaded);
-        body.add("count", LOAD_COUNT);
-        body.add("keyword", txt_search.getText().toString());
-        body.add("brand", "");
-        body.add("kategori", kategori);
-        body.add("penjual", "");
-        body.add("jenis", "1");
+    /*private void checkAllLoaded(boolean init){
+        boolean all_loaded = true;
+        for(BarangModel b : listBarang){
+            if(!b.isImgLoaded()){
+                all_loaded = false;
+                break;
+            }
+        }
 
-        ApiVolleyManager.getInstance().addRequest(BarangActivity.this, Constant.URL_BARANG_ARTIS, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body.create(), new AppRequestCallback(new AppRequestCallback.RequestListener() {
-            @Override
-            public void onSuccess(String result) {
-                try{
-                    JSONArray response = new JSONArray(result);
-                    for(int i = 0; i < response.length(); i++){
-                        JSONObject barang = response.getJSONObject(i);
-                        boolean isfavorit = false;
-                        if(barang.getString("is_favorit").equals("1")){
-                            isfavorit = true;
-                        }
-
-                        listBarang.add(new BarangModel(barang.getString("id_barang"), barang.getString("nama"),barang.getString("image"), barang.getDouble("harga"), isfavorit, new ArtisModel(barang.getString("penjual"), barang.getString("foto_penjual"), (float)barang.getDouble("rating"))));
-                        last_loaded += 1;
-                    }
-
-                    barangAdapter.notifyDataSetChanged();
-                    loading = false;
-                }
-                catch (JSONException e){
-                    Toast.makeText(BarangActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
-                    Log.e("Barang Artis", e.toString());
-                    loading = false;
-                }
+        if(all_loaded){
+            if(init){
+                barangAdapter.notifyDataSetChanged();
+            }
+            else{
+                barangAdapter.notifyItemRangeInserted(previous_loaded, last_loaded);
             }
 
-            @Override
-            public void onFail(String message) {
-                Toast.makeText(BarangActivity.this, message, Toast.LENGTH_SHORT).show();
-                loading = false;
-            }
-        }));
-    }
+            AppLoading.getInstance().stopLoading();
+            loadMoreScrollListener.finishLoad();
+        }
+    }*/
 
-    private void initMerchandise(String keyword){
-        last_loaded = 0;
-
-        rv_barang.setVisibility(View.INVISIBLE);
-        pb_barang.setVisibility(View.VISIBLE);
+    private void loadMerchandise(final boolean init, String keyword, boolean show_loading){
+        if(show_loading){
+            AppLoading.getInstance().showLoading(this);
+        }
+        if(init){
+            loadMoreScrollListener.initLoad();
+        }
 
         JSONBuilder body = new JSONBuilder();
-        body.add("start", 0);
+        body.add("start", loadMoreScrollListener.getLoaded());
         body.add("count", LOAD_COUNT);
         body.add("keyword", keyword);
         body.add("brand", "");
@@ -425,11 +449,15 @@ public class BarangActivity extends AppCompatActivity {
         body.add("penjual", "");
         body.add("jenis", "2");
 
-        ApiVolleyManager.getInstance().addRequest(BarangActivity.this, Constant.URL_BARANG_ARTIS, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body.create(), new AppRequestCallback(new AppRequestCallback.RequestListener() {
+        ApiVolleyManager.getInstance().addRequest(BarangActivity.this, Constant.URL_BARANG_MASTER,
+                ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body.create(),
+                new AppRequestCallback(new AppRequestCallback.SimpleRequestListener() {
             @Override
             public void onSuccess(String result) {
                 try{
-                    listBarang.clear();
+                    if(init){
+                        listBarang.clear();
+                    }
 
                     JSONArray response = new JSONArray(result);
                     for(int i = 0; i < response.length(); i++){
@@ -439,76 +467,115 @@ public class BarangActivity extends AppCompatActivity {
                             isfavorit = true;
                         }
 
-                        listBarang.add(new BarangModel(barang.getString("id_barang"), barang.getString("nama"),barang.getString("image"), barang.getDouble("harga"), isfavorit,new ArtisModel(barang.getString("penjual"), barang.getString("foto_penjual"), (float)barang.getDouble("rating"))));
-                        last_loaded += 1;
+                        listBarang.add(new BarangModel(barang.getString("id_barang"), barang.getString("nama"),
+                                barang.getString("image"), barang.getDouble("harga"), isfavorit,
+                                new ArtisModel(barang.getString("penjual"), barang.getString("foto_penjual"),
+                                        (float)barang.getDouble("rating")), barang.getInt("donasi")==1));
                     }
 
                     barangAdapter.notifyDataSetChanged();
-
-                    rv_barang.setVisibility(View.VISIBLE);
-                    pb_barang.setVisibility(View.INVISIBLE);
+                    AppLoading.getInstance().stopLoading();
+                    loadMoreScrollListener.finishLoad(response.length());
                 }
                 catch (JSONException e){
                     Toast.makeText(BarangActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
-                    Log.e("Barang Artis", e.toString());
+                    Log.e(Constant.TAG, e.toString());
 
-                    rv_barang.setVisibility(View.VISIBLE);
-                    pb_barang.setVisibility(View.INVISIBLE);
+                    AppLoading.getInstance().stopLoading();
+                    loadMoreScrollListener.failedLoad();
                 }
             }
 
             @Override
             public void onFail(String message) {
                 Toast.makeText(BarangActivity.this, message, Toast.LENGTH_SHORT).show();
-                rv_barang.setVisibility(View.VISIBLE);
-                pb_barang.setVisibility(View.INVISIBLE);
+
+                AppLoading.getInstance().stopLoading();
+                loadMoreScrollListener.failedLoad();
             }
         }));
     }
 
-    private void loadMerchandise(){
+    private void loadDonasi(final boolean init, String keyword, boolean show_loading){
+        if(show_loading){
+            AppLoading.getInstance().showLoading(this);
+        }
+        if(init){
+            loadMoreScrollListener.initLoad();
+        }
+
         JSONBuilder body = new JSONBuilder();
-        body.add("start", last_loaded);
+        body.add("start", loadMoreScrollListener.getLoaded());
         body.add("count", LOAD_COUNT);
-        body.add("keyword", txt_search.getText().toString());
+        body.add("keyword", keyword);
         body.add("brand", "");
         body.add("kategori", kategori);
         body.add("penjual", "");
-        body.add("jenis", "2");
 
-        ApiVolleyManager.getInstance().addRequest(BarangActivity.this, Constant.URL_BARANG_ARTIS, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body.create(), new AppRequestCallback(new AppRequestCallback.RequestListener() {
-            @Override
-            public void onSuccess(String result) {
-                try{
-                    JSONArray response = new JSONArray(result);
-                    for(int i = 0; i < response.length(); i++){
-                        JSONObject barang = response.getJSONObject(i);
-                        boolean isfavorit = false;
-                        if(barang.getString("is_favorit").equals("1")){
-                            isfavorit = true;
+        ApiVolleyManager.getInstance().addRequest(BarangActivity.this, Constant.URL_BARANG_MASTER,
+                ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body.create(),
+                new AppRequestCallback(new AppRequestCallback.SimpleRequestListener() {
+                    @Override
+                    public void onSuccess(String result) {
+                        try{
+                            if(init){
+                                listBarang.clear();
+                            }
+
+                            JSONArray response = new JSONArray(result);
+                            for(int i = 0; i < response.length(); i++){
+                                JSONObject barang = response.getJSONObject(i);
+                                boolean isfavorit = false;
+                                if(barang.getString("is_favorit").equals("1")){
+                                    isfavorit = true;
+                                }
+
+                                if(barang.getInt("donasi") == 1){
+                                    listBarang.add(new DonasiModel(barang.getString("id_barang"), barang.getString("nama"),
+                                            barang.getString("image"), barang.getDouble("harga"), isfavorit,
+                                            barang.getString("jenis").equals("Preloved")?Constant.BARANG_PRELOVED:Constant.BARANG_MERCHANDISE,
+                                            new ArtisModel(barang.getString("penjual"), barang.getString("foto_penjual"),
+                                                    (float)barang.getDouble("rating"))));
+                                }
+                            }
+
+                            barangAdapter.notifyDataSetChanged();
+                            AppLoading.getInstance().stopLoading();
+                            loadMoreScrollListener.finishLoad(response.length());
                         }
+                        catch (JSONException e){
+                            Toast.makeText(BarangActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
+                            Log.e(Constant.TAG, e.toString());
 
-                        listBarang.add(new BarangModel(barang.getString("id_barang"), barang.getString("nama"),barang.getString("image"), barang.getDouble("harga"), isfavorit));
-                        last_loaded += 1;
+                            AppLoading.getInstance().stopLoading();
+                            loadMoreScrollListener.failedLoad();
+                        }
                     }
 
-                    barangAdapter.notifyDataSetChanged();
-                    pb_barang.setVisibility(View.GONE);
-                }
-                catch (JSONException e){
-                    Toast.makeText(BarangActivity.this, R.string.error_json, Toast.LENGTH_SHORT).show();
-                    Log.e("Barang Artis", e.toString());
+                    @Override
+                    public void onFail(String message) {
+                        Toast.makeText(BarangActivity.this, message, Toast.LENGTH_SHORT).show();
 
-                    pb_barang.setVisibility(View.GONE);
-                }
-            }
+                        AppLoading.getInstance().stopLoading();
+                        loadMoreScrollListener.failedLoad();
+                    }
+                }));
+    }
 
-            @Override
-            public void onFail(String message) {
-                Toast.makeText(BarangActivity.this, message, Toast.LENGTH_SHORT).show();
-                pb_barang.setVisibility(View.GONE);
-            }
-        }));
+    private void initSlider(){
+        List<String> listImage = new ArrayList<>();
+        listImage.add(Uri.parse("android.resource://"+R.class.getPackage().getName()+"/" + R.drawable.slider3).toString());
+        listImage.add(Uri.parse("android.resource://"+R.class.getPackage().getName()+"/" + R.drawable.slider2).toString());
+        listImage.add(Uri.parse("android.resource://"+R.class.getPackage().getName()+"/" + R.drawable.slider1).toString());
+
+        RecyclerView rv_slider = findViewById(R.id.rv_slider);
+        rv_slider.setItemAnimator(new DefaultItemAnimator());
+        SliderAdapter sliderAdapter = new SliderAdapter(listImage);
+        rv_slider.setAdapter(sliderAdapter);
+        rv_slider.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        SnapHelper snapHelper = new LinearSnapHelper();
+        snapHelper.attachToRecyclerView(rv_slider);
+        rv_slider.setVisibility(View.VISIBLE);
     }
 
     @Override

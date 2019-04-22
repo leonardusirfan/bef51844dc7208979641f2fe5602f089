@@ -1,7 +1,6 @@
 package id.net.gmedia.selby.Home.Adapter;
 
 import android.app.Activity;
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,21 +8,22 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.leonardus.irfan.SimpleObjectModel;
+
 import java.util.List;
 
 import id.net.gmedia.selby.Home.ArtisActivity;
 import id.net.gmedia.selby.Home.BarangActivity;
 import id.net.gmedia.selby.Home.LelangActivity;
-import id.net.gmedia.selby.Model.ObjectModel;
 import id.net.gmedia.selby.R;
 
 public class KategoriAdapter extends RecyclerView.Adapter<KategoriAdapter.KategoriViewHolder> {
 
     private Activity activity;
-    private List<ObjectModel> listKategori;
+    private List<SimpleObjectModel> listKategori;
     private int selected = 0;
 
-    public KategoriAdapter(Activity activity, List<ObjectModel> listKategori){
+    public KategoriAdapter(Activity activity, List<SimpleObjectModel> listKategori){
         this.activity = activity;
         this.listKategori = listKategori;
     }
@@ -38,12 +38,12 @@ public class KategoriAdapter extends RecyclerView.Adapter<KategoriAdapter.Katego
     public void onBindViewHolder(@NonNull KategoriViewHolder kategoriViewHolder, int i) {
         final int position = kategoriViewHolder.getAdapterPosition();
         if(i == selected){
-            kategoriViewHolder.txt_kategori.setBackgroundResource(R.drawable.style_fullrounded_gold_rectangle);
+            kategoriViewHolder.txt_kategori.setBackgroundResource(R.drawable.style_fullrounded_dark_blue_rectangle);
             kategoriViewHolder.txt_kategori.setTextColor(activity.getResources().getColor(R.color.white));
         }
         else{
-            kategoriViewHolder.txt_kategori.setBackgroundResource(R.drawable.style_fullrounded_gold_bordered_white_rectangle);
-            kategoriViewHolder.txt_kategori.setTextColor(activity.getResources().getColor(R.color.gold));
+            kategoriViewHolder.txt_kategori.setBackgroundResource(R.drawable.style_fullrounded_darkblue_bordered_white_rectangle);
+            kategoriViewHolder.txt_kategori.setTextColor(activity.getResources().getColor(R.color.dark_blue));
         }
 
         kategoriViewHolder.txt_kategori.setText(listKategori.get(i).getValue());

@@ -1,15 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/lelang_item_header_width"
-    android:layout_margin="@dimen/padding2">
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@color/white"
+    android:padding="@dimen/dp15"
+    android:layout_marginBottom="@dimen/dp10">
 
-    <ImageView
-        android:id="@+id/img_artis"
+    <TextView
+        android:id="@+id/txt_judul"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Jalan - Jalan Santai"
+        android:textColor="@color/black"
+        android:textSize="@dimen/sp14"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/txt_tanggal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="29 Januari 2019"
+        android:textColor="@color/black"
+        android:textSize="@dimen/sp12" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_galeri"
+        android:layout_marginTop="@dimen/dp10"
         android:contentDescription="@null"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"/>
 
-</FrameLayout>
+</LinearLayout>

@@ -10,17 +10,44 @@
         <item name="android:windowBackground">@color/grey</item>
 
         <!-- Color for circle in progress bar -->
-        <item name="colorControlActivated">@color/orange</item>
+        <item name="colorControlActivated">@color/blue</item>
+        <!-- Style menu action bar -->
+        <item name="actionButtonStyle">@style/AppTheme.Widget.ActionButton</item>
+
+        <item name="android:windowSharedElementEnterTransition">@transition/transition_shared_element</item>
+        <!--<item name="android:windowSharedElementExitTransition">@transition/transition_shared_element_reverse</item>-->
+        <item name="android:windowSharedElementExitTransition">@null</item>
+        <!--<item name="android:windowSharedElementReenterTransition">@null</item>
+        <item name="android:windowReenterTransition">@null</item>-->
+        <item name="android:windowAllowReturnTransitionOverlap">false</item>
+    </style>
+
+    <!--style untuk action bar-->
+    <style name="AppBaseTheme.Toolbar" parent="Widget.AppCompat.ActionBar.Solid">
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="colorControlNormal">@color/white</item>
+    </style>
+
+    <style name="AppTheme.ActionBar" parent="@style/Theme.AppCompat.Light">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowContentTransitions">true</item>
+        <item name="android:windowBackground">@color/grey</item>
+
+        <!-- Color for circle in progress bar -->
+        <item name="colorControlActivated">@color/blue</item>
         <!-- Style menu action bar -->
         <item name="actionButtonStyle">@style/AppTheme.Widget.ActionButton</item>
 
         <item name="android:windowSharedElementEnterTransition">@transition/transition_shared_element</item>
         <item name="android:windowSharedElementExitTransition">@transition/transition_shared_element_reverse</item>
-    </style>
-
-    <style name="AppTheme.ActionBar" parent="@style/ThemeOverlay.AppCompat.ActionBar">
         <!-- THIS is where you can color the arrow! -->
-        <item name="colorControlNormal">@color/dark_grey</item>
+        <item name="colorControlNormal">@color/white</item>
+
+        <!--custom style action bar-->
+        <item name="actionBarTheme">@style/AppBaseTheme.Toolbar</item>
     </style>
 
     <style name="AppTheme.Fullscreen" parent="Theme.AppCompat.Light.NoActionBar">
@@ -44,7 +71,6 @@
         <item name="android:textColorSecondary">@color/dark_grey</item>
     </style>
 
-
     <style name="AppTheme.SplashScreen" parent="Theme.AppCompat.NoActionBar">
         <item name="android:windowBackground">@drawable/splash_screen</item>
     </style>
@@ -57,7 +83,7 @@
 
     <style name="AppRatingBar.Orange" parent="Theme.AppCompat">
         <item name="colorControlNormal">@color/dark_grey</item>
-        <item name="colorControlActivated">@color/light_orange</item>
+        <item name="colorControlActivated">@color/gold</item>
     </style>
 
     <style name="EditText.Grey" parent="Theme.AppCompat">
@@ -75,5 +101,15 @@
 
     <style name="AppTheme.Widget.ActionButton" parent="@style/Widget.AppCompat.ActionButton">
         <item name="textAllCaps">false</item>
+    </style>
+
+    <style name="NoCapsTextAppearance" parent="TextAppearance.Design.Tab">
+        <item name="textAllCaps">false</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+
+    <style name="DialogAnimation">
+        <item name="android:windowEnterAnimation">@anim/anim_slide_left</item>
+        <item name="android:windowExitAnimation">@anim/anim_slide_right</item>
     </style>
 </resources>

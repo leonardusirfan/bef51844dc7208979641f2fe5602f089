@@ -21,10 +21,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:background="#fff"
+            android:background="@android:color/transparent"
             app:elevation="0dp"
-            app:itemIconTint="#000"
-            app:itemTextColor="#000"/>
+            app:itemIconTint="@color/color_bottombar"
+            app:itemTextColor="@color/color_bottombar"
+            app:labelVisibilityMode="labeled"/>
 
         <!--<rjsv.floatingmenu.floatingmenubutton.FloatingMenuButton
             android:id="@+id/fab_post"

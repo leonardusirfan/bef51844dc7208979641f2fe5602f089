@@ -1,5 +1,6 @@
 package id.net.gmedia.selby.Feed;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -14,6 +15,10 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.leonardus.irfan.ApiVolleyManager;
+import com.leonardus.irfan.AppRequestCallback;
+import com.leonardus.irfan.Converter;
+import com.leonardus.irfan.JSONBuilder;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -25,7 +30,6 @@ import java.util.List;
 
 import id.net.gmedia.selby.Feed.FeedItem.KegiatanItemModel;
 import id.net.gmedia.selby.Model.KegiatanModel;
-import id.net.gmedia.selby.Util.AppRequestCallback;
 import id.net.gmedia.selby.Util.Constant;
 import id.net.gmedia.selby.Feed.FeedItem.BarangItemModel;
 import id.net.gmedia.selby.Feed.FeedItem.FeedItemModel;
@@ -36,9 +40,6 @@ import id.net.gmedia.selby.Model.ArtisModel;
 import id.net.gmedia.selby.Model.BarangModel;
 import id.net.gmedia.selby.Model.LelangModel;
 import id.net.gmedia.selby.R;
-import id.net.gmedia.selby.Util.ApiVolleyManager;
-import id.net.gmedia.selby.Util.Converter;
-import id.net.gmedia.selby.Util.JSONBuilder;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -46,6 +47,7 @@ import id.net.gmedia.selby.Util.JSONBuilder;
 public class FragmentFeed extends Fragment {
 
     //Variabel view fragment
+    private Context context;
     private View v;
 
     //Variabel load data
@@ -68,6 +70,7 @@ public class FragmentFeed extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        context = container.getContext();
         if(v == null || needLoad) {
             v = inflater.inflate(R.layout.fragment_loading, container, false);
             initItem();
@@ -78,7 +81,7 @@ public class FragmentFeed extends Fragment {
             //Inisialisasi Recycler View
             RecyclerView rv_feed = v.findViewById(R.id.rv_feed);
             rv_feed.setItemAnimator(new DefaultItemAnimator());
-            layoutManager = new LinearLayoutManager(getContext());
+            layoutManager = new LinearLayoutManager(context);
             rv_feed.setLayoutManager(layoutManager);
             adapter = new FeedAdapter(listItem);
             rv_feed.setAdapter(adapter);
@@ -111,7 +114,9 @@ public class FragmentFeed extends Fragment {
         body.add("start", 0);
         body.add("count", loadedcount);
 
-        ApiVolleyManager.getInstance().addRequest(getActivity(), Constant.URL_FEED, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body.create(), new AppRequestCallback(new AppRequestCallback.RequestListener() {
+        ApiVolleyManager.getInstance().addRequest(getActivity(), Constant.URL_FEED, ApiVolleyManager.METHOD_POST,
+                Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body.create(),
+                new AppRequestCallback(new AppRequestCallback.SimpleRequestListener() {
             @Override
             public void onSuccess(String response) {
                 try{
@@ -127,14 +132,14 @@ public class FragmentFeed extends Fragment {
                     adapter.notifyDataSetChanged();
                 }
                 catch (JSONException e){
-                    Toast.makeText(getContext(), R.string.error_json, Toast.LENGTH_SHORT).show();
-                    Log.e("Feed", e.getMessage());
+                    Toast.makeText(context, R.string.error_json, Toast.LENGTH_SHORT).show();
+                    Log.e(Constant.TAG, e.getMessage());
                 }
             }
 
             @Override
             public void onFail(String message) {
-                Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
             }
         }));
     }
@@ -150,7 +155,9 @@ public class FragmentFeed extends Fragment {
         body.add("start", loadedcount);
         body.add("count", LOAD_COUNT);
 
-        ApiVolleyManager.getInstance().addRequest(getActivity(), Constant.URL_FEED, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body.create(), new AppRequestCallback(new AppRequestCallback.RequestListener() {
+        ApiVolleyManager.getInstance().addRequest(getActivity(), Constant.URL_FEED, ApiVolleyManager.METHOD_POST,
+                Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body.create(),
+                new AppRequestCallback(new AppRequestCallback.SimpleRequestListener() {
             @Override
             public void onSuccess(String response) {
                 try{
@@ -177,15 +184,15 @@ public class FragmentFeed extends Fragment {
                     loading = false;
                 }
                 catch (JSONException e){
-                    Toast.makeText(getContext(), R.string.error_json, Toast.LENGTH_SHORT).show();
-                    Log.e("Feed", e.getMessage());
+                    Toast.makeText(context, R.string.error_json, Toast.LENGTH_SHORT).show();
+                    Log.e(Constant.TAG, e.getMessage());
                     loading = false;
                 }
             }
 
             @Override
             public void onFail(String message) {
-                Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
                 loading = false;
             }
         }));
@@ -203,7 +210,9 @@ public class FragmentFeed extends Fragment {
         body.add("start", "0");
         body.add("count", LOAD_COUNT);
 
-        ApiVolleyManager.getInstance().addRequest(getActivity(), Constant.URL_FEED, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body.create(), new AppRequestCallback(new AppRequestCallback.RequestListener() {
+        ApiVolleyManager.getInstance().addRequest(getActivity(), Constant.URL_FEED, ApiVolleyManager.METHOD_POST,
+                Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body.create(),
+                new AppRequestCallback(new AppRequestCallback.SimpleRequestListener() {
             @Override
             public void onSuccess(String response) {
                 try{
@@ -219,14 +228,14 @@ public class FragmentFeed extends Fragment {
                     resetFragment();
                 }
                 catch (JSONException e){
-                    Toast.makeText(getContext(), R.string.error_json, Toast.LENGTH_SHORT).show();
-                    Log.e("Feed", e.getMessage());
+                    Toast.makeText(context, R.string.error_json, Toast.LENGTH_SHORT).show();
+                    Log.e(Constant.TAG, e.getMessage());
                 }
             }
 
             @Override
             public void onFail(String message) {
-                Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
             }
         }));
     }
@@ -236,14 +245,17 @@ public class FragmentFeed extends Fragment {
        try{
            listId.add(feeditem.getString("id"));
 
-           ArtisModel artis = new ArtisModel(feeditem.getString("id_penjual"), feeditem.getString("penjual"), feeditem.getString("image_penjual"));
-           Date timestamp = Converter.stringDTTToDate(feeditem.getString("timestamp"));
+           ArtisModel artis = new ArtisModel(feeditem.getString("id_penjual"), feeditem.getString("penjual"),
+                   feeditem.getString("image_penjual"));
+           Date timestamp = Converter.stringDTToDate(feeditem.getString("timestamp"));
            String text = feeditem.getString("title");
            int jenis = feeditem.getInt("jenis");
            FeedItemModel item = null;
            switch (jenis){
                case 1:{
-                   KegiatanModel kegiatan = new KegiatanModel(feeditem.getString("title"), feeditem.getString("tempat"), Converter.stringDToDate(feeditem.getString("tgl")), feeditem.getString("deskripsi"));
+                   KegiatanModel kegiatan = new KegiatanModel(feeditem.getString("title"),
+                           feeditem.getString("tempat"), Converter.stringDToDate(feeditem.getString("tgl")),
+                           feeditem.getString("deskripsi"));
                    item = new KegiatanItemModel(artis, kegiatan, timestamp);
                    break;
                }
@@ -265,14 +277,17 @@ public class FragmentFeed extends Fragment {
                    JSONArray jsonGambar = feeditem.getJSONArray("images");
                    for(int j = 0; j < jsonGambar.length(); j++){
                        JSONObject jsonbarang = jsonGambar.getJSONObject(j);
-                       listBarang.add(new BarangModel(jsonbarang.getString("id_barang"), jsonbarang.getString("teks"), jsonbarang.getString("image"), jsonbarang.getString("jenis")));
+                       listBarang.add(new BarangModel(jsonbarang.getString("id_barang"), jsonbarang.getString("teks"),
+                               jsonbarang.getString("image"), jsonbarang.getString("jenis").equals("1")?
+                               Constant.BARANG_PRELOVED:Constant.BARANG_MERCHANDISE));
                    }
                    item = new BarangItemModel(artis, listBarang, timestamp);
                    break;
                }
                case 5:{
                    JSONObject jsonlelang = feeditem.getJSONArray("images").getJSONObject(0);
-                   LelangModel lelang = new LelangModel(jsonlelang.getString("id_lelang"), jsonlelang.getString("teks"), jsonlelang.getString("image"));
+                   LelangModel lelang = new LelangModel(jsonlelang.getString("id_lelang"),
+                           jsonlelang.getString("teks"), jsonlelang.getString("image"));
                    item = new LelangItemModel(artis, lelang, timestamp);
                    break;
                }
@@ -281,8 +296,8 @@ public class FragmentFeed extends Fragment {
            listItem.add(item);
        }
        catch (JSONException e){
-           Toast.makeText(getContext(), R.string.error_json, Toast.LENGTH_SHORT).show();
-           Log.e("Feed", e.toString());
+           Toast.makeText(context, R.string.error_json, Toast.LENGTH_SHORT).show();
+           Log.e(Constant.TAG, e.toString());
        }
     }
 

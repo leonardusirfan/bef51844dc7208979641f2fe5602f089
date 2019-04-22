@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -22,6 +21,8 @@ import com.bumptech.glide.request.RequestOptions;
 import com.google.gson.Gson;
 import com.otaliastudios.zoom.ZoomLayout;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import id.net.gmedia.selby.Artis.Fragment.FragmentGaleri;
@@ -56,6 +57,8 @@ public class EventActivity extends AppCompatActivity {
 
     //flag apakah galeri sedang menampilkan foto detail secara popup atau tidak
     private boolean detail = false;
+
+    private List<String> listImage = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,14 +138,14 @@ public class EventActivity extends AppCompatActivity {
         btn_next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(selectedImage < fragmentGaleri.listImage.size() - 1){
+                if(selectedImage < listImage.size() - 1){
                     selectedImage++;
                 }
                 else{
                     selectedImage = 0;
                 }
 
-                Glide.with(EventActivity.this).load(fragmentGaleri.listImage.get(selectedImage)).apply(new RequestOptions().override(imgWidth, imgHeight)).into(img_galeri_selected);
+                Glide.with(EventActivity.this).load(listImage.get(selectedImage)).apply(new RequestOptions().override(imgWidth, imgHeight)).into(img_galeri_selected);
             }
         });
 
@@ -155,10 +158,10 @@ public class EventActivity extends AppCompatActivity {
 
                 }
                 else{
-                    selectedImage = fragmentGaleri.listImage.size() - 1;
+                    selectedImage = listImage.size() - 1;
                 }
 
-                Glide.with(EventActivity.this).load(fragmentGaleri.listImage.get(selectedImage)).apply(new RequestOptions().override(imgWidth, imgHeight)).into(img_galeri_selected);
+                Glide.with(EventActivity.this).load(listImage.get(selectedImage)).apply(new RequestOptions().override(imgWidth, imgHeight)).into(img_galeri_selected);
             }
         });
 
@@ -193,10 +196,12 @@ public class EventActivity extends AppCompatActivity {
         }
     }
 
-    public void setView(int position){
+    public void setView(List<String> listImage, int position){
         //Fungsi untuk menampilkan foto secara popup
         selectedImage = position;
-        Glide.with(this).load(fragmentGaleri.listImage.get(selectedImage)).apply(new RequestOptions().override(imgWidth, imgHeight)).into(img_galeri_selected);
+        this.listImage = listImage;
+
+        Glide.with(this).load(listImage.get(selectedImage)).apply(new RequestOptions().override(imgWidth, imgHeight)).into(img_galeri_selected);
         layout_zoom.zoomTo(1, false);
         layout_overlay.setVisibility(View.VISIBLE);
         detail = true;
@@ -229,14 +234,9 @@ public class EventActivity extends AppCompatActivity {
         }
     }
 
-    //FUNGSI MENU ACTIONBAR
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            case android.R.id.home:
-                onBackPressed();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 }

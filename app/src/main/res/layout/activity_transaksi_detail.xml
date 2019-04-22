@@ -1,220 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="@dimen/padding20"
-    tools:context=".TransaksiDetailActivity">
+    android:padding="@dimen/dp15"
+    android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <TextView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/style_rectangle_rounded_bordered_white"
-        android:padding="@dimen/padding5"
-        android:layout_margin="@dimen/padding5"
-        android:elevation="@dimen/padding2"
-        android:orientation="vertical">
+        android:text="Kurir" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/transaksi_nomor"
-            android:textStyle="bold"
-            android:textColor="#000"
-            android:padding="@dimen/padding5"/>
+    <Spinner
+        android:id="@+id/spn_kurir"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/padding5"/>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
+    <TextView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/style_rectangle_rounded_bordered_white"
-        android:padding="@dimen/padding5"
-        android:layout_margin="@dimen/padding5"
-        android:elevation="@dimen/padding2"
-        android:orientation="vertical">
+        android:text="Provinsi Pengiriman" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/transaksi_pembayaran"
-            android:textStyle="bold"
-            android:textColor="#000"
-            android:padding="@dimen/padding5"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/padding5"/>
-    </LinearLayout>
-
-    <LinearLayout
+    <android.support.v7.widget.AppCompatSpinner
+        android:id="@+id/txt_provinsi"
         android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/style_rectangle_rounded_bordered_white"
-        android:padding="@dimen/padding5"
-        android:layout_margin="@dimen/padding5"
-        android:elevation="@dimen/padding2"
-        android:orientation="vertical">
+        android:text="Kota Pengiriman" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/transaksi_alamat"
-            android:textStyle="bold"
-            android:textColor="#000"
-            android:padding="@dimen/padding5"/>
-
-        <TextView
-            android:id="@+id/txt_alamat"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/padding5"/>
-    </LinearLayout>
-
-    <android.support.constraint.ConstraintLayout
+    <android.support.v7.widget.AppCompatSpinner
+        android:id="@+id/txt_kota"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/padding5"
-        android:background="@drawable/style_rectangle_rounded_bordered_white"
-        android:elevation="@dimen/padding2"
-        android:orientation="vertical"
-        android:padding="@dimen/padding5">
-
-        <TextView
-            android:id="@+id/txt_nama"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/padding10"
-
-            android:layout_marginEnd="@dimen/padding10"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:textSize="@dimen/text16"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@+id/txt_harga"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintHorizontal_weight="0.7"
-            app:layout_constraintStart_toEndOf="@+id/img_barang"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/txt_harga"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/padding10"
-            android:layout_marginTop="@dimen/padding5"
-            android:layout_marginEnd="@dimen/padding10"
-            app:layout_constraintBottom_toTopOf="@+id/txt_jumlah"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/img_barang"
-            app:layout_constraintTop_toBottomOf="@+id/txt_nama" />
-
-        <TextView
-            android:id="@+id/txt_jumlah"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/padding10"
-            android:layout_marginTop="@dimen/padding5"
-            android:textSize="@dimen/text14"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@+id/txt_total"
-            app:layout_constraintEnd_toStartOf="@+id/txt_plus"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/txt_minus"
-            app:layout_constraintTop_toBottomOf="@+id/txt_harga" />
-
-        <TextView
-            android:id="@+id/textView4"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/padding10"
-            android:layout_marginTop="@dimen/padding20"
-            android:layout_marginBottom="@dimen/padding10"
-            android:text="@string/transaksi_total"
-            android:textSize="@dimen/text18"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/txt_total"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintHorizontal_chainStyle="packed"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/img_barang" />
-
-        <TextView
-            android:id="@+id/txt_total"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/padding10"
-            android:textAlignment="viewEnd"
-            android:textSize="@dimen/text18"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@+id/textView4"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/textView4"
-            app:layout_constraintTop_toTopOf="@+id/textView4" />
-
-        <ImageView
-            android:id="@+id/img_barang"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginStart="@dimen/padding10"
-            app:layout_constraintBottom_toBottomOf="@+id/txt_jumlah"
-            app:layout_constraintEnd_toStartOf="@+id/txt_nama"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintHorizontal_chainStyle="packed"
-            app:layout_constraintHorizontal_weight="0.3"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/txt_nama"
-            app:layout_constraintVertical_bias="0.0"
-            tools:srcCompat="@tools:sample/avatars" />
-
-        <TextView
-            android:id="@+id/txt_minus"
-            android:layout_width="@dimen/favorit_size"
-            android:layout_height="@dimen/favorit_size"
-            android:layout_marginStart="@dimen/padding10"
-            android:background="@drawable/style_rectangle_rounded_bordered_white"
-            android:gravity="center"
-            android:text="@string/minus"
-            android:textSize="@dimen/text14"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toStartOf="@+id/txt_jumlah"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintHorizontal_chainStyle="packed"
-            app:layout_constraintStart_toEndOf="@+id/img_barang"
-            app:layout_constraintTop_toTopOf="@+id/txt_jumlah" />
-
-        <TextView
-            android:id="@+id/txt_plus"
-            android:layout_width="@dimen/favorit_size"
-            android:layout_height="@dimen/favorit_size"
-            android:layout_marginStart="@dimen/padding10"
-            android:background="@drawable/style_rectangle_rounded_bordered_white"
-            android:gravity="center"
-            android:text="@string/plus"
-            android:textSize="@dimen/text14"
-            android:textStyle="bold"
-            app:layout_constraintStart_toEndOf="@+id/txt_jumlah"
-            app:layout_constraintTop_toTopOf="@+id/txt_jumlah" />
-    </android.support.constraint.ConstraintLayout>
-
-    <Button
-        android:id="@+id/btn_bayar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/padding5"
-        android:layout_marginEnd="@dimen/padding5"
-        android:layout_marginTop="@dimen/padding20"
-        android:background="@drawable/style_rectangle_rounded_blue"
-        android:text="@string/transaksi_bayar"/>
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

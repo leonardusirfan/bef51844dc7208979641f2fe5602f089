@@ -3,7 +3,7 @@
     android:layout_height="wrap_content"
     android:baselineAligned="false"
     android:orientation="horizontal"
-    android:background="#E5E4E4"
+    android:background="#747474"
     android:padding="@dimen/padding5"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
@@ -25,6 +25,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="@string/barang_dilihat"
+            android:textColor="@color/white"
             android:textSize="@dimen/text12" />
 
         <TextView
@@ -33,6 +34,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:textSize="@dimen/text14"
+            android:textColor="@color/gold"
             android:textStyle="bold" />
     </LinearLayout>
 
@@ -58,6 +60,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
+            android:textColor="@color/white"
             android:text="@string/barang_terkirim"
             android:textSize="@dimen/text12" />
 
@@ -67,6 +70,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:textSize="@dimen/text14"
+            android:textColor="@color/gold"
             android:textStyle="bold" />
     </LinearLayout>
 
@@ -92,6 +96,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
+            android:textColor="@color/white"
             android:text="@string/barang_kondisi"
             android:textSize="@dimen/text12" />
 
@@ -101,6 +106,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:textSize="@dimen/text14"
+            android:textColor="@color/gold"
             android:textStyle="bold" />
     </LinearLayout>
 
@@ -126,6 +132,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
+            android:textColor="@color/white"
             android:text="@string/barang_asuransi"
             android:textSize="@dimen/text12" />
 
@@ -134,6 +141,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="@string/app_name"
+            android:textColor="@color/gold"
             android:textSize="@dimen/text14"
             android:textStyle="bold" />
     </LinearLayout>

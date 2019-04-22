@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".Artis.Fragment.FragmentGaleri">
 
     <TextView
@@ -22,8 +21,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@android:color/transparent"
-        android:paddingStart="@dimen/padding5"
-        android:paddingEnd="@dimen/padding5"
         android:clipToPadding="false" />
 
 </FrameLayout>

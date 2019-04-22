@@ -7,11 +7,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.leonardus.irfan.Converter;
+
 import java.util.List;
 
 import id.net.gmedia.selby.Model.KegiatanModel;
 import id.net.gmedia.selby.R;
-import id.net.gmedia.selby.Util.Converter;
 
 public class KegiatanAdapter extends RecyclerView.Adapter<KegiatanAdapter.KegiatanViewHolder> {
 
@@ -33,7 +34,7 @@ public class KegiatanAdapter extends RecyclerView.Adapter<KegiatanAdapter.Kegiat
 
         kegiatanViewHolder.txt_judul.setText(kegiatan.getJudul());
         kegiatanViewHolder.txt_tempat.setText(kegiatan.getTempat());
-        kegiatanViewHolder.txt_tanggal.setText(Converter.DateToString(kegiatan.getTanggal()));
+        kegiatanViewHolder.txt_tanggal.setText(Converter.DToString(kegiatan.getTanggal()));
         kegiatanViewHolder.txt_deskripsi.setText(kegiatan.getDeskripsi());
     }
 

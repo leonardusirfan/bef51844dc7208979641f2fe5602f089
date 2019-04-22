@@ -1,32 +1,18 @@
 package id.net.gmedia.selby.Keranjang;
 
-import id.net.gmedia.selby.Model.BarangModel;
+import id.net.gmedia.selby.Model.BarangJualModel;
 
 public class ContentListItem extends BaseListItem {
 
-    private BarangModel item;
-    private int jumlah;
+    private BarangJualModel item;
     private boolean selected;
 
-    public ContentListItem(BarangModel item, int jumlah){
+    public ContentListItem(BarangJualModel item){
         this.item = item;
-        this.jumlah = jumlah;
     }
 
-    public BarangModel getItem() {
+    public BarangJualModel getItem() {
         return item;
-    }
-
-    public int getJumlah() {
-        return jumlah;
-    }
-
-    public void increase(){
-        jumlah++;
-    }
-
-    public void decrease(){
-        jumlah--;
     }
 
     public void setSelected(boolean selected){

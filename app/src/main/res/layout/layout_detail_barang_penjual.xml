@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:padding="@dimen/padding10"
     android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android">
@@ -10,12 +11,11 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <ImageView
+        <com.leonardus.irfan.TopCropCircularImageView
             android:id="@+id/img_artis"
             android:contentDescription="@string/penjual"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.6"
+            android:layout_width="@dimen/detail_barang_profile_size"
+            android:layout_height="@dimen/detail_barang_profile_size"
             android:layout_margin="@dimen/padding10" />
 
         <LinearLayout
@@ -113,7 +113,7 @@
             android:id="@+id/btn_follow"
             android:layout_width="@dimen/detail_barang_button_width"
             android:layout_height="@dimen/detail_barang_button_height"
-            android:background="@drawable/style_fullrounded_gold_rectangle"
+            android:background="@drawable/style_fullrounded_dark_blue_rectangle"
             android:text="@string/penjual_follow"
             android:textAllCaps="false"
             android:textColor="#fff"

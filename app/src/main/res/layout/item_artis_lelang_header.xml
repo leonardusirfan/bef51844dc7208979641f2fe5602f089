@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/artis_lelang_hari_ini"
-        android:textColor="@color/gold"
+        android:textColor="@color/black"
         android:textStyle="bold"
         android:gravity="center"
         android:textAllCaps="true"
@@ -23,7 +23,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/lihat_semua"
-        android:textColor="@color/gold"
+        android:textColor="@color/black"
         android:gravity="center"
         android:textSize="@dimen/text10"
         android:layout_marginTop="@dimen/padding5"/>

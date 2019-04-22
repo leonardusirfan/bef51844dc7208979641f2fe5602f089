@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <ImageView
+        <com.leonardus.irfan.TopCropCircularImageView
             android:id="@+id/img_user"
             android:contentDescription="@string/user"
             android:layout_width="@dimen/profile_size_small"

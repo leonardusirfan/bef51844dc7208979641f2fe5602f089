@@ -14,13 +14,14 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.leonardus.irfan.Converter;
 
 import java.util.List;
 
 import id.net.gmedia.selby.Barang.LelangDetailActivity;
 import id.net.gmedia.selby.Model.LelangModel;
 import id.net.gmedia.selby.R;
-import id.net.gmedia.selby.Util.Converter;
+import com.leonardus.irfan.TopCropCircularImageView;
 
 public class LelangAdapter extends RecyclerView.Adapter<LelangAdapter.LelangViewHolder> {
 
@@ -46,10 +47,14 @@ public class LelangAdapter extends RecyclerView.Adapter<LelangAdapter.LelangView
         barangViewHolder.txt_nama.setText(lelang.getNama());
         barangViewHolder.txt_harga.setText(Converter.doubleToRupiah(lelang.getHarga()));
         Glide.with(context).load(lelang.getUrl()).thumbnail(0.5f).into(barangViewHolder.img_barang);
+        if(lelang.isDonasi()){
+            barangViewHolder.img_donasi.setVisibility(View.VISIBLE);
+        }
 
         //Pelapak
         barangViewHolder.txt_nama_pelapak.setText(lelang.getPenjual().getNama());
-        Glide.with(context).load(lelang.getPenjual().getImage()).thumbnail(0.5f).apply(new RequestOptions().circleCrop()).into(barangViewHolder.img_pelapak);
+        Glide.with(context).load(lelang.getPenjual().getImage()).thumbnail(0.5f).apply(new RequestOptions()).
+                into(barangViewHolder.img_pelapak);
 
         barangViewHolder.layout_barang.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,11 +75,11 @@ public class LelangAdapter extends RecyclerView.Adapter<LelangAdapter.LelangView
         LinearLayout layout_barang;
 
         //Variabel barang
-        ImageView img_barang;
+        ImageView img_barang, img_donasi;
         TextView txt_nama, txt_harga;
 
         //Variabel pelapak
-        ImageView img_pelapak;
+        TopCropCircularImageView img_pelapak;
         TextView txt_nama_pelapak;
         RatingBar rate_pelapak;
 
@@ -82,6 +87,7 @@ public class LelangAdapter extends RecyclerView.Adapter<LelangAdapter.LelangView
             super(view);
             layout_barang = view.findViewById(R.id.layout_barang);
             img_barang = view.findViewById(R.id.img_barang);
+            img_donasi = view.findViewById(R.id.img_donasi);
             txt_nama = view.findViewById(R.id.txt_nama);
             txt_harga = view.findViewById(R.id.txt_harga);
             img_pelapak = view.findViewById(R.id.img_pelapak);

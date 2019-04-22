@@ -16,7 +16,6 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,6 +23,12 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.firebase.auth.FirebaseAuth;
+import com.leonardus.irfan.ApiVolleyManager;
+import com.leonardus.irfan.AppRequestCallback;
+import com.leonardus.irfan.Converter;
+import com.leonardus.irfan.ImageSlider.ImageSlider;
+import com.leonardus.irfan.ImageSlider.ImageSliderAdapter;
+import com.leonardus.irfan.JSONBuilder;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -31,25 +36,19 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import id.net.gmedia.selby.Barang.Adapter.DetailBarangViewPagerAdapter;
 import id.net.gmedia.selby.Barang.Fragment.FragmentDetailBarang;
 import id.net.gmedia.selby.Barang.Fragment.FragmentDiskusiBarang;
 import id.net.gmedia.selby.Barang.Fragment.FragmentUlasan;
-import id.net.gmedia.selby.Util.AppRequestCallback;
 import id.net.gmedia.selby.Util.AppSharedPreferences;
 import id.net.gmedia.selby.Util.Constant;
 import id.net.gmedia.selby.LoginActivity;
 import id.net.gmedia.selby.R;
-import id.net.gmedia.selby.Util.ApiVolleyManager;
-import id.net.gmedia.selby.Util.Converter;
-import id.net.gmedia.selby.Util.DialogFactory;
-import id.net.gmedia.selby.Util.ImageContainer;
-import id.net.gmedia.selby.Util.ImageSliderAdapter;
-import id.net.gmedia.selby.Util.ImageSliderViewPager;
-import id.net.gmedia.selby.Util.JSONBuilder;
-import me.relex.circleindicator.CircleIndicator;
+import com.leonardus.irfan.DialogFactory;
+import com.leonardus.irfan.TopCropCircularImageView;
 import rjsv.floatingmenu.floatingmenubutton.FloatingMenuButton;
 
 public class LelangDetailActivity extends AppCompatActivity {
@@ -72,8 +71,7 @@ public class LelangDetailActivity extends AppCompatActivity {
     //Variabel UI
     private Button btn_follow;
     private TextView txt_title, txt_dilihat, txt_terkirim, txt_kondisi;
-    private ImageSliderViewPager sliderView;
-    private CircleIndicator indicator;
+    private ImageSlider slider;
     private ViewPager viewPager;
     private TabLayout tabLayout;
     private TextView txt_nama, txt_harga, txt_waktu, txt_bid;
@@ -87,9 +85,6 @@ public class LelangDetailActivity extends AppCompatActivity {
 
     //flag apakah user bisa bidding atau tidak
     private boolean canBid = false;
-
-    //Variabel list image slider
-    private ArrayList<ImageContainer> listImage = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,8 +104,7 @@ public class LelangDetailActivity extends AppCompatActivity {
         txt_bid = findViewById(R.id.txt_bid);
         viewPager = findViewById(R.id.viewPager);
         tabLayout = findViewById(R.id.tabs);
-        sliderView = findViewById(R.id.pager);
-        indicator = findViewById(R.id.indicator);
+        slider = findViewById(R.id.slider);
         fab_tambah = findViewById(R.id.fab_tambah);
         btn_follow = findViewById(R.id.btn_follow);
         btn_chat = findViewById(R.id.btn_chat);
@@ -203,7 +197,9 @@ public class LelangDetailActivity extends AppCompatActivity {
             id_lelang = getIntent().getStringExtra("lelang");
             body.add("id", id_lelang);
 
-            ApiVolleyManager.getInstance().addRequest(this, Constant.URL_DETAIL_LELANG, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body.create(), new AppRequestCallback(new AppRequestCallback.AdvancedRequestListener() {
+            ApiVolleyManager.getInstance().addRequest(this, Constant.URL_DETAIL_LELANG, ApiVolleyManager.METHOD_POST,
+                    Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body.create(),
+                    new AppRequestCallback(new AppRequestCallback.RequestListener() {
                 @Override
                 public void onEmpty(String message) {
                     Toast.makeText(LelangDetailActivity.this, "Barang tidak ditemukan", Toast.LENGTH_SHORT).show();
@@ -234,25 +230,23 @@ public class LelangDetailActivity extends AppCompatActivity {
                         if(!lelang.getJSONObject("penjual").getString("uid").equals(FirebaseAuth.getInstance().getUid())){
                             layout_pelapak.setVisibility(View.VISIBLE);
                         }
-                        Glide.with(LelangDetailActivity.this).load(lelang.getJSONObject("penjual").getString("image")).apply(new RequestOptions().circleCrop()).thumbnail(0.1f).into((ImageView)findViewById(R.id.img_artis));
+                        Glide.with(LelangDetailActivity.this).load(lelang.getJSONObject("penjual").getString("image")).
+                                apply(new RequestOptions()).thumbnail(0.1f).into((TopCropCircularImageView)findViewById(R.id.img_artis));
                         follow = lelang.getJSONObject("penjual").getInt("followed") == 1;
                         if(follow){
                             btn_follow.setText(R.string.penjual_unfollow);
                         }
 
-                        ImageContainer imageContainer = new ImageContainer();
-                        imageContainer.setImage(lelang.getString("image"));
-                        listImage.add(imageContainer);
+                        List<String> listImage = new ArrayList<>();
+                        listImage.add(lelang.getString("image"));
                         JSONArray galeri = lelang.getJSONArray("gallery");
                         for(int i = 0; i < galeri.length(); i++){
-                            imageContainer = new ImageContainer();
-                            imageContainer.setImage(galeri.getJSONObject(i).getString("image"));
-                            listImage.add(imageContainer);
+                            listImage.add(galeri.getJSONObject(i).getString("image"));
                         }
 
                         //Inisialisasi Timer lelang
                         Date now = new Date();
-                        Date end = Converter.stringDTTToDate(lelang.getString("end"));
+                        Date end = Converter.stringDTToDate(lelang.getString("end"));
                         long timeLeft = 0;
                         if(end != null){
                             timeLeft = end.getTime() - now.getTime();
@@ -276,7 +270,8 @@ public class LelangDetailActivity extends AppCompatActivity {
                                 millisUntilFinished =  millisUntilFinished % minutesInMilli;
 
                                 long elapsedSeconds =  millisUntilFinished / secondsInMilli;
-                                String waktu = String.format(Locale.getDefault(), "%02d : %02d : %02d : %02d",elapsedDays, elapsedHours, elapsedMinutes, elapsedSeconds);
+                                String waktu = String.format(Locale.getDefault(), "%02d : %02d : %02d : %02d",
+                                        elapsedDays, elapsedHours, elapsedMinutes, elapsedSeconds);
                                 txt_waktu.setText(waktu);
                             }
 
@@ -290,10 +285,10 @@ public class LelangDetailActivity extends AppCompatActivity {
                         canBid = true;
 
                         //Menginisialisasi slider
-                        initSlider();
+                        initSlider(listImage);
                     } catch (JSONException e) {
                         Toast.makeText(LelangDetailActivity.this, R.string.error_database, Toast.LENGTH_SHORT).show();
-                        Log.e("Barang Detail", e.toString());
+                        Log.e(Constant.TAG, e.toString());
                     }
                 }
 
@@ -322,7 +317,9 @@ public class LelangDetailActivity extends AppCompatActivity {
                     body.add("id_lelang", id_lelang);
                     body.add("nominal", bid);
 
-                    ApiVolleyManager.getInstance().addRequest(LelangDetailActivity.this, Constant.URL_BID, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body.create(), new AppRequestCallback(new AppRequestCallback.RequestListener() {
+                    ApiVolleyManager.getInstance().addRequest(LelangDetailActivity.this, Constant.URL_BID,
+                            ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()),
+                            body.create(), new AppRequestCallback(new AppRequestCallback.SimpleRequestListener() {
                         @Override
                         public void onSuccess(String result) {
                             dialog.dismiss();
@@ -365,16 +362,18 @@ public class LelangDetailActivity extends AppCompatActivity {
 
                 @Override
                 public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                    if (appBarLayout.getTotalScrollRange() + verticalOffset <= getActionBarHeight()) {
-                        if(nama_barang != null){
-                            txt_title.setText(nama_barang);
+                    if(getSupportActionBar() != null){
+                        if (appBarLayout.getTotalScrollRange() + verticalOffset <= getActionBarHeight()) {
+                            if(nama_barang != null){
+                                txt_title.setText(nama_barang);
+                            }
+                            isShow = true;
+                            getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                        } else if (isShow) {
+                            txt_title.setText("");
+                            isShow = false;
+                            getSupportActionBar().setBackgroundDrawable(getDrawable(R.drawable.style_rectangle_gradient_black));
                         }
-                        isShow = true;
-                        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                    } else if (isShow) {
-                        txt_title.setText("");
-                        isShow = false;
-                        getSupportActionBar().setBackgroundDrawable(getDrawable(R.drawable.style_rectangle_gradient_black));
                     }
                 }
             });
@@ -388,7 +387,9 @@ public class LelangDetailActivity extends AppCompatActivity {
             JSONBuilder body = new JSONBuilder();
             body.add("id_penjual", id_penjual);
 
-            ApiVolleyManager.getInstance().addRequest(this, Constant.URL_FOLLOW_PENJUAL, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body.create(), new AppRequestCallback(new AppRequestCallback.RequestListener() {
+            ApiVolleyManager.getInstance().addRequest(this, Constant.URL_FOLLOW_PENJUAL,
+                    ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()),
+                    body.create(), new AppRequestCallback(new AppRequestCallback.SimpleRequestListener() {
                 @Override
                 public void onSuccess(String response) {
                     if (follow) {
@@ -440,22 +441,11 @@ public class LelangDetailActivity extends AppCompatActivity {
         viewPager.setAdapter(adapter);
     }
 
-    private void initSlider(){
+    private void initSlider(List<String> listImage){
         //Inisialisasi Slider
-        ImageSliderAdapter sliderAdapter = new ImageSliderAdapter(this, sliderView, listImage, true);
-        sliderView.setAdapter(sliderAdapter);
-        indicator.setViewPager(sliderView);
+        ImageSliderAdapter sliderAdapter = new ImageSliderAdapter(this, listImage, true);
+        slider.setAdapter(sliderAdapter);
 
-        sliderView.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener(){
-            @Override
-            public void onPageSelected(int position) {
-                if(sliderView.getAdapter()!=null){
-                    ((ImageSliderAdapter)sliderView.getAdapter()).setPosition(position);
-                }
-            }
-        });
-
-        //sliderAdapter.startTimer();
         setupViewPager(viewPager);
         tabLayout.setupWithViewPager(viewPager);
     }

@@ -17,24 +17,22 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
-import com.bumptech.glide.request.RequestOptions;
 import com.google.firebase.auth.FirebaseAuth;
+import com.leonardus.irfan.ApiVolleyManager;
+import com.leonardus.irfan.AppRequestCallback;
+import com.leonardus.irfan.Converter;
+import com.leonardus.irfan.JSONBuilder;
 
 import java.util.List;
 
 import id.net.gmedia.selby.Barang.BarangDetailActivity;
-import id.net.gmedia.selby.Barang.MerchandiseDetailActivity;
 import id.net.gmedia.selby.Home.HomeActivity;
-import id.net.gmedia.selby.Util.AppRequestCallback;
 import id.net.gmedia.selby.Util.AppSharedPreferences;
 import id.net.gmedia.selby.Util.Constant;
 import id.net.gmedia.selby.LoginActivity;
 import id.net.gmedia.selby.Model.BarangModel;
 import id.net.gmedia.selby.R;
-import id.net.gmedia.selby.Util.ApiVolleyManager;
-import id.net.gmedia.selby.Util.Converter;
-import id.net.gmedia.selby.Util.DialogFactory;
-import id.net.gmedia.selby.Util.JSONBuilder;
+import com.leonardus.irfan.DialogFactory;
 
 public class BarangArtisAdapter extends RecyclerView.Adapter<BarangArtisAdapter.BarangViewHolder> {
 
@@ -63,7 +61,7 @@ public class BarangArtisAdapter extends RecyclerView.Adapter<BarangArtisAdapter.
 
         //pelapak
         barangViewHolder.txt_nama_pelapak.setText(barang.getPenjual().getNama());
-        Glide.with(activity).load(barang.getPenjual().getImage()).apply(new RequestOptions().circleCrop()).into(barangViewHolder.img_pelapak);
+        Glide.with(activity).load(barang.getPenjual().getImage()).transition(DrawableTransitionOptions.withCrossFade()).into(barangViewHolder.img_pelapak);
         barangViewHolder.rate_pelapak.setRating(barang.getPenjual().getRating());
 
         //tambah keranjang
@@ -108,7 +106,9 @@ public class BarangArtisAdapter extends RecyclerView.Adapter<BarangArtisAdapter.
                             body.add("id_barang", barang.getId());
                             body.add("jumlah", txt_jumlah.getText().toString());
 
-                            ApiVolleyManager.getInstance().addRequest(activity, Constant.URL_TAMBAH_KERANJANG, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body.create(), new AppRequestCallback(new AppRequestCallback.RequestListener() {
+                            ApiVolleyManager.getInstance().addRequest(activity, Constant.URL_TAMBAH_KERANJANG,
+                                    ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()),
+                                    body.create(), new AppRequestCallback(new AppRequestCallback.SimpleRequestListener() {
                                 @Override
                                 public void onSuccess(String response) {
                                     Toast.makeText(activity, "Barang berhasil ditambahkan", Toast.LENGTH_SHORT).show();
@@ -142,7 +142,9 @@ public class BarangArtisAdapter extends RecyclerView.Adapter<BarangArtisAdapter.
                     body.add("id_barang", barang.getId());
                     body.add("jumlah", 1);
 
-                    ApiVolleyManager.getInstance().addRequest(activity, Constant.URL_TAMBAH_KERANJANG, ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body.create(), new AppRequestCallback(new AppRequestCallback.RequestListener() {
+                    ApiVolleyManager.getInstance().addRequest(activity, Constant.URL_TAMBAH_KERANJANG,
+                            ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body.create(),
+                            new AppRequestCallback(new AppRequestCallback.SimpleRequestListener() {
                         @Override
                         public void onSuccess(String response) {
                             Intent i = new Intent(activity, HomeActivity.class);
@@ -170,16 +172,9 @@ public class BarangArtisAdapter extends RecyclerView.Adapter<BarangArtisAdapter.
             @Override
             public void onClick(View v) {
                 //Membuka activity detail berdasarkan jenis barang
-                if(barang.getJenis().equals("Preloved")){
-                    Intent i = new Intent(activity, BarangDetailActivity.class);
-                    i.putExtra("barang", barang.getId());
-                    activity.startActivity(i);
-                }
-                else if(barang.getJenis().equals("Merchandise")){
-                    Intent i = new Intent(activity, MerchandiseDetailActivity.class);
-                    i.putExtra("merchandise", barang.getId());
-                    activity.startActivity(i);
-                }
+                Intent i = new Intent(activity, BarangDetailActivity.class);
+                i.putExtra("barang", barang.getId());
+                activity.startActivity(i);
             }
         });
     }
