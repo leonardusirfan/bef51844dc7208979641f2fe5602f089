@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:id="@+id/layout_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/dp15"
+    android:layout_marginBottom="@dimen/dp15">
+
+    <ImageView
+        android:id="@+id/img_check"
+        android:layout_width="@dimen/icon_size"
+        android:layout_height="@dimen/icon_size"
+        android:src="@drawable/ic_cb_uncheck"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp15"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/txt_alamat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/sp16"
+            android:textColor="@color/black"
+            app:layout_constraintBottom_toBottomOf="@+id/img_check"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/img_check"
+            app:layout_constraintTop_toTopOf="@+id/img_check" />
+
+        <TextView
+            android:id="@+id/txt_kota"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/sp16"
+            android:textColor="@color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="@+id/txt_label"
+            app:layout_constraintTop_toBottomOf="@+id/txt_label" />
+
+        <TextView
+            android:id="@+id/txt_kodepos"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/sp16"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toStartOf="@+id/txt_alamat"
+            app:layout_constraintTop_toBottomOf="@+id/txt_alamat" />
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/img_hapus"
+        android:layout_width="@dimen/icon_size"
+        android:layout_height="@dimen/icon_size"
+        android:layout_margin="@dimen/dp10"
+        android:layout_gravity="center"
+        android:src="@drawable/garbage"/>
+
+</LinearLayout>

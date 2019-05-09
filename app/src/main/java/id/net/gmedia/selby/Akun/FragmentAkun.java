@@ -38,6 +38,7 @@ import java.io.File;
 import java.io.IOException;
 
 import id.net.gmedia.selby.Home.HomeActivity;
+import id.net.gmedia.selby.Transaksi.TransaksiActivity;
 import id.net.gmedia.selby.Util.AppSharedPreferences;
 import id.net.gmedia.selby.Util.Constant;
 import id.net.gmedia.selby.Model.UserModel;
@@ -172,6 +173,13 @@ public class FragmentAkun extends Fragment {
                 }
             });
         }
+
+        v.findViewById(R.id.layout_transaksi).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(activity, TransaksiActivity.class));
+            }
+        });
 
         //Edit profil
         v.findViewById(R.id.layout_edit).setOnClickListener(new View.OnClickListener() {

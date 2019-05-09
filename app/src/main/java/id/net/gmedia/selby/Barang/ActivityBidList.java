@@ -67,7 +67,7 @@ public class ActivityBidList extends AppCompatActivity {
         }
 
         //Mengambil id lelang dari activity sebelumnya
-        id_lelang = getIntent().getStringExtra("id_lelang");
+        id_lelang = getIntent().getStringExtra(Constant.EXTRA_LELANG_ID);
 
         //Inisialisasi UI
         TextView txt_first, txt_next, txt_previous, txt_last;

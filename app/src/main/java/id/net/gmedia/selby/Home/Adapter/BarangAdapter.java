@@ -65,8 +65,12 @@ public class BarangAdapter extends RecyclerView.Adapter<BarangAdapter.BarangView
         Glide.with(context).load(barang.getUrl()).thumbnail(0.5f).
                 transition(DrawableTransitionOptions.withCrossFade()).
                 into(barangViewHolder.img_barang);
+
         if(barang.isDonasi()){
             barangViewHolder.img_donasi.setVisibility(View.VISIBLE);
+        }
+        else{
+            barangViewHolder.img_donasi.setVisibility(View.INVISIBLE);
         }
 
         //Pelapak
@@ -80,7 +84,7 @@ public class BarangAdapter extends RecyclerView.Adapter<BarangAdapter.BarangView
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(context, BarangDetailActivity.class);
-                i.putExtra("barang", barang.getId());
+                i.putExtra(Constant.EXTRA_BARANG, barang.getId());
                 context.startActivity(i);
             }
         });
@@ -165,7 +169,7 @@ public class BarangAdapter extends RecyclerView.Adapter<BarangAdapter.BarangView
                             Intent i = new Intent(activity, HomeActivity.class);
                             i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            i.putExtra("start", 3);
+                            i.putExtra(Constant.EXTRA_START, 3);
                             activity.startActivity(i);
                         }
 

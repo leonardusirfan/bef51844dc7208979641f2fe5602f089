@@ -27,6 +27,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import id.net.gmedia.selby.Model.UserModel;
 import id.net.gmedia.selby.R;
 import id.net.gmedia.selby.Util.Constant;
 

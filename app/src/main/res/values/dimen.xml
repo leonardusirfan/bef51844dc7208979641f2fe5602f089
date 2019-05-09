@@ -74,6 +74,8 @@
 
     <dimen name="user_profile_size">48dp</dimen>
 
+    <dimen name="transaksi_image_size">120dp</dimen>
+
 
 </resources>
 

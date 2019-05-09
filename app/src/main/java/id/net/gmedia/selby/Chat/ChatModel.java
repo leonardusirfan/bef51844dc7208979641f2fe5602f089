@@ -1,5 +1,7 @@
 package id.net.gmedia.selby.Chat;
 
+import id.net.gmedia.selby.Model.UserModel;
+
 public class ChatModel {
     private String id;
     private String chat;
@@ -7,7 +9,7 @@ public class ChatModel {
     private UserModel pengirim;
     private int baru;
 
-    public ChatModel(String id,String chat, String tanggal, UserModel pengirim, int baru){
+    public ChatModel(String id, String chat, String tanggal, UserModel pengirim, int baru){
         this.id = id;
         this.chat = chat;
         this.tanggal = tanggal;

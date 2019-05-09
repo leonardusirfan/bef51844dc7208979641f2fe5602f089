@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#ebeaeb"
-    tools:context=".Home.SearchActivity">
+    tools:activity=".Home.SearchActivity">
 
     <RelativeLayout
         android:id="@+id/layout_search"

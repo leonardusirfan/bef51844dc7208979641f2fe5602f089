@@ -29,6 +29,7 @@ import id.net.gmedia.selby.Artis.Fragment.FragmentGaleri;
 import id.net.gmedia.selby.Artis.Fragment.FragmentKegiatan;
 import id.net.gmedia.selby.Model.ArtisModel;
 import id.net.gmedia.selby.R;
+import id.net.gmedia.selby.Util.Constant;
 
 public class EventActivity extends AppCompatActivity {
     /*
@@ -74,9 +75,9 @@ public class EventActivity extends AppCompatActivity {
         }
 
         //Inisialisasi Artis
-        if(getIntent().hasExtra("artis")){
+        if(getIntent().hasExtra(Constant.EXTRA_ARTIS)){
             Gson gson = new Gson();
-            ArtisModel artis = gson.fromJson(getIntent().getStringExtra("artis"), ArtisModel.class);
+            ArtisModel artis = gson.fromJson(getIntent().getStringExtra(Constant.EXTRA_ARTIS), ArtisModel.class);
             id = artis.getId();
             getSupportActionBar().setTitle(artis.getNama());
         }
@@ -145,7 +146,8 @@ public class EventActivity extends AppCompatActivity {
                     selectedImage = 0;
                 }
 
-                Glide.with(EventActivity.this).load(listImage.get(selectedImage)).apply(new RequestOptions().override(imgWidth, imgHeight)).into(img_galeri_selected);
+                Glide.with(EventActivity.this).load(listImage.get(selectedImage)).
+                        apply(new RequestOptions().override(imgWidth, imgHeight)).into(img_galeri_selected);
             }
         });
 
@@ -161,7 +163,8 @@ public class EventActivity extends AppCompatActivity {
                     selectedImage = listImage.size() - 1;
                 }
 
-                Glide.with(EventActivity.this).load(listImage.get(selectedImage)).apply(new RequestOptions().override(imgWidth, imgHeight)).into(img_galeri_selected);
+                Glide.with(EventActivity.this).load(listImage.get(selectedImage)).
+                        apply(new RequestOptions().override(imgWidth, imgHeight)).into(img_galeri_selected);
             }
         });
 
@@ -201,7 +204,8 @@ public class EventActivity extends AppCompatActivity {
         selectedImage = position;
         this.listImage = listImage;
 
-        Glide.with(this).load(listImage.get(selectedImage)).apply(new RequestOptions().override(imgWidth, imgHeight)).into(img_galeri_selected);
+        Glide.with(this).load(listImage.get(selectedImage)).
+                apply(new RequestOptions().override(imgWidth, imgHeight)).into(img_galeri_selected);
         layout_zoom.zoomTo(1, false);
         layout_overlay.setVisibility(View.VISIBLE);
         detail = true;

@@ -118,7 +118,7 @@ public class OrderGreetingActivity extends AppCompatActivity {
             if(resultCode == RESULT_OK){
                 if(data != null){
                     Gson gson = new Gson();
-                    ArtisModel artis = gson.fromJson(data.getStringExtra(Constant.EXTRA_ARTIS), ArtisModel.class);
+                    ArtisModel artis = gson.fromJson(data.getStringExtra(Constant.EXTRA_ARTIS_NAMA), ArtisModel.class);
 
                     id_artis = artis.getId();
                     txt_artis.setText(artis.getNama());

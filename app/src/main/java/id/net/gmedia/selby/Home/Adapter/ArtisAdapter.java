@@ -23,6 +23,8 @@ import id.net.gmedia.selby.Artis.ArtisDetailActivity;
 import id.net.gmedia.selby.Home.ArtisActivity;
 import id.net.gmedia.selby.Model.ArtisModel;
 import id.net.gmedia.selby.R;
+import id.net.gmedia.selby.Util.Constant;
+
 import com.leonardus.irfan.TopCropImageView;
 
 public class ArtisAdapter extends RecyclerView.Adapter<ArtisAdapter.ArtisViewHolder> {
@@ -66,7 +68,7 @@ public class ArtisAdapter extends RecyclerView.Adapter<ArtisAdapter.ArtisViewHol
                 if(activity.getCallingActivity() == null){
                     Gson gson = new Gson();
                     Intent intent = new Intent(activity, ArtisDetailActivity.class);
-                    intent.putExtra("artis", gson.toJson(artis));
+                    intent.putExtra(Constant.EXTRA_ARTIS, gson.toJson(artis));
 
                     ActivityOptionsCompat options = ActivityOptionsCompat.
                             makeSceneTransitionAnimation(activity, artisViewHolder.layout_artis, "artis");

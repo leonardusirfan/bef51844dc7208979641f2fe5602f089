@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="#F7F8F3"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:layout_above="@id/layout_bayar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/dp10">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight="0.7"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sp14"
+                    android:textStyle="bold"
+                    android:gravity="center_vertical"
+                    android:layout_height="match_parent"
+                    android:text="Alamat Pengiriman" />
+
+                <TextView
+                    android:id="@+id/txt_tambah"
+                    android:layout_width="wrap_content"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="@dimen/sp12"
+                    android:padding="@dimen/dp10"
+                    android:gravity="center_vertical"
+                    android:layout_height="match_parent"
+                    android:text="Tambah Alamat +" />
+
+            </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/layout_alamat"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:padding="@dimen/dp15">
+
+                <TextView
+                    android:id="@+id/txt_alamat"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sp14" />
+
+                <TextView
+                    android:id="@+id/txt_kota"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:layout_below="@id/txt_alamat"
+                    android:textSize="@dimen/sp14" />
+
+                <TextView
+                    android:id="@+id/txt_kodepos"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:layout_below="@id/txt_kota"
+                    android:textSize="@dimen/sp14" />
+
+                <ImageView
+                    android:layout_width="@dimen/icon_size"
+                    android:layout_height="@dimen/icon_size"
+                    android:src="@drawable/ic_next"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"/>
+
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp15"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_barang"
+                android:background="@color/white"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <RelativeLayout
+        android:id="@+id/layout_bayar"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/padding1"
+            android:background="#D0D1CC" />
+
+        <TextView
+            android:id="@+id/lbl_total"
+            android:layout_marginStart="@dimen/dp15"
+            android:layout_width="wrap_content"
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp14"
+            android:textStyle="bold"
+            android:layout_marginTop="@dimen/dp15"
+            android:layout_height="wrap_content"
+            android:text="Total Bayar" />
+
+        <TextView
+            android:id="@+id/txt_total"
+            android:layout_toEndOf="@id/lbl_total"
+            android:layout_width="match_parent"
+            android:textColor="@color/orange"
+            android:gravity="end"
+            android:layout_marginEnd="@dimen/dp15"
+            android:layout_marginStart="@dimen/dp20"
+            android:textStyle="bold"
+            android:textSize="@dimen/sp14"
+            android:layout_marginTop="@dimen/dp15"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/btn_bayar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/button_height"
+            android:text="Bayar"
+            android:background="@drawable/style_rectangle_rounded_blue"
+            android:textColor="@color/white"
+            android:textAllCaps="false"
+            android:layout_below="@id/lbl_total"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/dp15"/>
+
+    </RelativeLayout>
+
+</RelativeLayout>

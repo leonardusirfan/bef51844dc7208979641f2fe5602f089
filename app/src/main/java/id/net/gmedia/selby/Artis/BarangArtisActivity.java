@@ -102,9 +102,9 @@ public class BarangArtisActivity extends AppCompatActivity {
         }
 
         //Inisialisasi Artis
-        if(getIntent().hasExtra("artis")){
+        if(getIntent().hasExtra(Constant.EXTRA_ARTIS)){
             Gson gson = new Gson();
-            artis = gson.fromJson(getIntent().getStringExtra("artis"), ArtisModel.class);
+            artis = gson.fromJson(getIntent().getStringExtra(Constant.EXTRA_ARTIS), ArtisModel.class);
             getSupportActionBar().setTitle(artis.getNama());
         }
 

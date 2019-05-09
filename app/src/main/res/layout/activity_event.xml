@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".Artis.EventActivity"
+    tools:activity=".Artis.EventActivity"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -47,7 +47,7 @@
                         app:tabMode="fixed"
                         app:tabGravity="fill"
                         app:tabTextColor="#000"
-                        app:tabSelectedTextColor="@color/orange"
+                        app:tabSelectedTextColor="@color/colorPrimary"
                         app:tabIndicatorHeight="0dp">
 
                         <android.support.design.widget.TabItem
@@ -68,7 +68,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_below="@id/layout_tablayout"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior">
+                app:layout_behavior="android.support.design.widget.AppBarLayout$ScrollingViewBehavior">
 
                 <ProgressBar
                     android:id="@+id/bar_loading"
@@ -128,8 +128,6 @@
             </android.support.v7.widget.CardView>
 
         </com.otaliastudios.zoom.ZoomLayout>
-
-
 
         <Button
             android:id="@+id/btn_next"

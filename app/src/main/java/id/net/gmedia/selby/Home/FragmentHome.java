@@ -2,12 +2,13 @@ package id.net.gmedia.selby.Home;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayout;
-import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +25,7 @@ import com.leonardus.irfan.AppRequestCallback;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import id.net.gmedia.selby.HotNewsActivity;
+import id.net.gmedia.selby.HotNews.HotNewsActivity;
 import id.net.gmedia.selby.R;
 import id.net.gmedia.selby.Util.Constant;
 
@@ -70,11 +71,17 @@ public class FragmentHome extends Fragment {
                 }
             });
 
-            DisplayMetrics metrics = activity.getResources().getDisplayMetrics();
-            float device_TotalWidth = metrics.widthPixels;
-            int  px = (int) (getResources().getDimension(R.dimen.home_icon_width) / metrics.density);
+            Display display = activity.getWindowManager().getDefaultDisplay();
+            Point size = new Point();
+            display.getRealSize(size);
+            int device_TotalWidth = size.x;
 
-            if(device_TotalWidth * 0.9 < px * 4){
+            int  px =  getResources().getDimensionPixelSize(R.dimen.home_icon_width);
+            int  padding =  getResources().getDimensionPixelSize(R.dimen.padding10);
+
+            /*System.out.println(device_TotalWidth * 0.9);
+            System.out.println((px + padding * 2)* 4);*/
+            if(device_TotalWidth * 0.9 < (px + padding * 2)* 4){
                 ((GridLayout)v.findViewById(R.id.layout_grid)).setColumnCount(3);
             }
 
@@ -89,7 +96,7 @@ public class FragmentHome extends Fragment {
                 @Override
                 public void onClick(View v) {
                     Intent i = new Intent(activity, ArtisActivity.class);
-                    i.putExtra("follow", true);
+                    i.putExtra(Constant.EXTRA_FOLLOW, true);
                     startActivity(i);
                 }
             });

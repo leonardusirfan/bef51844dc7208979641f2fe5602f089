@@ -27,6 +27,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.gson.Gson;
 import com.leonardus.irfan.ApiVolleyManager;
+import com.leonardus.irfan.AppLoading;
 import com.leonardus.irfan.AppRequestCallback;
 import com.leonardus.irfan.Converter;
 import com.leonardus.irfan.ImageSlider.ImageSlider;
@@ -45,8 +46,8 @@ import id.net.gmedia.selby.Barang.Fragment.FragmentDetailBarang;
 import id.net.gmedia.selby.Barang.Fragment.FragmentDiskusiBarang;
 import id.net.gmedia.selby.Barang.Fragment.FragmentUlasan;
 import id.net.gmedia.selby.Chat.ChatDetailActivity;
-import id.net.gmedia.selby.Chat.UserModel;
 import id.net.gmedia.selby.Home.HomeActivity;
+import id.net.gmedia.selby.Model.ArtisModel;
 import id.net.gmedia.selby.Util.AppSharedPreferences;
 import id.net.gmedia.selby.Util.Constant;
 import id.net.gmedia.selby.LoginActivity;
@@ -64,8 +65,10 @@ public class BarangDetailActivity extends AppCompatActivity {
     private Menu menu;
 
     //Variabel atribut barang
-    private String nama_barang;
+    private String nama_barang = "";
     private String id = "";
+    private double harga_barang = 0;
+    private String main_image = "";
     private String deskripsi = "";
     private String kategori = "";
     private String berat = "";
@@ -76,7 +79,7 @@ public class BarangDetailActivity extends AppCompatActivity {
 
     //Variabel atribut penjual
     private String penjual_uid;
-    private UserModel penjual;
+    private ArtisModel penjual;
 
     //Variabel UI
     private TabLayout tabLayout;
@@ -87,7 +90,8 @@ public class BarangDetailActivity extends AppCompatActivity {
     private Button btn_follow;
     private CollapsingToolbarLayout collapsingToolbar;
     //private ImageView btn_chat;
-    private TextView txt_title, txt_nama, txt_harga, txt_kondisi, txt_dilihat, txt_terkirim;
+    private TextView txt_title, txt_nama, txt_harga,
+            txt_kondisi, txt_dilihat, txt_terkirim;
     private LinearLayout layout_pelapak;
 
     private DetailBarangViewPagerAdapter adapter;
@@ -117,7 +121,7 @@ public class BarangDetailActivity extends AppCompatActivity {
         initToolbar();
 
         //Inisialisasi barang
-        if (getIntent().hasExtra("barang")) {
+        if (getIntent().hasExtra(Constant.EXTRA_BARANG)) {
             initBarang();
         }
 
@@ -147,11 +151,95 @@ public class BarangDetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
             //beli barang -> transaksi
-            /*Intent i = new Intent(BarangDetailActivity.this, TransaksiDetailActivity.class);
+            /*Intent i = new Intent(BarangDetailActivity.this, PembayaranActivity.class);
             i.putExtra("barang", gson.toJson(barang));
             startActivity(i);*/
-            }
-        });
+                /*final Dialog dialog = DialogFactory.getInstance().createDialog
+                        (BarangDetailActivity.this, R.layout.popup_keranjang_tambah,
+                                70, 50);
+
+                Button btn_tambah = dialog.findViewById(R.id.btn_tambah);
+                TextView txt_kurang, txt_tambah;
+                txt_kurang = dialog.findViewById(R.id.txt_kurang);
+                txt_tambah = dialog.findViewById(R.id.txt_tambah);
+                final TextView txt_jumlah = dialog.findViewById(R.id.txt_jumlah);
+                txt_jumlah.setText("1");
+                //final ProgressBar bar_loading = dialog.findViewById(R.id.bar_loading);
+
+                txt_kurang.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        int jumlah = Integer.parseInt(txt_jumlah.getText().toString());
+                        if(jumlah > 1){
+                            jumlah--;
+                        }
+                        txt_jumlah.setText(String.valueOf(jumlah));
+                    }
+                });
+
+                txt_tambah.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        int jumlah = Integer.parseInt(txt_jumlah.getText().toString());
+                        jumlah++;
+                        txt_jumlah.setText(String.valueOf(jumlah));
+                    }
+                });
+
+                btn_tambah.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if(!id.equals("")){
+                            //bar_loading.setVisibility(View.VISIBLE);
+                            Gson gson = new Gson();
+                            Intent i = new Intent(BarangDetailActivity.this, PembayaranActivity.class);
+
+                            LinkedHashMap<String, List<BarangJualModel>> listBarangBeli = new LinkedHashMap<>();
+                            List<ArtisModel> listPenjual = new ArrayList<>();
+                            ArrayList<BarangJualModel> listBarang = new ArrayList<>();
+
+                            listBarang.add(new BarangJualModel(id, nama_barang, main_image, harga_barang,
+                                    Integer.parseInt(txt_jumlah.getText().toString())));
+
+                            listBarangBeli.put(penjual.getId(), listBarang);
+                            listPenjual.add(penjual);
+
+                            i.putExtra(Constant.EXTRA_LIST_BARANG, gson.toJson(listBarangBeli));
+                            i.putExtra(Constant.EXTRA_LIST_PENJUAL, gson.toJson(listPenjual));
+                            startActivity(i);
+                            //bar_loading.setVisibility(View.INVISIBLE);
+                        }
+                    }
+                });
+                dialog.show();*/
+                AppLoading.getInstance().showLoading(BarangDetailActivity.this);
+                JSONBuilder body = new JSONBuilder();
+                body.add("id_barang", id);
+                body.add("jumlah", 1);
+
+                ApiVolleyManager.getInstance().addRequest(BarangDetailActivity.this,
+                        Constant.URL_TAMBAH_KERANJANG, ApiVolleyManager.METHOD_POST,
+                        Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body.create(),
+                        new AppRequestCallback(new AppRequestCallback.SimpleRequestListener() {
+                            @Override
+                            public void onSuccess(String response) {
+                                Intent i = new Intent(BarangDetailActivity.this, HomeActivity.class);
+                                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                i.putExtra(Constant.EXTRA_START, 3);
+                                startActivity(i);
+
+                                AppLoading.getInstance().stopLoading();
+                            }
+
+                            @Override
+                            public void onFail(String message) {
+                                Toast.makeText(BarangDetailActivity.this, message, Toast.LENGTH_SHORT).show();
+                                AppLoading.getInstance().stopLoading();
+                            }
+                        }));
+                    }
+                });
 
         if(AppSharedPreferences.isLoggedIn(this)){
             initFloatingActionButton();
@@ -215,11 +303,13 @@ public class BarangDetailActivity extends AppCompatActivity {
                 @Override
                 public void onSuccess(String response) {
                     if(follow){
-                        Toast.makeText(BarangDetailActivity.this, "Berhenti Follow berhasil", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(BarangDetailActivity.this, "Berhenti Follow berhasil",
+                                Toast.LENGTH_SHORT).show();
                         btn_follow.setText(R.string.penjual_follow);
                     }
                     else{
-                        Toast.makeText(BarangDetailActivity.this, "Follow berhasil", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(BarangDetailActivity.this, "Follow berhasil",
+                                Toast.LENGTH_SHORT).show();
                         btn_follow.setText(R.string.penjual_unfollow);
                     }
 
@@ -276,7 +366,7 @@ public class BarangDetailActivity extends AppCompatActivity {
     private void initBarang(){
         //Membaca detail barang dari Web Service
         JSONBuilder body = new JSONBuilder();
-        id = getIntent().getStringExtra("barang");
+        id = getIntent().getStringExtra(Constant.EXTRA_BARANG);
         body.add("id", id);
 
         ApiVolleyManager.getInstance().addRequest(this, Constant.URL_DETAIL_PRODUK,
@@ -284,7 +374,8 @@ public class BarangDetailActivity extends AppCompatActivity {
                 body.create(), new AppRequestCallback(new AppRequestCallback.RequestListener() {
             @Override
             public void onEmpty(String message) {
-                Toast.makeText(BarangDetailActivity.this,"Barang tidak ditemukan", Toast.LENGTH_SHORT).show();
+                Toast.makeText(BarangDetailActivity.this,"Barang tidak ditemukan",
+                        Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -294,14 +385,15 @@ public class BarangDetailActivity extends AppCompatActivity {
 
                     nama_barang = barang.getString("nama");
                     txt_nama.setText(nama_barang);
-                    txt_harga.setText(Converter.doubleToRupiah(barang.getDouble("harga")));
+                    harga_barang = barang.getDouble("harga");
+                    txt_harga.setText(Converter.doubleToRupiah(harga_barang));
                     txt_kondisi.setText(barang.getString("kondisi"));
                     txt_terkirim.setText(barang.getString("terjual"));
                     txt_dilihat.setText(barang.getString("dilihat"));
 
                     deskripsi = barang.getString("deskripsi");
                     kategori = barang.getString("category");
-                    berat = String.valueOf(barang.getInt("berat")) + " " + barang.getString("berat_satuan");
+                    berat = barang.getInt("berat") + " " + barang.getString("berat_satuan");
                     merk = barang.getString("brand");
                     rating = (float) barang.getDouble("rating");
 
@@ -313,7 +405,7 @@ public class BarangDetailActivity extends AppCompatActivity {
                         menu.getItem(1).setIcon(R.drawable.ic_favorit_kosong);
                     }
 
-                    penjual = new UserModel(barang.getJSONObject("penjual").getString("id"),
+                    penjual = new ArtisModel(barang.getJSONObject("penjual").getString("id"),
                             barang.getJSONObject("penjual").getString("nama"),
                             barang.getJSONObject("penjual").getString("image"));
                     penjual_uid = barang.getJSONObject("penjual").getString("uid");
@@ -329,7 +421,8 @@ public class BarangDetailActivity extends AppCompatActivity {
                     }
 
                     List<String> listImage = new ArrayList<>();
-                    listImage.add(barang.getString("image"));
+                    main_image = barang.getString("image");
+                    listImage.add(main_image);
                     JSONArray galeri = barang.getJSONArray("gallery");
                     for(int i = 0; i < galeri.length(); i++){
                         listImage.add(galeri.getJSONObject(i).getString("image"));
@@ -352,7 +445,10 @@ public class BarangDetailActivity extends AppCompatActivity {
 
     private void tambahKeranjang(){
         //Memunculkan dialog dan menambahkan barang ke keranjang
-        final Dialog dialog = DialogFactory.getInstance().createDialog(BarangDetailActivity.this, R.layout.popup_keranjang_tambah, 70, 50);
+        final Dialog dialog = DialogFactory.getInstance().createDialog
+                (BarangDetailActivity.this,
+                        R.layout.popup_keranjang_tambah,
+                        70, 50);
 
         Button btn_tambah = dialog.findViewById(R.id.btn_tambah);
         TextView txt_kurang, txt_tambah;
@@ -386,7 +482,6 @@ public class BarangDetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(!id.equals("")){
-                    //bar_loading.setVisibility(View.VISIBLE);
                     JSONBuilder body = new JSONBuilder();
                     body.add("id_barang", id);
                     body.add("jumlah", Integer.parseInt(txt_jumlah.getText().toString()));
@@ -397,7 +492,8 @@ public class BarangDetailActivity extends AppCompatActivity {
                             new AppRequestCallback(new AppRequestCallback.SimpleRequestListener() {
                         @Override
                         public void onSuccess(String response) {
-                            Toast.makeText(BarangDetailActivity.this, "Barang berhasil ditambahkan", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(BarangDetailActivity.this,
+                                    "Barang berhasil ditambahkan", Toast.LENGTH_SHORT).show();
                             dialog.dismiss();
                         }
 
@@ -406,14 +502,13 @@ public class BarangDetailActivity extends AppCompatActivity {
                             Toast.makeText(BarangDetailActivity.this, message, Toast.LENGTH_SHORT).show();
                         }
                     }));
-                    //bar_loading.setVisibility(View.INVISIBLE);
                 }
             }
         });
         dialog.show();
     }
 
-    private void setupViewPager(final ViewPager viewPager) {
+    private void setupViewPager(ViewPager viewPager) {
         //Inisialisasi View Pager dan Fragment Detail barang, Ulasan, dan Diskusi Barang
         adapter = new DetailBarangViewPagerAdapter(this, getSupportFragmentManager());
 
@@ -503,12 +598,14 @@ public class BarangDetailActivity extends AppCompatActivity {
             JSONBuilder body = new JSONBuilder();
             body.add("id_barang", id);
 
-            ApiVolleyManager.getInstance().addRequest(this, Constant.URL_TAMBAH_FAVORIT, ApiVolleyManager.METHOD_POST,
-                    Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body.create(),
-                    new AppRequestCallback(new AppRequestCallback.SimpleRequestListener() {
+            ApiVolleyManager.getInstance().addRequest(this, Constant.URL_TAMBAH_FAVORIT,
+                    ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()),
+                    body.create(), new AppRequestCallback(new AppRequestCallback.SimpleRequestListener() {
                 @Override
                 public void onSuccess(String response) {
-                    final Dialog dialog = DialogFactory.getInstance().createDialog(BarangDetailActivity.this, R.layout.popup_message, 65, 30);
+                    final Dialog dialog = DialogFactory.getInstance().createDialog
+                            (BarangDetailActivity.this, R.layout.popup_message,
+                                    65, 30);
                     TextView txt_pesan = dialog.findViewById(R.id.txt_pesan);
                     dialog.findViewById(R.id.img_close).setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -560,7 +657,7 @@ public class BarangDetailActivity extends AppCompatActivity {
                 Intent i = new Intent(this, HomeActivity.class);
                 i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                i.putExtra("start", 3);
+                i.putExtra(Constant.EXTRA_START, 3);
                 startActivity(i);
                 return true;
             case R.id.action_favorit:
@@ -574,6 +671,5 @@ public class BarangDetailActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
 }
 

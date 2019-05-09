@@ -68,4 +68,6 @@
 
     <dimen name="popup_icon_size">120dp</dimen>
     <dimen name="popup_icon_padding">60dp</dimen>
+
+    <dimen name="transaksi_image_size">180dp</dimen>
 </resources>

@@ -69,8 +69,8 @@ public class LelangActivity extends AppCompatActivity {
             getSupportActionBar().setTitle("");
         }
 
-        if(getIntent().hasExtra("id_penjual")){
-            id_penjual = getIntent().getStringExtra("id_penjual");
+        if(getIntent().hasExtra(Constant.EXTRA_PENJUAL_ID)){
+            id_penjual = getIntent().getStringExtra(Constant.EXTRA_PENJUAL_ID);
         }
 
         EditText txt_search = findViewById(R.id.txt_search);
@@ -197,7 +197,7 @@ public class LelangActivity extends AppCompatActivity {
                                 lelang.getString("image"), lelang.getDouble("bid_akhir"),
                                 lelang.getDouble("bid_awal"), new ArtisModel(lelang.getString("penjual"),
                                 lelang.getString("foto"), (float)lelang.getDouble("rating")),
-                                Converter.stringDTToDate(lelang.getString("end"))));
+                                Converter.stringDTToDate(lelang.getString("end")), lelang.getInt("donasi")==1));
                     }
 
                     loadManager.finishLoad(response.length());

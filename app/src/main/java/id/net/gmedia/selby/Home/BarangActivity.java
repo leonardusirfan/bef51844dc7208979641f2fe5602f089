@@ -297,7 +297,7 @@ public class BarangActivity extends AppCompatActivity {
                                 barang.getString("image"), barang.getDouble("harga"),
                                 barang.getString("jenis").equals("1")?Constant.BARANG_PRELOVED:Constant.BARANG_MERCHANDISE,
                                 new ArtisModel(barang.getString("penjual"), barang.getString("foto_penjual"),
-                                        (float)barang.getDouble("rating")), false));
+                                        (float)barang.getDouble("rating")), barang.getInt("donasi")==1));
                     }
 
                     barangAdapter.notifyDataSetChanged();
@@ -511,6 +511,8 @@ public class BarangActivity extends AppCompatActivity {
         body.add("brand", "");
         body.add("kategori", kategori);
         body.add("penjual", "");
+        body.add("donasi", "1");
+        body.add("lelang", "1");
 
         ApiVolleyManager.getInstance().addRequest(BarangActivity.this, Constant.URL_BARANG_MASTER,
                 ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body.create(),
@@ -530,13 +532,11 @@ public class BarangActivity extends AppCompatActivity {
                                     isfavorit = true;
                                 }
 
-                                if(barang.getInt("donasi") == 1){
-                                    listBarang.add(new DonasiModel(barang.getString("id_barang"), barang.getString("nama"),
-                                            barang.getString("image"), barang.getDouble("harga"), isfavorit,
-                                            barang.getString("jenis").equals("Preloved")?Constant.BARANG_PRELOVED:Constant.BARANG_MERCHANDISE,
-                                            new ArtisModel(barang.getString("penjual"), barang.getString("foto_penjual"),
-                                                    (float)barang.getDouble("rating"))));
-                                }
+                                listBarang.add(new DonasiModel(barang.getString("id_barang"), barang.getString("nama"),
+                                        barang.getString("image"), barang.getDouble("harga"), isfavorit,
+                                        barang.getString("jenis").equals("Preloved")?Constant.BARANG_PRELOVED:Constant.BARANG_MERCHANDISE,
+                                        new ArtisModel(barang.getString("penjual"), barang.getString("foto_penjual"),
+                                                (float)barang.getDouble("rating"))));
                             }
 
                             barangAdapter.notifyDataSetChanged();

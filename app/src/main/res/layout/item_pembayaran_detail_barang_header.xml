@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@color/white">
+
+    <TextView
+        android:id="@+id/txt_penjual"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/sp14"
+        android:background="#F7F8F3"
+        android:textStyle="bold"
+        android:textColor="@color/orange"
+        android:padding="@dimen/dp15"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_barang"
+        android:layout_marginTop="@dimen/dp10"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/layout_kurir"
+        android:layout_marginTop="@dimen/dp10"
+        android:layout_marginBottom="@dimen/dp10"
+        android:layout_width="match_parent"
+        android:background="@color/white"
+        android:padding="@dimen/dp10"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/lbl_kurir"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Jasa Pengiriman"
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp14"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/txt_pengiriman"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/lbl_kurir"
+            android:layout_toStartOf="@id/img_next"
+            android:gravity="center_vertical"
+            android:padding="@dimen/dp15"
+            android:paddingTop="@dimen/dp15"
+            android:textColor="@color/black"
+            android:layout_marginEnd="@dimen/dp15"
+            android:textSize="@dimen/sp14"
+            app:layout_constraintEnd_toStartOf="@+id/img_next"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/lbl_kurir" />
+
+        <ImageView
+            android:id="@+id/img_next"
+            android:layout_width="@dimen/icon_size"
+            android:layout_height="@dimen/icon_size"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_next"
+            app:layout_constraintBottom_toBottomOf="@+id/txt_pengiriman"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/txt_pengiriman" />
+    </android.support.constraint.ConstraintLayout>
+
+</LinearLayout>

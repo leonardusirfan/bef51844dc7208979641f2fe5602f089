@@ -132,7 +132,7 @@ public class LelangDetailActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(!id_lelang.equals("")){
                     Intent i = new Intent(LelangDetailActivity.this, ActivityBidList.class);
-                    i.putExtra("id_lelang", id_lelang);
+                    i.putExtra(Constant.EXTRA_LELANG_ID, id_lelang);
                     startActivity(i);
                 }
             }
@@ -192,9 +192,9 @@ public class LelangDetailActivity extends AppCompatActivity {
 
     private void initLelang(){
         //Membaca detail barang lelang dari Web Service
-        if (getIntent().hasExtra("lelang")) {
+        if (getIntent().hasExtra(Constant.EXTRA_LELANG)) {
             JSONBuilder body = new JSONBuilder();
-            id_lelang = getIntent().getStringExtra("lelang");
+            id_lelang = getIntent().getStringExtra(Constant.EXTRA_LELANG);
             body.add("id", id_lelang);
 
             ApiVolleyManager.getInstance().addRequest(this, Constant.URL_DETAIL_LELANG, ApiVolleyManager.METHOD_POST,
@@ -385,7 +385,7 @@ public class LelangDetailActivity extends AppCompatActivity {
         //Mengubah status follow/unfollow terhadap penjual
         if(!id_penjual.equals("")) {
             JSONBuilder body = new JSONBuilder();
-            body.add("id_penjual", id_penjual);
+            body.add(Constant.EXTRA_PENJUAL_ID, id_penjual);
 
             ApiVolleyManager.getInstance().addRequest(this, Constant.URL_FOLLOW_PENJUAL,
                     ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()),

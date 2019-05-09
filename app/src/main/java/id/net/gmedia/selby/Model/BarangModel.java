@@ -53,6 +53,25 @@ public class BarangModel {
         this.jenis = jenis;
     }
 
+    public BarangModel(String id, String nama, String url, double harga, ArtisModel penjual, boolean donasi){
+        this.id = id;
+        this.nama = nama;
+        this.url = url;
+        this.harga = harga;
+        this.penjual = penjual;
+        this.donasi = donasi;
+    }
+
+    public BarangModel(String id, String nama, String url, double harga, boolean favorit, int jenis, ArtisModel penjual){
+        this.id = id;
+        this.nama = nama;
+        this.url = url;
+        this.harga = harga;
+        this.favorit = favorit;
+        this.jenis = jenis;
+        this.penjual = penjual;
+    }
+
     public BarangModel(String id, String nama, String url, double harga, boolean favorit, int jenis, ArtisModel penjual, boolean donasi){
         this.id = id;
         this.nama = nama;

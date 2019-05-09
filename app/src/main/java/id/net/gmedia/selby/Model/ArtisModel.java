@@ -17,6 +17,8 @@ public class ArtisModel {
 
     private float rating = 0;
 
+    private String id_kota = "";
+
     public ArtisModel(String nama){
         this.nama = nama;
     }
@@ -33,7 +35,15 @@ public class ArtisModel {
         this.image = image;
     }
 
-    public ArtisModel(String id, String nama, String image, String tempat_lahir, String tgl_lahir, int tinggi, String deskripsi){
+    public ArtisModel(String id, String nama, String image, String id_kota){
+        this.id = id;
+        this.nama = nama;
+        this.image = image;
+        this.id_kota = id_kota;
+    }
+
+    public ArtisModel(String id, String nama, String image, String tempat_lahir,
+                      String tgl_lahir, int tinggi, String deskripsi){
         this.id = id;
         this.nama = nama;
         this.image = image;
@@ -81,5 +91,9 @@ public class ArtisModel {
 
     public float getRating() {
         return rating;
+    }
+
+    public String getId_kota() {
+        return id_kota;
     }
 }

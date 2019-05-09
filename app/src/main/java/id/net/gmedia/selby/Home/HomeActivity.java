@@ -94,7 +94,7 @@ public class HomeActivity extends AppCompatActivity {
         img_galeri_selected = findViewById(R.id.img_galeri_selected);
         layout_zoom = findViewById(R.id.layout_zoom);
 
-        int start_page = getIntent().getIntExtra("start", 0);
+        int start_page = getIntent().getIntExtra(Constant.EXTRA_START, 0);
 
         //Inisialisasi Floating Action Button
         /*if(login && AppSharedPreferences.isPenjual(this)){
@@ -209,9 +209,10 @@ public class HomeActivity extends AppCompatActivity {
                     selectedImage = 0;
                 }
 
-                Glide.with(HomeActivity.this).load(listImage.get(selectedImage)).apply(new RequestOptions().override(imgWidth, imgHeight)).into(img_galeri_selected);
-            }
-        });
+                Glide.with(HomeActivity.this).load(listImage.get(selectedImage)).
+                        apply(new RequestOptions().override(imgWidth, imgHeight)).into(img_galeri_selected);
+    }
+});
 
         //Previous foto dalam galeri
         btn_previous.setOnClickListener(new View.OnClickListener() {
@@ -219,13 +220,13 @@ public class HomeActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(selectedImage > 0){
                     selectedImage--;
-
                 }
                 else{
                     selectedImage = listImage.size() - 1;
                 }
 
-                Glide.with(HomeActivity.this).load(listImage.get(selectedImage)).apply(new RequestOptions().override(imgWidth, imgHeight)).into(img_galeri_selected);
+                Glide.with(HomeActivity.this).load(listImage.get(selectedImage)).
+                        apply(new RequestOptions().override(imgWidth, imgHeight)).into(img_galeri_selected);
             }
         });
 
@@ -391,13 +392,17 @@ public class HomeActivity extends AppCompatActivity {
         if(bottombar.getSelectedItemId() == R.id.action_favorit){
             loadFragment(new FragmentFavorit());
         }
+        else if(bottombar.getSelectedItemId() == R.id.action_keranjang){
+            loadFragment(new FragmentKeranjang());
+        }
 
         //update FCM id
         JSONBuilder body = new JSONBuilder();
         body.add("fcm_id", AppSharedPreferences.getFcmId(this));
 
         ApiVolleyManager.getInstance().addRequest(this, Constant.URL_FCM_UPDATE, ApiVolleyManager.METHOD_POST,
-                Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body.create(), new AppRequestCallback(new AppRequestCallback.SimpleRequestListener() {
+                Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()), body.create(),
+                new AppRequestCallback(new AppRequestCallback.SimpleRequestListener() {
                     @Override
                     public void onSuccess(String result) {
 

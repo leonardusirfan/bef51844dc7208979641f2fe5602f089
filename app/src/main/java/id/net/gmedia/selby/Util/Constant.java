@@ -20,7 +20,8 @@ public class Constant {
      */
 
     //Header Request
-    public final static Map<String, String> HEADER_AUTH = new HashMap<String, String>(){{put("Auth-Key", "gmedia"); put("Client-Service", "selby-ecommerce");}};
+    public final static Map<String, String> HEADER_AUTH = new HashMap<String, String>()
+    {{put("Auth-Key", "gmedia"); put("Client-Service", "selby-ecommerce");}};
 
     //Extra
     public static final String EXTRA_BITMAP = "bitmap";
@@ -28,10 +29,27 @@ public class Constant {
     public static final String TAG = "selbi_log";
 
     public static final String EXTRA_JENIS_BARANG = "jenis_barang";
+    public static final String EXTRA_PENJUAL_ID = "id_penjual";
+    public static final String EXTRA_LELANG = "lelang";
+    public static final String EXTRA_LELANG_ID = "id_lelang";
+    public static final String EXTRA_BARANG = "barang";
     public static final String EXTRA_USER = "user";
     public static final String EXTRA_CHAT_FROM = "chat_from";
-    public static final String EXTRA_ARTIS = "nama_artis";
+    public static final String EXTRA_ARTIS_NAMA = "nama_artis";
+    public static final String EXTRA_ARTIS = "artis";
     public static final String EXTRA_BERITA = "berita";
+    public static final String EXTRA_FOLLOW = "follow";
+    public static final String EXTRA_ONGKIR = "ongkir";
+    public static final String EXTRA_START = "start";
+    public static final String EXTRA_LIST_BARANG = "list_barang";
+    public static final String EXTRA_LIST_ALAMAT = "list_alamat";
+    public static final String EXTRA_LIST_PENJUAL = "list_penjual";
+    public static final String EXTRA_ALAMAT_ID_TUJUAN = "id_tujuan";
+    public static final String EXTRA_ALAMAT_ID_ASAL = "id_asal";
+    public static final String EXTRA_BERAT_BARANG = "berat";
+    public static final String EXTRA_POSITION = "position";
+
+    public static final String RESULT_ALAMAT = "alamat";
 
     public static final int BARANG_PRELOVED = 31;
     public static final int BARANG_MERCHANDISE = 32;
@@ -79,9 +97,13 @@ public class Constant {
     public static final String URL_FCM_UPDATE = BASE_URL + "Authentication/update_fcm_id";
     public static final String URL_GREETING_ADD = BASE_URL + "Greeting/add_greeting";
     public static final String URL_HOT_NEWS = BASE_URL + "Hot_News/view";
+    public static final String URL_KURIR_MASTER = BASE_URL + "ongkir/kurir";
     public static final String URL_KURIR_PROVINSI = BASE_URL + "ongkir/provinsi";
     public static final String URL_KURIR_KOTA = BASE_URL + "ongkir/kota";
     public static final String URL_KURIR_ONGKIR = BASE_URL + "ongkir/hitung";
+    public static final String URL_ALAMAT_PENGIRIMAN_LIST = BASE_URL + "User/view_alamat";
+    public static final String URL_ALAMAT_PENGIRIMAN_TAMBAH = BASE_URL + "User/tambah_alamat";
+    public static final String URL_ALAMAT_PENGIRIMAN_HAPUS = BASE_URL + "User/hapus_alamat";
 
     //Token heaader dengan enkripsi
     public static Map<String, String> getTokenHeader(String uuid){
@@ -112,7 +134,7 @@ public class Constant {
             e.printStackTrace();
         }
 
-        Log.w("SHA256", "Return string kosong");
+        Log.w(TAG, "Return string kosong");
         return "";
     }
 

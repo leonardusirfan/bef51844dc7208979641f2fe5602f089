@@ -21,6 +21,8 @@ import java.util.List;
 import id.net.gmedia.selby.Barang.BarangDetailActivity;
 import id.net.gmedia.selby.Model.BarangModel;
 import id.net.gmedia.selby.R;
+import id.net.gmedia.selby.Util.Constant;
+
 import com.leonardus.irfan.TopCropImageView;
 
 public class MerchandiseAdapter extends RecyclerView.Adapter<MerchandiseAdapter.MerchandiseViewHolder> {
@@ -52,14 +54,19 @@ public class MerchandiseAdapter extends RecyclerView.Adapter<MerchandiseAdapter.
         artisViewHolder.txt_merchandise.setText(merchandise.getNama());
         Glide.with(context).load(merchandise.getUrl()).apply(new RequestOptions().dontAnimate().dontTransform()).
                 thumbnail(0.5f).transition(DrawableTransitionOptions.withCrossFade()).into(artisViewHolder.img_merchandise);
+
         if(merchandise.isDonasi()){
             artisViewHolder.img_donasi.setVisibility(View.VISIBLE);
         }
+        else{
+            artisViewHolder.img_donasi.setVisibility(View.INVISIBLE);
+        }
+
         artisViewHolder.img_merchandise.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(context, BarangDetailActivity.class);
-                i.putExtra("barang", merchandise.getId());
+                i.putExtra(Constant.EXTRA_BARANG, merchandise.getId());
                 context.startActivity(i);
             }
         });

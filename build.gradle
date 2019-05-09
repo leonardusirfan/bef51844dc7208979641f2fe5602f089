@@ -25,7 +25,11 @@ allprojects {
     repositories {
         google()
         jcenter()
+
+        // Add the midtrans repository into the list of repositories
+        maven { url "http://dl.bintray.com/pt-midtrans/maven" }
         maven { url 'https://jitpack.io' }
+
         maven {
             url 'https://maven.google.com/'
         }

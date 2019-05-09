@@ -94,7 +94,8 @@ public class LoginActivity extends AppCompatActivity {
         loginManager.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener( LoginActivity.this,  new OnSuccessListener<InstanceIdResult>() {
+                FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener( LoginActivity.this,
+                        new OnSuccessListener<InstanceIdResult>() {
                     @Override
                     public void onSuccess(InstanceIdResult instanceIdResult) {
                         fcm_id = instanceIdResult.getToken();

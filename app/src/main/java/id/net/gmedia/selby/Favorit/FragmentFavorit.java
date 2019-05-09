@@ -95,7 +95,10 @@ public class FragmentFavorit extends Fragment {
                     JSONArray listfavorit = new JSONArray(response);
                     for(int i = 0; i < listfavorit.length(); i++){
                         JSONObject favorit = listfavorit.getJSONObject(i);
-                        listItem.add(new BarangModel(favorit.getString("id_barang"), favorit.getString("barang"), favorit.getString("image"), favorit.getDouble("harga"), new ArtisModel(favorit.getString("penjual"), favorit.getString("foto"), (float) favorit.getDouble("rating_penjual"))));
+                        listItem.add(new BarangModel(favorit.getString("id_barang"),
+                                favorit.getString("barang"), favorit.getString("image"),
+                                favorit.getDouble("harga"), new ArtisModel(favorit.getString("penjual"),
+                                favorit.getString("foto"), (float) favorit.getDouble("rating_penjual"))));
                     }
 
                     resetFragment();

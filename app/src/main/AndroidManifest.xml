@@ -14,10 +14,19 @@
         android:networkSecurityConfig="@xml/network_security_config"
         android:roundIcon="@mipmap/selby_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".HotNewsDetailActivity"></activity>
+        android:theme="@style/AppTheme"
+        tools:replace="android:allowBackup">
+        <activity android:name=".Transaksi.TransaksiActivity"></activity>
         <activity
-            android:name=".HotNewsActivity"
+            android:name=".Pembayaran.PembayaranOngkirGanti"
+            android:theme="@style/AppTheme.ActionBar" />
+        <activity
+            android:name=".Pembayaran.PembayaranAlamatGanti"
+            android:theme="@style/AppTheme.ActionBar" />
+        <activity android:name=".Pembayaran.PembayaranAlamatTambah" />
+        <activity android:name=".HotNews.HotNewsDetailActivity" />
+        <activity
+            android:name=".HotNews.HotNewsActivity"
             android:theme="@style/AppTheme.ActionBar" />
         <activity android:name=".OrderGreetingActivity" />
         <activity
@@ -46,8 +55,9 @@
             android:name=".Barang.BarangDetailActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".TransaksiDetailActivity"
-            android:screenOrientation="portrait" />
+            android:name=".Pembayaran.PembayaranActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.ActionBar" />
         <activity
             android:name=".Artis.EventActivity"
             android:screenOrientation="portrait" />

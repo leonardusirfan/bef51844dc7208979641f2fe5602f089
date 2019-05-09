@@ -109,7 +109,6 @@
             android:background="@color/white"
             android:layout_marginEnd="@dimen/dp20"
             android:layout_marginStart="@dimen/dp20"
-            android:layout_marginBottom="@dimen/dp20"
             app:cardCornerRadius="@dimen/dp15">
 
             <LinearLayout
@@ -184,6 +183,40 @@
                     android:textSize="@dimen/text16" />
 
             </LinearLayout>
+
+        </android.support.design.card.MaterialCardView>
+
+        <android.support.design.card.MaterialCardView
+            android:id="@+id/layout_transaksi"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:layout_margin="@dimen/dp20"
+            app:cardCornerRadius="@dimen/dp15">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/padding15">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="#000"
+                    android:text="Transaksi"
+                    android:textSize="@dimen/text16"
+                    android:textStyle="bold" />
+
+                <com.leonardus.irfan.TopCropCircularImageView
+                    android:id="@+id/img_transaksi"
+                    android:layout_width="@dimen/icon_size"
+                    android:layout_height="@dimen/icon_size"
+                    android:src="@color/colorAccent"
+                    android:visibility="invisible"
+                    android:layout_alignParentEnd="true" />
+            </RelativeLayout>
 
         </android.support.design.card.MaterialCardView>
 

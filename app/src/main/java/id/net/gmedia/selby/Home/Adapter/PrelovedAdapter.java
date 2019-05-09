@@ -27,6 +27,7 @@ import id.net.gmedia.selby.Barang.BarangDetailActivity;
 import id.net.gmedia.selby.Model.BarangModel;
 import id.net.gmedia.selby.Model.PrelovedModel;
 import id.net.gmedia.selby.R;
+import id.net.gmedia.selby.Util.Constant;
 import id.net.gmedia.selby.Util.DynamicHeightImageView;
 import com.leonardus.irfan.TopCropCircularImageView;
 
@@ -61,6 +62,9 @@ public class PrelovedAdapter extends RecyclerView.Adapter<PrelovedAdapter.Prelov
         if(preloved.isDonasi()){
             prelovedViewHolder.img_donasi.setVisibility(View.VISIBLE);
         }
+        else{
+            prelovedViewHolder.img_donasi.setVisibility(View.INVISIBLE);
+        }
 
         if(preloved.getImgBitmap() != null){
             prelovedViewHolder.img_barang.setAspectRatio((float)preloved.getImgBitmap().getWidth()/(float)preloved.getImgBitmap().getHeight());
@@ -93,7 +97,7 @@ public class PrelovedAdapter extends RecyclerView.Adapter<PrelovedAdapter.Prelov
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(activity, BarangDetailActivity.class);
-                i.putExtra("barang", preloved.getId());
+                i.putExtra(Constant.EXTRA_BARANG, preloved.getId());
                 activity.startActivity(i);
             }
         });

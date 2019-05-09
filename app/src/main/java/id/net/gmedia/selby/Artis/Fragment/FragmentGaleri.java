@@ -23,6 +23,7 @@ import com.leonardus.irfan.SimpleObjectModel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -36,6 +37,7 @@ import id.net.gmedia.selby.R;
 /**
  * A simple {@link Fragment} subclass.
  */
+
 public class FragmentGaleri extends Fragment {
 
     //Variabel penampung id artis
@@ -55,11 +57,9 @@ public class FragmentGaleri extends Fragment {
         // Required empty public constructor
     }
 
-
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         activity = getActivity();
         if(v == null || needLoad){
             //jika fragment pertama kali dibutuhkan atau fragment membutuhkan load data/tampilan
@@ -109,15 +109,25 @@ public class FragmentGaleri extends Fragment {
                 try{
                     needLoad = false;
 
-                    JSONArray images = new JSONArray(response);
-                    List<String> listImage = new ArrayList<>();
-                    for(int i = 0; i < images.length(); i++){
-                        listImage.add(images.getJSONObject(i).getString("image"));
+                    JSONArray result = new JSONArray(response);
+
+                    for(int i = 0; i < result.length(); i++){
+                        JSONObject header = result.getJSONObject(i);
+
+                        String nama_album = "Album " + (i + 1);
+                        SimpleObjectModel header_obj = new SimpleObjectModel
+                                (nama_album, header.getString("tanggal"));
+                        listHeader.add(header_obj);
+
+                        JSONArray gallery = header.getJSONArray("gallery");
+                        List<String> listImage = new ArrayList<>();
+                        for(int j = 0; i < gallery.length(); i++){
+                            listImage.add(gallery.getJSONObject(i).getString("image"));
+                        }
+
+                        listGaleri.put(header_obj, listImage);
                     }
 
-                    SimpleObjectModel header = new SimpleObjectModel("Album 1", "29 Januari 2019");
-                    listHeader.add(header);
-                    listGaleri.put(header, listImage);
                     resetFragment();
                 }
                 catch (JSONException e){

@@ -21,8 +21,8 @@ public class LelangModel extends BarangModel{
         this.tglSelesai = tglSelesai;
     }
 
-    public LelangModel(String id, String nama, String url, double harga, double hargaNormal, ArtisModel penjual, Date tglSelesai){
-        super(id, nama, url, harga, penjual);
+    public LelangModel(String id, String nama, String url, double harga, double hargaNormal, ArtisModel penjual, Date tglSelesai, boolean donasi){
+        super(id, nama, url, harga, penjual, donasi);
         this.hargaNormal = hargaNormal;
         this.tglSelesai = tglSelesai;
     }

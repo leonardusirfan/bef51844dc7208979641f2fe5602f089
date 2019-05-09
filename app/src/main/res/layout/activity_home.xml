@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Home.HomeActivity">
+    tools:activity=".Home.HomeActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -23,6 +23,8 @@
             android:layout_alignParentBottom="true"
             android:background="@android:color/transparent"
             app:elevation="0dp"
+            app:itemTextAppearanceActive="@style/BottomNavigationView.Active"
+            app:itemTextAppearanceInactive="@style/BottomNavigationView"
             app:itemIconTint="@color/color_bottombar"
             app:itemTextColor="@color/color_bottombar"
             app:labelVisibilityMode="labeled"/>

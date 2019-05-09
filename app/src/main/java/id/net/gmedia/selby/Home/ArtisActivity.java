@@ -113,7 +113,7 @@ public class ArtisActivity extends AppCompatActivity {
         initKategori();
 
         //Inisialisasi Artis
-        follow = getIntent().hasExtra("follow");
+        follow = getIntent().hasExtra(Constant.EXTRA_FOLLOW);
         if(follow){
             loadArtisFollow(true, search, true);
         }
@@ -150,7 +150,7 @@ public class ArtisActivity extends AppCompatActivity {
     public void sendResult(ArtisModel artis){
         Gson gson = new Gson();
         Intent returnIntent = getIntent();
-        returnIntent.putExtra(Constant.EXTRA_ARTIS, gson.toJson(artis));
+        returnIntent.putExtra(Constant.EXTRA_ARTIS_NAMA, gson.toJson(artis));
         setResult(Activity.RESULT_OK,returnIntent);
         finish();
     }

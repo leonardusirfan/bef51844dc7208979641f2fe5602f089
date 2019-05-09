@@ -150,7 +150,7 @@ public class BarangArtisAdapter extends RecyclerView.Adapter<BarangArtisAdapter.
                             Intent i = new Intent(activity, HomeActivity.class);
                             i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            i.putExtra("start", 3);
+                            i.putExtra(Constant.EXTRA_START, 3);
                             activity.startActivity(i);
                         }
 
@@ -173,7 +173,7 @@ public class BarangArtisAdapter extends RecyclerView.Adapter<BarangArtisAdapter.
             public void onClick(View v) {
                 //Membuka activity detail berdasarkan jenis barang
                 Intent i = new Intent(activity, BarangDetailActivity.class);
-                i.putExtra("barang", barang.getId());
+                i.putExtra(Constant.EXTRA_BARANG, barang.getId());
                 activity.startActivity(i);
             }
         });

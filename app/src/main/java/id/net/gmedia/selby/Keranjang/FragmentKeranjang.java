@@ -11,6 +11,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.gson.Gson;
 import com.leonardus.irfan.ApiVolleyManager;
 import com.leonardus.irfan.AppRequestCallback;
 import com.leonardus.irfan.Converter;
@@ -37,7 +39,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import id.net.gmedia.selby.Model.BarangJualModel;
-import id.net.gmedia.selby.TransaksiDetailActivity;
+import id.net.gmedia.selby.Pembayaran.PembayaranActivity;
 import id.net.gmedia.selby.Util.Constant;
 import id.net.gmedia.selby.Model.ArtisModel;
 import id.net.gmedia.selby.R;
@@ -185,7 +187,41 @@ public class FragmentKeranjang extends Fragment {
                     @Override
                     public void onClick(View v) {
                         //bayar item terpilih
-                        startActivity(new Intent(context, TransaksiDetailActivity.class));
+                        Gson gson = new Gson();
+                        Intent i = new Intent(context, PembayaranActivity.class);
+
+                        LinkedHashMap<String, List<BarangJualModel>> listBarangBeli = new LinkedHashMap<>();
+                        List<ArtisModel> listPenjual = new ArrayList<>();
+
+                        ArtisModel penjual = null;
+                        ArrayList<BarangJualModel> listBarang = new ArrayList<>();
+
+                        for(BaseListItem it : listItem){
+                            if(it instanceof HeaderListItem){
+                                penjual = ((HeaderListItem) it).getPelapak();
+                                listBarang = new ArrayList<>();
+                            }
+                            else if(it instanceof ContentListItem){
+                                if((((ContentListItem) it).isSelected())){
+                                    listBarang.add(((ContentListItem) it).getItem());
+                                }
+                            }
+                            else if(it instanceof FooterListItem){
+                                if(listBarang.size() > 0){
+                                    if(penjual != null){
+                                        listBarangBeli.put(penjual.getId(), listBarang);
+                                        listPenjual.add(penjual);
+                                    }
+                                    else{
+                                        Log.w(Constant.TAG, "keranjang beli Penjual null");
+                                    }
+                                }
+                            }
+                        }
+
+                        i.putExtra(Constant.EXTRA_LIST_BARANG, gson.toJson(listBarangBeli));
+                        i.putExtra(Constant.EXTRA_LIST_PENJUAL, gson.toJson(listPenjual));
+                        startActivity(i);
                     }
                 });
 
@@ -242,7 +278,7 @@ public class FragmentKeranjang extends Fragment {
         }
         else{
             txt_hapus.setVisibility(View.VISIBLE);
-            btn_bayar.setBackgroundResource(R.drawable.style_fullrounded_gold_rectangle);
+            btn_bayar.setBackgroundResource(R.drawable.style_fullrounded_dark_blue_rectangle);
             btn_bayar.setEnabled(true);
         }
     }
@@ -261,7 +297,9 @@ public class FragmentKeranjang extends Fragment {
                     Map<ArtisModel, List<BarangJualModel>> listKeranjang = new LinkedHashMap<>();
                     JSONArray response = new JSONArray(result);
                     for(int i = 0; i < response.length(); i++){
-                        ArtisModel pelapak = new ArtisModel(response.getJSONObject(i).getString("penjual"));
+                        ArtisModel pelapak = new ArtisModel(response.getJSONObject(i).getString("id_penjual"),
+                                response.getJSONObject(i).getString("penjual"), "",
+                                response.getJSONObject(i).getString("id_kota"));
                         JSONArray listBarang = response.getJSONObject(i).getJSONArray("barang");
                         List<BarangJualModel> barang = new ArrayList<>();
 

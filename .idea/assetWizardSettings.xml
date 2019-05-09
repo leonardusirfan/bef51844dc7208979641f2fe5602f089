@@ -29,12 +29,24 @@
                                           </PersistentState>
                                         </value>
                                       </entry>
+                                      <entry key="clipartAsset">
+                                        <value>
+                                          <PersistentState>
+                                            <option name="values">
+                                              <map>
+                                                <entry key="url" value="jar:file:/D:/APPLICATION/Android_Studio/plugins/android/lib/android.jar!/images/material_design_icons/image/ic_navigate_next_black_24dp.xml" />
+                                              </map>
+                                            </option>
+                                          </PersistentState>
+                                        </value>
+                                      </entry>
                                     </map>
                                   </option>
                                   <option name="values">
                                     <map>
-                                      <entry key="theme" value="HOLO_DARK" />
-                                      <entry key="themeColor" value="ffffff" />
+                                      <entry key="outputName" value="ic_next" />
+                                      <entry key="theme" value="CUSTOM" />
+                                      <entry key="themeColor" value="9e9f9a" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -74,7 +86,7 @@
                                       <entry key="backgroundImage" value="D:\GMEDIA\Selby\Selby Resource\launcher\launcher_user.jpg" />
                                       <entry key="backgroundLayerName" value="ic_launcher_background" />
                                       <entry key="foregroundImage" value="D:\GMEDIA\Selby\Selby Resource\launcher\launcher_user.jpg" />
-                                      <entry key="foregroundLayerName" value="ic_launcher_foreground" />
+                                      <entry key="foregroundLayerName" value="ic_next" />
                                       <entry key="outputName" value="selby_launcher" />
                                     </map>
                                   </option>
@@ -140,6 +152,11 @@
                                 </PersistentState>
                               </value>
                             </entry>
+                          </map>
+                        </option>
+                        <option name="values">
+                          <map>
+                            <entry key="outputIconType" value="ACTIONBAR" />
                           </map>
                         </option>
                       </PersistentState>

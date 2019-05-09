@@ -23,6 +23,7 @@ import id.net.gmedia.selby.Barang.LelangDetailActivity;
 import id.net.gmedia.selby.Home.LelangActivity;
 import id.net.gmedia.selby.Model.LelangModel;
 import id.net.gmedia.selby.R;
+import id.net.gmedia.selby.Util.Constant;
 
 public class LelangArtisAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -108,7 +109,7 @@ public class LelangArtisAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                @Override
                public void onClick(View v) {
                    Intent i = new Intent(new Intent(context, LelangDetailActivity.class));
-                   i.putExtra("lelang", lelang.getId());
+                   i.putExtra(Constant.EXTRA_LELANG, lelang.getId());
                    context.startActivity(i);
                    //((Activity) context).overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                }
@@ -119,7 +120,7 @@ public class LelangArtisAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                @Override
                public void onClick(View v) {
                    Intent i = new Intent(context, LelangActivity.class);
-                   i.putExtra("id_penjual", id_penjual);
+                   i.putExtra(Constant.EXTRA_PENJUAL_ID, id_penjual);
                    context.startActivity(i);
                }
            });

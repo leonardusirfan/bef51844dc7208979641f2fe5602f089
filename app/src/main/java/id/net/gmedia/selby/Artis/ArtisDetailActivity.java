@@ -27,6 +27,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.gson.Gson;
 import com.leonardus.irfan.ApiVolleyManager;
 import com.leonardus.irfan.AppRequestCallback;
@@ -170,7 +171,7 @@ public class ArtisDetailActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Gson gson = new Gson();
                 Intent i = new Intent(ArtisDetailActivity.this, BarangArtisActivity.class);
-                i.putExtra("artis", gson.toJson(artis));
+                i.putExtra(Constant.EXTRA_ARTIS, gson.toJson(artis));
                 startActivity(i);
                 overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
             }
@@ -182,7 +183,7 @@ public class ArtisDetailActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Gson gson = new Gson();
                 Intent i = new Intent(ArtisDetailActivity.this, EventActivity.class);
-                i.putExtra("artis", gson.toJson(artis));
+                i.putExtra(Constant.EXTRA_ARTIS, gson.toJson(artis));
                 startActivity(i);
                 overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
             }
@@ -190,9 +191,9 @@ public class ArtisDetailActivity extends AppCompatActivity {
     }
 
     private void initArtis(){
-        if(getIntent().hasExtra("artis")){
+        if(getIntent().hasExtra(Constant.EXTRA_ARTIS)){
             Gson gson = new Gson();
-            artis = gson.fromJson(getIntent().getStringExtra("artis"), ArtisModel.class);
+            artis = gson.fromJson(getIntent().getStringExtra(Constant.EXTRA_ARTIS), ArtisModel.class);
 
             //Inisialisasi UI terkait artis
             Glide.with(this).load(artis.getImage()).thumbnail(0.3f).apply(new RequestOptions().dontTransform().
@@ -208,8 +209,8 @@ public class ArtisDetailActivity extends AppCompatActivity {
             body.add("count", 0);
 
             ApiVolleyManager.getInstance().addRequest(ArtisDetailActivity.this, Constant.URL_ARTIS,
-                    ApiVolleyManager.METHOD_POST, Constant.HEADER_AUTH, body.create(),
-                    new AppRequestCallback(new AppRequestCallback.SimpleRequestListener() {
+                    ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()),
+                    body.create(), new AppRequestCallback(new AppRequestCallback.SimpleRequestListener() {
                 @Override
                 public void onSuccess(String response) {
                     try{

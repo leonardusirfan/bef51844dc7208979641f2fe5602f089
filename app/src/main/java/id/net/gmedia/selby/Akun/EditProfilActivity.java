@@ -57,7 +57,7 @@ public class EditProfilActivity extends AppCompatActivity {
         txt_telepon = findViewById(R.id.txt_telepon);
 
         //Inisialisasi User
-        if(getIntent().hasExtra("user")){
+        if(getIntent().hasExtra(Constant.EXTRA_USER)){
             Gson gson = new Gson();
             UserModel user = gson.fromJson(getIntent().getStringExtra("user"), UserModel.class);
 
@@ -83,7 +83,7 @@ public class EditProfilActivity extends AppCompatActivity {
                 Intent i = new Intent(EditProfilActivity.this, HomeActivity.class);
                 i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                i.putExtra("start", 4);
+                i.putExtra(Constant.EXTRA_START, 4);
                 startActivity(i);
             }
 
