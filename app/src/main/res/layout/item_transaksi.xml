@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.card.MaterialCardView
+    android:id="@+id/layout_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -17,19 +19,24 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:text="BL1811RW1NYKINV"
-            android:textStyle="bold"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp14"/>
+            android:textSize="@dimen/sp14"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/txt_status"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:text="Status : Dibatalkan"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp5"
+            android:layout_marginEnd="@dimen/dp15"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:minLines="2"
+            app:layout_constraintHorizontal_weight="0.6"
             android:textColor="@color/black"
             android:textSize="@dimen/sp12"
-            android:layout_marginTop="@dimen/dp5"
             app:layout_constraintEnd_toStartOf="@+id/txt_total"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/layout_status" />
 
@@ -74,13 +81,16 @@
 
         <TextView
             android:id="@+id/txt_total"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
+            app:layout_constraintHorizontal_weight="0.4"
             android:layout_height="match_parent"
-            android:text="Rp 120.000"
             android:textColor="@color/black"
             android:textSize="@dimen/sp14"
             android:textStyle="bold"
+            android:gravity="end"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/txt_status"
             app:layout_constraintTop_toTopOf="@+id/txt_status" />
 
     </android.support.constraint.ConstraintLayout>

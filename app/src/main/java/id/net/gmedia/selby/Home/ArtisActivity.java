@@ -170,6 +170,7 @@ public class ArtisActivity extends AppCompatActivity {
                         listKategori.add(new SimpleObjectModel(arraykategori.getJSONObject(i).getString("id"),
                                 arraykategori.getJSONObject(i).getString("pekerjaan")));
                     }
+
                     kategoriAdapter.notifyDataSetChanged();
                 }
                 catch (JSONException e){

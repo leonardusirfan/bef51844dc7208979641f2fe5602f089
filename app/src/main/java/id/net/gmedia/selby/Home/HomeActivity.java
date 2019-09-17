@@ -10,15 +10,16 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -30,7 +31,10 @@ import com.leonardus.irfan.AppRequestCallback;
 import com.leonardus.irfan.JSONBuilder;
 import com.otaliastudios.zoom.ZoomLayout;
 
+import org.json.JSONArray;
+
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import id.net.gmedia.selby.Akun.FragmentAkun;
@@ -61,7 +65,7 @@ public class HomeActivity extends AppCompatActivity {
     private BottomNavigationView bottombar;
     private ImageView img_galeri_selected;
     private ConstraintLayout layout_overlay;
-    private CardView layout_galeri_selected;
+    private LinearLayout layout_galeri_selected;
     private ZoomLayout layout_zoom;
     /*private FloatingActionButton fab_post;
     private SubActionButton button1, button2, button3;*/
@@ -394,6 +398,25 @@ public class HomeActivity extends AppCompatActivity {
         }
         else if(bottombar.getSelectedItemId() == R.id.action_keranjang){
             loadFragment(new FragmentKeranjang());
+        }
+
+        //update keranjang
+        if(AppSharedPreferences.getUnupdatedKeranjang(this).size() > 0){
+            JSONBuilder body = new JSONBuilder();
+            body.add("id_keranjang", new JSONArray(AppSharedPreferences.getUnupdatedKeranjang(this)));
+            ApiVolleyManager.getInstance().addRequest(this, Constant.URL_KERANJANG_UPDATE_TRANSAKSI,
+                    ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()),
+                    body.create(), new AppRequestCallback(new AppRequestCallback.SimpleRequestListener() {
+                        @Override
+                        public void onSuccess(String result) {
+                            AppSharedPreferences.setUnupdatedKeranjang(HomeActivity.this, new HashSet<String>());
+                        }
+
+                        @Override
+                        public void onFail(String message) {
+                            Log.e(Constant.TAG, message);
+                        }
+                    }));
         }
 
         //update FCM id

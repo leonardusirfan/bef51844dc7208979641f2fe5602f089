@@ -90,24 +90,34 @@
             app:zoomEnabled="true"
             app:hasClickableChildren="false">
 
-            <android.support.v7.widget.CardView
-                android:id="@+id/layout_galeri_selected"
+           <!-- <ImageView
+                android:id="@+id/img_galeri_selected"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:cardCornerRadius="@dimen/padding5"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/btn_next"
-                app:layout_constraintStart_toEndOf="@+id/btn_previous"
-                app:layout_constraintTop_toTopOf="parent">
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/artis" />-->
+            <LinearLayout
+                android:id="@+id/layout_galeri_selected"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
 
-                <ImageView
-                    android:id="@+id/img_galeri_selected"
+                <android.support.v7.widget.CardView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:adjustViewBounds="true"
-                    android:contentDescription="@string/artis" />
+                    app:cardCornerRadius="@dimen/padding10">
 
-            </android.support.v7.widget.CardView>
+                    <ImageView
+                        android:id="@+id/img_galeri_selected"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="@string/artis"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/btn_next"
+                        app:layout_constraintStart_toEndOf="@+id/btn_previous"
+                        app:layout_constraintTop_toTopOf="parent"/>
+
+                </android.support.v7.widget.CardView>
+            </LinearLayout>
 
         </com.otaliastudios.zoom.ZoomLayout>
 

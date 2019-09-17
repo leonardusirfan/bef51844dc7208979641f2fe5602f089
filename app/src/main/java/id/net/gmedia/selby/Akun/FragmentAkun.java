@@ -212,7 +212,7 @@ public class FragmentAkun extends Fragment {
         try{
             final Bitmap bitmap = MediaStore.Images.Media.getBitmap(activity.getContentResolver(), Uri.fromFile(new File(path)));
             ApiVolleyManager.getInstance().addMultipartRequest(activity, url, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()),
-                    Converter.getFileDataFromDrawable(bitmap), new AppRequestCallback(new AppRequestCallback.SimpleRequestListener() {
+                    "pic", Converter.getFileDataFromDrawable(bitmap), new AppRequestCallback(new AppRequestCallback.SimpleRequestListener() {
                         @Override
                         public void onSuccess(String result) {
                             Toast.makeText(activity, "Foto berhasil diubah", Toast.LENGTH_SHORT).show();

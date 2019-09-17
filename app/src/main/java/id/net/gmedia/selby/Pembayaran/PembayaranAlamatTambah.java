@@ -146,12 +146,8 @@ public class PembayaranAlamatTambah extends AppCompatActivity {
                 }
             }
         });
-    }
 
-    @Override
-    protected void onResume() {
         loadProvinsi();
-        super.onResume();
     }
 
     private void simpanAlamat(){
@@ -198,6 +194,13 @@ public class PembayaranAlamatTambah extends AppCompatActivity {
     }
 
     private void loadProvinsi(){
+        AppLoading.getInstance().showLoading(this, new AppLoading.CancelListener() {
+            @Override
+            public void onCancel() {
+                onBackPressed();
+            }
+        });
+
         ApiVolleyManager.getInstance().addRequest(this, Constant.URL_KURIR_PROVINSI, ApiVolleyManager.METHOD_POST,
                 Constant.HEADER_AUTH, new AppRequestCallback(new AppRequestCallback.RequestListener() {
                     @Override
@@ -247,6 +250,7 @@ public class PembayaranAlamatTambah extends AppCompatActivity {
                         adapterKota.notifyDataSetChanged();
 
                         Toast.makeText(PembayaranAlamatTambah.this, message, Toast.LENGTH_SHORT).show();
+                        AppLoading.getInstance().stopLoading();
                     }
 
                     @Override
@@ -269,11 +273,14 @@ public class PembayaranAlamatTambah extends AppCompatActivity {
                             Toast.makeText(PembayaranAlamatTambah.this, R.string.error_json, Toast.LENGTH_SHORT).show();
                             Log.e(Constant.TAG, e.getMessage());
                         }
+
+                        AppLoading.getInstance().stopLoading();
                     }
 
                     @Override
                     public void onFail(String message) {
                         Toast.makeText(PembayaranAlamatTambah.this, message, Toast.LENGTH_SHORT).show();
+                        AppLoading.getInstance().stopLoading();
                     }
                 }));
     }

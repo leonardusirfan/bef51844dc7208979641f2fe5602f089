@@ -82,7 +82,8 @@ public class ActivityBidList extends AppCompatActivity {
         //Inisialisasi Recycler View list bid
         adapter = new BidAdapter(listShow);
         rv_bid.setItemAnimator(new DefaultItemAnimator());
-        rv_bid.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        rv_bid.setLayoutManager(new LinearLayoutManager
+                (this, LinearLayoutManager.VERTICAL, false));
         rv_bid.setAdapter(adapter);
 
         //Inisialisasi Navigasi list show
@@ -128,7 +129,8 @@ public class ActivityBidList extends AppCompatActivity {
         listShow = listBid.get(page);
         adapter = new BidAdapter(listShow);
         rv_bid.setAdapter(adapter);
-        txt_info_bid.setText(String.format(Locale.getDefault(), "Showing %d to %d of %d entries", 10 * page, 10 * page + listShow.size(), total));
+        txt_info_bid.setText(String.format(Locale.getDefault(),
+                "Showing %d to %d of %d entries", 10 * page, 10 * page + listShow.size(), total));
     }
 
     private void initBid(){

@@ -37,8 +37,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 import id.net.gmedia.selby.Home.HomeActivity;
 import id.net.gmedia.selby.Model.AlamatModel;
@@ -69,11 +72,12 @@ public class PembayaranActivity extends AppCompatActivity implements Transaction
     private boolean alamat_kosong = false;
 
     //Variabel UI
-    private TextView txt_alamat, txt_kota, txt_kodepos, txt_total;
+    private TextView txt_alamat, txt_kota, txt_kodepos, txt_total, txt_pengiriman;
 
     private LinkedHashMap<String, List<BarangJualModel>> listBarangBeli = new LinkedHashMap<>();
     private List<ArtisModel> listHeader = new ArrayList<>();
-    private LinkedHashMap<String, OngkirModel> listOngkir = new LinkedHashMap<>();
+    //private LinkedHashMap<String, OngkirModel> listOngkir = new LinkedHashMap<>();
+    private OngkirModel ongkir_dipilih;
 
     private PembayaranAdapter adapter;
 
@@ -93,6 +97,7 @@ public class PembayaranActivity extends AppCompatActivity implements Transaction
         txt_kodepos = findViewById(R.id.txt_kodepos);
         RecyclerView rv_barang = findViewById(R.id.rv_barang);
         txt_total = findViewById(R.id.txt_total);
+        txt_pengiriman = findViewById(R.id.txt_pengiriman);
 
         //Inisialisasi transaksi Midtrans
         initTransaksi();
@@ -108,7 +113,7 @@ public class PembayaranActivity extends AppCompatActivity implements Transaction
 
             //Inisialisasi total barang
             for(String s : listBarangBeli.keySet()){
-                for(BarangJualModel b : listBarangBeli.get(s)){
+                for(BarangJualModel b : Objects.requireNonNull(listBarangBeli.get(s))){
                     harga_total_barang += b.getJumlah() * b.getHarga();
                 }
             }
@@ -118,13 +123,22 @@ public class PembayaranActivity extends AppCompatActivity implements Transaction
         //Inisialisasi recycleView & Adapter barang beli
         rv_barang.setItemAnimator(new DefaultItemAnimator());
         rv_barang.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new PembayaranAdapter(this, listHeader, listBarangBeli, listOngkir);
+        //adapter = new PembayaranAdapter(this, listHeader, listBarangBeli, listOngkir);
+        adapter = new PembayaranAdapter(this, listHeader, listBarangBeli);
         rv_barang.setAdapter(adapter);
 
         findViewById(R.id.btn_bayar).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!adapter.checkKurir()){
+                /*if(!adapter.checkKurir()){
+                    Toast.makeText(PembayaranActivity.this,
+                            "Jasa pengiriman yang belum dipilih", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    verifyUser();
+                }*/
+
+                if(ongkir_dipilih == null){
                     Toast.makeText(PembayaranActivity.this,
                             "Jasa pengiriman yang belum dipilih", Toast.LENGTH_SHORT).show();
                 }
@@ -164,6 +178,26 @@ public class PembayaranActivity extends AppCompatActivity implements Transaction
             }
         });
 
+        findViewById(R.id.layout_kurir).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(alamat_dipilih == null){
+                    Toast.makeText(PembayaranActivity.this,
+                            "Alamat pengiriman belum dipilih", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    Intent i  = new Intent(PembayaranActivity.this, PembayaranOngkirGanti.class);
+
+                    //parameter perlu disesuaikan
+                    i.putExtra(Constant.EXTRA_ALAMAT_ID_ASAL, "399");
+                    i.putExtra(Constant.EXTRA_BERAT_BARANG, 200);
+                    i.putExtra(Constant.EXTRA_ALAMAT_ID_TUJUAN, alamat_dipilih.getId_kota());
+
+                    startActivityForResult(i, KODE_GANTI_ONGKIR);
+                }
+            }
+        });
+
         loadAlamat();
     }
 
@@ -173,21 +207,25 @@ public class PembayaranActivity extends AppCompatActivity implements Transaction
             String header_id = a.getId();
 
             //Inisialisasi detail pembayaran
-            for(int i = 0; i < listBarangBeli.get(header_id).size(); i++){
-                BarangJualModel barang = listBarangBeli.get(header_id).get(i);
+            for(int i = 0; i < Objects.requireNonNull(listBarangBeli.get(header_id)).size(); i++){
+                BarangJualModel barang = Objects.requireNonNull(listBarangBeli.get(header_id)).get(i);
                 itemDetailsList.add(new ItemDetails(barang.getId(), barang.getHarga(),
                         barang.getJumlah(), barang.getNama()));
             }
 
             //Biaya Ongkir
-            itemDetailsList.add(new ItemDetails("0", listOngkir.get(header_id).getHarga(),
-                    1, listOngkir.get(header_id).getService()));
+            /*String id_ongkir = Objects.requireNonNull(listOngkir.get(header_id)).getId() + "-" + a.getId();
+            itemDetailsList.add(new ItemDetails(id_ongkir, Objects.requireNonNull(listOngkir.get(header_id)).getHarga(),
+                    1, Objects.requireNonNull(listOngkir.get(header_id)).getService()));*/
         }
+
+        String id_ongkir = Objects.requireNonNull(ongkir_dipilih.getId());
+        itemDetailsList.add(new ItemDetails(id_ongkir, ongkir_dipilih.getHarga(),
+                1, ongkir_dipilih.getService()));
 
         String id_transaksi = String.valueOf(System.currentTimeMillis());
         TransactionRequest transactionRequest = new TransactionRequest(id_transaksi,
                 harga_total_barang + harga_total_ongkir);
-        Log.d(Constant.TAG, id_transaksi);
         transactionRequest.setItemDetails(itemDetailsList);
 
         BillInfoModel billInfoModel = new BillInfoModel("SELBI", "Transaksi");
@@ -269,13 +307,23 @@ public class PembayaranActivity extends AppCompatActivity implements Transaction
                             userDetail.setPhoneNumber(user.getTelepon());
 
                             ArrayList<UserAddress> userAddresses = new ArrayList<>();
+
+                            //alamat billing
                             UserAddress userAddress = new UserAddress();
                             userAddress.setAddress(akun.getString("alamat"));
-                            //userAddress.setCity("Jakarta");
                             userAddress.setAddressType(Constants.ADDRESS_TYPE_BILLING);
-                            //userAddress.setZipcode("40184");
                             userAddress.setCountry("IDN");
                             userAddresses.add(userAddress);
+
+                            //alamat shipping
+                            userAddress = new UserAddress();
+                            userAddress.setAddress(alamat_dipilih.getAlamat());
+                            userAddress.setCity(alamat_dipilih.getNama_kota());
+                            userAddress.setZipcode(alamat_dipilih.getKodepos());
+                            userAddress.setAddressType(Constants.ADDRESS_TYPE_SHIPPING);
+                            userAddress.setCountry("IDN");
+                            userAddresses.add(userAddress);
+
                             userDetail.setUserAddresses(userAddresses);
                             LocalDataHandler.saveObject("user_details", userDetail);
 
@@ -314,23 +362,27 @@ public class PembayaranActivity extends AppCompatActivity implements Transaction
                     Toast.makeText(this, "Transaksi berhasil", Toast.LENGTH_SHORT).show();
                     Log.d(Constant.TAG, "Transaction Finished. ID: " + result.getResponse().getTransactionId());
 
-                    //Kembali ke keranjang
-                    Intent i = new Intent(this, HomeActivity.class);
-                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    i.putExtra(Constant.EXTRA_START, 3);
-                    startActivity(i);
-
                     //hapus keranjang
+                    Set<String> listIdKeranjang = new HashSet<>();
+                    for(ArtisModel a : listHeader){
+                        String header_id = a.getId();
+                        //Inisialisasi detail pembayaran
+                        for(BarangJualModel barang : Objects.requireNonNull(listBarangBeli.get(header_id))){
+                            listIdKeranjang.add(barang.getId());
+                        }
+                    }
+
+                    updateKeranjang(listIdKeranjang);
 
                     break;
                 case TransactionResult.STATUS_PENDING:
-                    Toast.makeText(this, "Transaksi pending", Toast.LENGTH_SHORT).show();
-                    Log.d(Constant.TAG, "Transaction Pending. ID: " + result.getResponse().getTransactionId());
+                    Toast.makeText(this, "Menunggu pembayaran", Toast.LENGTH_SHORT).show();
+                    Log.d(Constant.TAG, "Menunggu pembayaran. ID: " + result.getResponse().getTransactionId());
                     break;
                 case TransactionResult.STATUS_FAILED:
                     Toast.makeText(this, "Transaksi gagal", Toast.LENGTH_SHORT).show();
-                    Log.d(Constant.TAG, "Transaction Failed. ID: " + result.getResponse().getTransactionId() + ". Message: " + result.getResponse().getStatusMessage());
+                    Log.d(Constant.TAG, "Transaction gagal. ID: " + result.getResponse().getTransactionId()
+                            + ". Message: " + result.getResponse().getStatusMessage());
                     break;
             }
             result.getResponse().getValidationMessages();
@@ -340,7 +392,7 @@ public class PembayaranActivity extends AppCompatActivity implements Transaction
             if (result.getStatus().equalsIgnoreCase(TransactionResult.STATUS_INVALID)) {
                 Toast.makeText(this, "Transaksi Invalid", Toast.LENGTH_LONG).show();
             } else {
-                Toast.makeText(this, "Transaction selesai dengan kegagalan.", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Transaksi selesai dengan kegagalan.", Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -353,8 +405,11 @@ public class PembayaranActivity extends AppCompatActivity implements Transaction
         txt_kodepos.setText(alamat_dipilih.getKodepos());
 
         //reset ongkir
-        listOngkir.clear();
-        adapter.notifyDataSetChanged();
+        //listOngkir.clear();
+        //adapter.notifyDataSetChanged();
+
+        txt_pengiriman.setText("Jasa pengiriman belum dipilih");
+        ongkir_dipilih = null;
     }
 
     @Override
@@ -380,22 +435,62 @@ public class PembayaranActivity extends AppCompatActivity implements Transaction
             if(resultCode == RESULT_OK){
                 if(data != null){
                     Gson gson = new Gson();
-                    int position = data.getIntExtra(Constant.EXTRA_POSITION, 0);
-                    OngkirModel o = gson.fromJson(data.getStringExtra(Constant.EXTRA_ONGKIR), OngkirModel.class);
+                    /*int position = data.getIntExtra(Constant.EXTRA_POSITION, 0);
+                    OngkirModel o = gson.fromJson(data.getStringExtra(Constant.EXTRA_ONGKIR), OngkirModel.class);*/
 
-                    listOngkir.put(listHeader.get(position).getId(), o);
-                    adapter.notifyDataSetChanged();
+                    //UPDATE ONGKIR
+                    //listOngkir.put(listHeader.get(position).getId(), o);
+                    //adapter.notifyDataSetChanged();
+
+                    ongkir_dipilih = gson.fromJson(data.getStringExtra(Constant.EXTRA_ONGKIR), OngkirModel.class);
+                    String pengiriman = ongkir_dipilih.getService() + " - " + Converter.doubleToRupiah(ongkir_dipilih.getHarga());
+                    txt_pengiriman.setText(pengiriman);
 
                     //Inisialisasi total barang
-                    harga_total_ongkir = 0;
+                    /*harga_total_ongkir = 0;
                     for(String s : listOngkir.keySet()){
-                        harga_total_ongkir += listOngkir.get(s).getHarga();
+                        harga_total_ongkir += Objects.requireNonNull(listOngkir.get(s)).getHarga();
                     }
+                    txt_total.setText(Converter.doubleToRupiah(harga_total_barang + harga_total_ongkir));*/
+                    harga_total_ongkir = ongkir_dipilih.getHarga();
                     txt_total.setText(Converter.doubleToRupiah(harga_total_barang + harga_total_ongkir));
                 }
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void updateKeranjang(Set<String> listIdKeranjang){
+        JSONBuilder body = new JSONBuilder();
+        body.add("id_keranjang", new JSONArray(listIdKeranjang));
+
+        ApiVolleyManager.getInstance().addRequest(this, Constant.URL_KERANJANG_UPDATE_TRANSAKSI,
+                ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()),
+                body.create(), new AppRequestCallback(new AppRequestCallback.SimpleRequestListener() {
+                    @Override
+                    public void onSuccess(String result) {
+                        //AppLoading.getInstance().showLoading(PembayaranActivity.this);
+                        //Kembali ke keranjang
+                        Intent i = new Intent(PembayaranActivity.this, HomeActivity.class);
+                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        i.putExtra(Constant.EXTRA_START, 3);
+                        startActivity(i);
+                    }
+
+                    @Override
+                    public void onFail(String message) {
+                        Log.e(Constant.TAG, message);
+
+                        AppLoading.getInstance().showLoading(PembayaranActivity.this);
+                        //Kembali ke keranjang
+                        Intent i = new Intent(PembayaranActivity.this, HomeActivity.class);
+                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        i.putExtra(Constant.EXTRA_START, 3);
+                        startActivity(i);
+                    }
+                }));
     }
 
     @Override

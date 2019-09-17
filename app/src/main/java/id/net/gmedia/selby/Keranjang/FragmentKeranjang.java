@@ -73,7 +73,7 @@ public class FragmentKeranjang extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        context = container.getContext();
+        context = getContext();
         // Inflate the layout for this fragment
         if(v == null || needLoad){
             v = inflater.inflate(R.layout.fragment_loading, container, false);
@@ -183,6 +183,7 @@ public class FragmentKeranjang extends Fragment {
                         builder.create().show();
                     }
                 });
+
                 btn_bayar.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

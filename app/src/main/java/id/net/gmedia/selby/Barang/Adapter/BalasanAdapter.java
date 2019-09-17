@@ -25,7 +25,8 @@ public class BalasanAdapter extends RecyclerView.Adapter<BalasanAdapter.BalasanV
     @NonNull
     @Override
     public BalasanViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        return new BalasanViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_barang_balasan, viewGroup, false));
+        return new BalasanViewHolder(LayoutInflater.from(viewGroup.getContext())
+                .inflate(R.layout.item_barang_balasan, viewGroup, false));
     }
 
     @Override

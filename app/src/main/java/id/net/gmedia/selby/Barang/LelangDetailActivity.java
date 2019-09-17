@@ -23,6 +23,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.gson.Gson;
 import com.leonardus.irfan.ApiVolleyManager;
 import com.leonardus.irfan.AppRequestCallback;
 import com.leonardus.irfan.Converter;
@@ -43,6 +44,8 @@ import id.net.gmedia.selby.Barang.Adapter.DetailBarangViewPagerAdapter;
 import id.net.gmedia.selby.Barang.Fragment.FragmentDetailBarang;
 import id.net.gmedia.selby.Barang.Fragment.FragmentDiskusiBarang;
 import id.net.gmedia.selby.Barang.Fragment.FragmentUlasan;
+import id.net.gmedia.selby.Chat.ChatDetailActivity;
+import id.net.gmedia.selby.Model.ArtisModel;
 import id.net.gmedia.selby.Util.AppSharedPreferences;
 import id.net.gmedia.selby.Util.Constant;
 import id.net.gmedia.selby.LoginActivity;
@@ -65,8 +68,12 @@ public class LelangDetailActivity extends AppCompatActivity {
     private String kategori = "";
     private String berat = "";
     private String merk = "";
-    private String id_penjual = "";
+    //private String id_penjual = "";
     private boolean follow = false;
+
+    //Variabel atribut penjual
+    private String penjual_uid;
+    private ArtisModel penjual;
 
     //Variabel UI
     private Button btn_follow;
@@ -78,7 +85,6 @@ public class LelangDetailActivity extends AppCompatActivity {
     private FloatingMenuButton fab_tambah;
     private CollapsingToolbarLayout collapsingToolbar;
     private Toolbar toolbar;
-    private Button btn_chat;
     private LinearLayout layout_pelapak;
 
     private DetailBarangViewPagerAdapter adapter;
@@ -107,7 +113,7 @@ public class LelangDetailActivity extends AppCompatActivity {
         slider = findViewById(R.id.slider);
         fab_tambah = findViewById(R.id.fab_tambah);
         btn_follow = findViewById(R.id.btn_follow);
-        btn_chat = findViewById(R.id.btn_chat);
+        Button btn_chat = findViewById(R.id.btn_chat);
         layout_pelapak = findViewById(R.id.layout_pelapak);
 
         //Inisialisasi Toolbar
@@ -117,7 +123,7 @@ public class LelangDetailActivity extends AppCompatActivity {
         btn_follow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!id_penjual.equals("")){
+                if(penjual != null){
                     followPenjual();
                 }
             }
@@ -148,6 +154,17 @@ public class LelangDetailActivity extends AppCompatActivity {
                 else if(canBid){
                     bid();
                 }
+            }
+        });
+
+        btn_chat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Gson gson = new Gson();
+                Intent i = new Intent(LelangDetailActivity.this, ChatDetailActivity.class);
+                i.putExtra(Constant.EXTRA_USER, gson.toJson(penjual));
+                i.putExtra(Constant.EXTRA_CHAT_FROM, penjual_uid);
+                startActivity(i);
             }
         });
 
@@ -213,7 +230,7 @@ public class LelangDetailActivity extends AppCompatActivity {
                         id_barang = lelang.getString("id_barang");
                         deskripsi = lelang.getString("deskripsi");
                         kategori = lelang.getString("category");
-                        berat = String.valueOf(lelang.getInt("berat")) + " " + lelang.getString("berat_satuan");
+                        berat = lelang.getInt("berat") + " " + lelang.getString("berat_satuan");
                         merk = lelang.getString("brand");
                         rating = (float) lelang.getDouble("rating");
 
@@ -226,8 +243,11 @@ public class LelangDetailActivity extends AppCompatActivity {
                         txt_harga.setText(Converter.doubleToRupiah(lelang.getDouble("bid_awal")));
                         txt_bid.setText(Converter.doubleToRupiah(lelang.getDouble("bid_akhir")));
 
-                        id_penjual = lelang.getJSONObject("penjual").getString("id");
-                        if(!lelang.getJSONObject("penjual").getString("uid").equals(FirebaseAuth.getInstance().getUid())){
+                        penjual = new ArtisModel(lelang.getJSONObject("penjual").getString("id"),
+                                lelang.getJSONObject("penjual").getString("nama"),
+                                lelang.getJSONObject("penjual").getString("image"));
+                        penjual_uid = lelang.getJSONObject("penjual").getString("uid");
+                        if(!penjual_uid.equals(FirebaseAuth.getInstance().getUid())){
                             layout_pelapak.setVisibility(View.VISIBLE);
                         }
                         Glide.with(LelangDetailActivity.this).load(lelang.getJSONObject("penjual").getString("image")).
@@ -302,7 +322,8 @@ public class LelangDetailActivity extends AppCompatActivity {
 
     private void bid(){
         //Menampilkan dialog bid
-        final Dialog dialog = DialogFactory.getInstance().createDialog(LelangDetailActivity.this, R.layout.popup_lelang_bid, 75, 45);
+        final Dialog dialog = DialogFactory.getInstance().createDialog(LelangDetailActivity.this,
+                R.layout.popup_lelang_bid, 75, 45);
         final TextView txt_bid = dialog.findViewById(R.id.txt_bid);
         Button btn_bid = dialog.findViewById(R.id.btn_bid);
 
@@ -382,10 +403,9 @@ public class LelangDetailActivity extends AppCompatActivity {
 
     private void followPenjual(){
         //Mengubah status follow/unfollow terhadap penjual
-        //Mengubah status follow/unfollow terhadap penjual
-        if(!id_penjual.equals("")) {
+        if(!penjual.getId().equals("")) {
             JSONBuilder body = new JSONBuilder();
-            body.add(Constant.EXTRA_PENJUAL_ID, id_penjual);
+            body.add(Constant.EXTRA_PENJUAL_ID, penjual.getId());
 
             ApiVolleyManager.getInstance().addRequest(this, Constant.URL_FOLLOW_PENJUAL,
                     ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()),

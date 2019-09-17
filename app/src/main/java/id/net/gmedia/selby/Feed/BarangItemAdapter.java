@@ -18,6 +18,7 @@ import java.util.List;
 import id.net.gmedia.selby.Barang.BarangDetailActivity;
 import id.net.gmedia.selby.Model.BarangModel;
 import id.net.gmedia.selby.R;
+import id.net.gmedia.selby.Util.Constant;
 
 public class BarangItemAdapter extends RecyclerView.Adapter<BarangItemAdapter.BarangSmallViewHolder> {
 
@@ -32,7 +33,8 @@ public class BarangItemAdapter extends RecyclerView.Adapter<BarangItemAdapter.Ba
     @Override
     public BarangSmallViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         context = viewGroup.getContext();
-        return new BarangSmallViewHolder(LayoutInflater.from(context).inflate(R.layout.item_feed_barang_item, viewGroup, false));
+        return new BarangSmallViewHolder(LayoutInflater.from(context).
+                inflate(R.layout.item_feed_barang_item, viewGroup, false));
     }
 
     @Override
@@ -46,7 +48,7 @@ public class BarangItemAdapter extends RecyclerView.Adapter<BarangItemAdapter.Ba
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(context, BarangDetailActivity.class);
-                i.putExtra("barang", item.getId());
+                i.putExtra(Constant.EXTRA_BARANG, item.getId());
                 context.startActivity(i);
             }
         });

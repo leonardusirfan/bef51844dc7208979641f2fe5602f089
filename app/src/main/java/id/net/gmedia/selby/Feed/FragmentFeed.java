@@ -253,6 +253,7 @@ public class FragmentFeed extends Fragment {
            FeedItemModel item = null;
            switch (jenis){
                case 1:{
+                   //Kegiatan
                    KegiatanModel kegiatan = new KegiatanModel(feeditem.getString("title"),
                            feeditem.getString("tempat"), Converter.stringDToDate(feeditem.getString("tgl")),
                            feeditem.getString("deskripsi"));
@@ -260,35 +261,45 @@ public class FragmentFeed extends Fragment {
                    break;
                }
                case 2:{
+                   //Galeri
                    List<String> listGambar = new ArrayList<>();
-                   JSONArray jsonGambar = feeditem.getJSONArray("images");
-                   for(int j = 0; j < jsonGambar.length(); j++){
-                       listGambar.add(jsonGambar.getJSONObject(j).getString("image"));
+                   if(feeditem.has("images")){
+                       JSONArray jsonGambar = feeditem.getJSONArray("images");
+                       for(int j = 0; j < jsonGambar.length(); j++){
+                           listGambar.add(jsonGambar.getJSONObject(j).getString("image"));
+                       }
                    }
                    item = new GambarItemModel(artis, listGambar, text, timestamp);
                    break;
                }
                case 3:{
+                   //Teks
                    item = new TextItemModel(artis, text, timestamp);
                    break;
                }
                case 4:{
+                   //Produk
                    List<BarangModel> listBarang = new ArrayList<>();
-                   JSONArray jsonGambar = feeditem.getJSONArray("images");
-                   for(int j = 0; j < jsonGambar.length(); j++){
-                       JSONObject jsonbarang = jsonGambar.getJSONObject(j);
-                       listBarang.add(new BarangModel(jsonbarang.getString("id_barang"), jsonbarang.getString("teks"),
-                               jsonbarang.getString("image"), jsonbarang.getString("jenis").equals("1")?
-                               Constant.BARANG_PRELOVED:Constant.BARANG_MERCHANDISE));
+                   if(feeditem.has("images")){
+                       JSONArray jsonGambar = feeditem.getJSONArray("images");
+                       for(int j = 0; j < jsonGambar.length(); j++){
+                           JSONObject jsonbarang = jsonGambar.getJSONObject(j);
+                           listBarang.add(new BarangModel(jsonbarang.getString("id_barang"), jsonbarang.getString("teks"),
+                                   jsonbarang.getString("image"), jsonbarang.getString("jenis").equals("1")?
+                                   Constant.BARANG_PRELOVED:Constant.BARANG_MERCHANDISE));
+                       }
                    }
                    item = new BarangItemModel(artis, listBarang, timestamp);
                    break;
                }
                case 5:{
-                   JSONObject jsonlelang = feeditem.getJSONArray("images").getJSONObject(0);
-                   LelangModel lelang = new LelangModel(jsonlelang.getString("id_lelang"),
-                           jsonlelang.getString("teks"), jsonlelang.getString("image"));
-                   item = new LelangItemModel(artis, lelang, timestamp);
+                   //Lelang
+                   if(feeditem.has("images")){
+                       JSONObject jsonlelang = feeditem.getJSONArray("images").getJSONObject(0);
+                       LelangModel lelang = new LelangModel(jsonlelang.getString("id_lelang"),
+                               jsonlelang.getString("teks"), jsonlelang.getString("image"));
+                       item = new LelangItemModel(artis, lelang, timestamp);
+                   }
                    break;
                }
            }

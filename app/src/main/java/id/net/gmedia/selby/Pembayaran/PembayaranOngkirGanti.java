@@ -33,17 +33,17 @@ import id.net.gmedia.selby.Util.Constant;
 
 public class PembayaranOngkirGanti extends AppCompatActivity {
 
-    private int position = 0;
-    private String kurir = "";
+    //private int position = 0;
+    //private String kurir = "";
 
     private String id_kota_asal = "";
     private String id_kota_tujuan = "";
     private int berat = 0;
 
-    private List<SimpleObjectModel> listKurir = new ArrayList<>();
+    //private List<SimpleObjectModel> listKurir = new ArrayList<>();
     private List<OngkirModel> listOngkir = new ArrayList<>();
     private PembayaranOngkirAdapter adapter;
-    private ArrayAdapter<SimpleObjectModel> adapterKurir;
+    //private ArrayAdapter<SimpleObjectModel> adapterKurir;
     private RecyclerView rv_ongkir;
 
     @Override
@@ -65,12 +65,12 @@ public class PembayaranOngkirGanti extends AppCompatActivity {
         if(getIntent().hasExtra(Constant.EXTRA_BERAT_BARANG)){
             berat = getIntent().getIntExtra(Constant.EXTRA_BERAT_BARANG, 0);
         }
-        if(getIntent().hasExtra(Constant.EXTRA_POSITION)){
+        /*if(getIntent().hasExtra(Constant.EXTRA_POSITION)){
             position = getIntent().getIntExtra(Constant.EXTRA_POSITION, 0);
-        }
+        }*/
 
-        AppCompatSpinner spn_kurir = findViewById(R.id.spn_kurir);
-        adapterKurir = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, listKurir);
+        /*AppCompatSpinner spn_kurir = findViewById(R.id.spn_kurir);
+        adapterKurir = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, listKurir);
         spn_kurir.setAdapter(adapterKurir);
         spn_kurir.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -83,7 +83,7 @@ public class PembayaranOngkirGanti extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> parent) {
 
             }
-        });
+        });*/
 
         rv_ongkir = findViewById(R.id.rv_ongkir);
         rv_ongkir.setItemAnimator(new DefaultItemAnimator());
@@ -103,7 +103,7 @@ public class PembayaranOngkirGanti extends AppCompatActivity {
 
                     Intent i = new Intent();
                     i.putExtra(Constant.EXTRA_ONGKIR, gson.toJson(o));
-                    i.putExtra(Constant.EXTRA_POSITION, position);
+                    //i.putExtra(Constant.EXTRA_POSITION, position);
                     setResult(RESULT_OK, i);
 
                     finish();
@@ -111,7 +111,8 @@ public class PembayaranOngkirGanti extends AppCompatActivity {
             }
         });
 
-        loadKurir();
+        //loadKurir();
+        loadOngkir();
         AppLoading.getInstance().showLoading(this, new AppLoading.CancelListener() {
             @Override
             public void onCancel() {
@@ -120,7 +121,7 @@ public class PembayaranOngkirGanti extends AppCompatActivity {
         });
     }
 
-    private void loadKurir(){
+    /*private void loadKurir(){
         ApiVolleyManager.getInstance().addRequest(this, Constant.URL_KURIR_MASTER, ApiVolleyManager.METHOD_POST,
                 Constant.HEADER_AUTH, new AppRequestCallback(new AppRequestCallback.RequestListener() {
                     @Override
@@ -156,7 +157,7 @@ public class PembayaranOngkirGanti extends AppCompatActivity {
                         AppLoading.getInstance().stopLoading();
                     }
                 }));
-    }
+    }*/
 
     private void loadOngkir(){
         listOngkir.clear();
@@ -168,7 +169,9 @@ public class PembayaranOngkirGanti extends AppCompatActivity {
         body.add("asal", id_kota_asal);
         body.add("tujuan", id_kota_tujuan);
         body.add("berat", berat);
-        body.add("kurir", kurir);
+        //body.add("kurir", kurir);
+        body.add("kurir", "");
+        Log.d(Constant.TAG, body.create().toString());
 
         ApiVolleyManager.getInstance().addRequest(this, Constant.URL_KURIR_ONGKIR, ApiVolleyManager.METHOD_POST,
                 Constant.HEADER_AUTH, body.create(), new AppRequestCallback(new AppRequestCallback.RequestListener() {
@@ -186,7 +189,7 @@ public class PembayaranOngkirGanti extends AppCompatActivity {
                             JSONArray response = new JSONArray(result);
                             for(int i = 0; i < response.length(); i++){
                                 JSONObject ongkir = response.getJSONObject(i);
-                                listOngkir.add(new OngkirModel(ongkir.getString("code" ), ongkir.getString("name" )
+                                listOngkir.add(new OngkirModel(ongkir.getString("code"), ongkir.getString("name" )
                                         + " " + ongkir.getString("service"), ongkir.getString("description"),
                                         ongkir.getDouble("value"), ongkir.getString("etd"), ongkir.getString("note")));
                             }

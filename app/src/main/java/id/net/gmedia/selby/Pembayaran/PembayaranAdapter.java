@@ -28,15 +28,22 @@ public class PembayaranAdapter extends RecyclerView.Adapter<PembayaranAdapter.Pe
 
     private PembayaranActivity activity;
     private LinkedHashMap<String, List<BarangJualModel>> keranjang;
-    private LinkedHashMap<String, OngkirModel> listOngkir;
+    //private LinkedHashMap<String, OngkirModel> listOngkir;
     private List<ArtisModel> listHeader;
 
-    PembayaranAdapter(PembayaranActivity activity, List<ArtisModel> listHeader, LinkedHashMap<String,
+    /*PembayaranAdapter(PembayaranActivity activity, List<ArtisModel> listHeader, LinkedHashMap<String,
             List<BarangJualModel>> keranjang, LinkedHashMap<String, OngkirModel> listOngkir){
         this.activity = activity;
         this.listHeader = listHeader;
         this.keranjang = keranjang;
         this.listOngkir = listOngkir;
+    }*/
+
+    PembayaranAdapter(PembayaranActivity activity, List<ArtisModel> listHeader, LinkedHashMap<String,
+            List<BarangJualModel>> keranjang){
+        this.activity = activity;
+        this.listHeader = listHeader;
+        this.keranjang = keranjang;
     }
 
     @NonNull
@@ -59,16 +66,16 @@ public class PembayaranAdapter extends RecyclerView.Adapter<PembayaranAdapter.Pe
         holder.rv_barang.setLayoutManager(new LinearLayoutManager(activity));
         holder.rv_barang.setAdapter(new PembayaranChildAdapter(listBarang));
 
-        OngkirModel o = listOngkir.get(header.getId());
-        if(o != null){
+        //OngkirModel o = listOngkir.get(header.getId());
+        /*if(o != null){
             String pengiriman = o.getService() + " - " + Converter.doubleToRupiah(o.getHarga());
             holder.txt_pengiriman.setText(pengiriman);
         }
         else{
             holder.txt_pengiriman.setText("Jasa pengiriman belum dipilih");
-        }
+        }*/
 
-        holder.layout_kurir.setOnClickListener(new View.OnClickListener() {
+        /*holder.layout_kurir.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(activity.alamat_dipilih == null){
@@ -84,10 +91,10 @@ public class PembayaranAdapter extends RecyclerView.Adapter<PembayaranAdapter.Pe
                     activity.startActivityForResult(i, activity.KODE_GANTI_ONGKIR);
                 }
             }
-        });
+        });*/
     }
 
-    boolean checkKurir(){
+    /*boolean checkKurir(){
         for(ArtisModel p : listHeader){
             if(listOngkir.containsKey(p.getId())){
                 for(String s : listOngkir.keySet()){
@@ -102,7 +109,7 @@ public class PembayaranAdapter extends RecyclerView.Adapter<PembayaranAdapter.Pe
         }
 
         return true;
-    }
+    }*/
 
     @Override
     public int getItemCount() {
@@ -111,17 +118,18 @@ public class PembayaranAdapter extends RecyclerView.Adapter<PembayaranAdapter.Pe
 
     class PembayaranDetailViewHolder extends RecyclerView.ViewHolder{
 
-        View layout_kurir;
-        TextView txt_penjual, txt_pengiriman, txt_harga;
+        //View layout_kurir;
+        //TextView txt_pengiriman;
+        TextView txt_penjual, txt_harga;
         RecyclerView rv_barang;
 
         PembayaranDetailViewHolder(@NonNull View itemView) {
             super(itemView);
             txt_penjual = itemView.findViewById(R.id.txt_penjual);
             rv_barang = itemView.findViewById(R.id.rv_barang);
-            txt_pengiriman = itemView.findViewById(R.id.txt_pengiriman);
+            //txt_pengiriman = itemView.findViewById(R.id.txt_pengiriman);
             txt_harga = itemView.findViewById(R.id.txt_harga);
-            layout_kurir = itemView.findViewById(R.id.layout_kurir);
+            //layout_kurir = itemView.findViewById(R.id.layout_kurir);
         }
     }
 

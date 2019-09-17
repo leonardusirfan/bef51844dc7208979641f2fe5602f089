@@ -59,8 +59,8 @@ dependencies {
     implementation 'com.nineoldandroids:library:2.4.0'
     implementation 'com.daimajia.slider:library:1.1.5@aar'
     implementation 'com.oguzdev:CircularFloatingActionMenu:1.0.2'
-    implementation project(':appcustommodule')
 
     implementation 'com.midtrans:uikit:1.21.2-SANDBOX'
+    implementation project(path: ':appcustommodule')
     //implementation 'com.midtrans:uikit:1.21.2'
 }

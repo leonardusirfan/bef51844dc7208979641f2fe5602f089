@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="#F7F8F3"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ScrollView
+    <android.support.v4.widget.NestedScrollView
         android:layout_above="@id/layout_bayar"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -91,9 +91,62 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp15"/>
+
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/layout_kurir"
+                android:layout_marginTop="@dimen/dp10"
+                android:layout_marginBottom="@dimen/dp10"
+                android:layout_width="match_parent"
+                android:background="@color/white"
+                android:padding="@dimen/dp10"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/lbl_kurir"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="Jasa Pengiriman"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sp14"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/txt_pengiriman"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/lbl_kurir"
+                    android:layout_toStartOf="@id/img_next"
+                    android:gravity="center_vertical"
+                    android:padding="@dimen/dp15"
+                    android:paddingTop="@dimen/dp15"
+                    android:textColor="@color/black"
+                    android:layout_marginEnd="@dimen/dp15"
+                    android:textSize="@dimen/sp14"
+                    android:text="Jasa pengiriman belum dipilih"
+                    app:layout_constraintEnd_toStartOf="@+id/img_next"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/lbl_kurir" />
+
+                <ImageView
+                    android:id="@+id/img_next"
+                    android:layout_width="@dimen/icon_size"
+                    android:layout_height="@dimen/icon_size"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/ic_next"
+                    app:layout_constraintBottom_toBottomOf="@+id/txt_pengiriman"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/txt_pengiriman" />
+            </android.support.constraint.ConstraintLayout>
         </LinearLayout>
 
-    </ScrollView>
+    </android.support.v4.widget.NestedScrollView>
 
     <RelativeLayout
         android:id="@+id/layout_bayar"
@@ -102,10 +155,10 @@
         android:layout_height="wrap_content"
         android:background="@color/white">
 
-        <View
+       <!-- <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/padding1"
-            android:background="#D0D1CC" />
+            android:background="#D0D1CC" />-->
 
         <TextView
             android:id="@+id/lbl_total"

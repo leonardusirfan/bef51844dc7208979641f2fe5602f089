@@ -16,7 +16,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="android:allowBackup">
-        <activity android:name=".Transaksi.TransaksiActivity"></activity>
+        <activity android:name=".Transaksi.TransaksiDetailActivity"/>
+        <activity android:name=".Transaksi.TransaksiActivity" />
         <activity
             android:name=".Pembayaran.PembayaranOngkirGanti"
             android:theme="@style/AppTheme.ActionBar" />
@@ -123,6 +124,14 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/ic_launcher"/>
+
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/colorAccent"/>
     </application>
 
 </manifest>

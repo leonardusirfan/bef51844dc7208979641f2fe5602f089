@@ -22,9 +22,10 @@
         android:id="@+id/rv_barang"
         android:layout_marginTop="@dimen/dp10"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp10"/>
 
-    <android.support.constraint.ConstraintLayout
+    <!--<android.support.constraint.ConstraintLayout
         android:id="@+id/layout_kurir"
         android:layout_marginTop="@dimen/dp10"
         android:layout_marginBottom="@dimen/dp10"
@@ -71,6 +72,6 @@
             app:layout_constraintBottom_toBottomOf="@+id/txt_pengiriman"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/txt_pengiriman" />
-    </android.support.constraint.ConstraintLayout>
+    </android.support.constraint.ConstraintLayout>-->
 
 </LinearLayout>

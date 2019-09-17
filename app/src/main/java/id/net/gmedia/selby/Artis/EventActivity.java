@@ -7,7 +7,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.view.View;
@@ -15,6 +14,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -43,7 +43,7 @@ public class EventActivity extends AppCompatActivity {
     public AppBarLayout appbar;
     private ImageView img_galeri_selected;
     private ConstraintLayout layout_overlay;
-    private CardView layout_galeri_selected;
+    private LinearLayout layout_galeri_selected;
     private ZoomLayout layout_zoom;
 
     //Variabel UI galeri (animasi, foto tampil)
@@ -204,8 +204,9 @@ public class EventActivity extends AppCompatActivity {
         selectedImage = position;
         this.listImage = listImage;
 
-        Glide.with(this).load(listImage.get(selectedImage)).
-                apply(new RequestOptions().override(imgWidth, imgHeight)).into(img_galeri_selected);
+        /*Glide.with(this).load(listImage.get(selectedImage)).
+                apply(new RequestOptions().override(imgWidth, imgHeight)).into(img_galeri_selected);*/
+        Glide.with(this).load(listImage.get(selectedImage)).into(img_galeri_selected);
         layout_zoom.zoomTo(1, false);
         layout_overlay.setVisibility(View.VISIBLE);
         detail = true;

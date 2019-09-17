@@ -36,8 +36,9 @@
 
             <LinearLayout
                 android:id="@+id/layout_edit"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/dp15"
                 android:orientation="vertical"
                 android:layout_centerVertical="true"
                 android:layout_toEndOf="@id/img_akun">

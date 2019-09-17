@@ -48,6 +48,7 @@ public class Constant {
     public static final String EXTRA_ALAMAT_ID_ASAL = "id_asal";
     public static final String EXTRA_BERAT_BARANG = "berat";
     public static final String EXTRA_POSITION = "position";
+    public static final String EXTRA_TRANSAKSI_ID = "id_transaksi";
 
     public static final String RESULT_ALAMAT = "alamat";
 
@@ -57,7 +58,7 @@ public class Constant {
     public static final int BARANG_DONASI = 34;
 
     //URL Request
-    private static final String BASE_URL = "http://gmedia.bz/selbi/api/";
+    private static final String BASE_URL = "https://selbi.co.id/beta/api/";
     public static final String URL_HOME_SLIDE = BASE_URL + "Slider/index";
     public static final String URL_ARTIS = BASE_URL + "Penjual/index";
     public static final String URL_BARANG_MASTER = BASE_URL + "Produk/index";
@@ -70,6 +71,7 @@ public class Constant {
     public static final String URL_TAMBAH_FAVORIT = BASE_URL + "Favorit/add_to_favorit";
     public static final String URL_HAPUS_FAVORIT = BASE_URL + "Favorit/hapus_favorit";
     public static final String URL_KERANJANG = BASE_URL + "Keranjang/index";
+    public static final String URL_KERANJANG_UPDATE_TRANSAKSI = BASE_URL + "Keranjang/update_flag";
     public static final String URL_TRANSAKSI = BASE_URL + "Transaksi/index";
     public static final String URL_DETAIL_TRANSAKSI = BASE_URL + "Transaksi/details";
     public static final String URL_TAMBAH_KERANJANG = BASE_URL + "Keranjang/add_to_cart";

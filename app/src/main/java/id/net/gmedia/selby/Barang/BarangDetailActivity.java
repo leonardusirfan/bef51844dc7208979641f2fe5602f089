@@ -129,7 +129,9 @@ public class BarangDetailActivity extends AppCompatActivity {
         btn_follow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                followPenjual();
+                if(penjual != null){
+                    followPenjual();
+                }
             }
         });
 
@@ -216,6 +218,7 @@ public class BarangDetailActivity extends AppCompatActivity {
                 JSONBuilder body = new JSONBuilder();
                 body.add("id_barang", id);
                 body.add("jumlah", 1);
+                body.add("jenis", "barang");
 
                 ApiVolleyManager.getInstance().addRequest(BarangDetailActivity.this,
                         Constant.URL_TAMBAH_KERANJANG, ApiVolleyManager.METHOD_POST,
@@ -485,6 +488,7 @@ public class BarangDetailActivity extends AppCompatActivity {
                     JSONBuilder body = new JSONBuilder();
                     body.add("id_barang", id);
                     body.add("jumlah", Integer.parseInt(txt_jumlah.getText().toString()));
+                    body.add("jenis", "barang");
 
                     ApiVolleyManager.getInstance().addRequest(BarangDetailActivity.this,
                             Constant.URL_TAMBAH_KERANJANG, ApiVolleyManager.METHOD_POST,
@@ -601,6 +605,7 @@ public class BarangDetailActivity extends AppCompatActivity {
             ApiVolleyManager.getInstance().addRequest(this, Constant.URL_TAMBAH_FAVORIT,
                     ApiVolleyManager.METHOD_POST, Constant.getTokenHeader(FirebaseAuth.getInstance().getUid()),
                     body.create(), new AppRequestCallback(new AppRequestCallback.SimpleRequestListener() {
+
                 @Override
                 public void onSuccess(String response) {
                     final Dialog dialog = DialogFactory.getInstance().createDialog

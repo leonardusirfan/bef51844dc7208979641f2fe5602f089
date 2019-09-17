@@ -60,6 +60,7 @@ public class ChatDetailActivity extends AppCompatActivity {
         if(getIntent().hasExtra(Constant.EXTRA_USER)){
             Gson gson = new Gson();
             user = gson.fromJson(getIntent().getStringExtra(Constant.EXTRA_USER), UserModel.class);
+            //Log.d(Constant.TAG, getIntent().getStringExtra(Constant.EXTRA_USER));
         }
 
         if(getIntent().hasExtra(Constant.EXTRA_CHAT_FROM)){

@@ -4,10 +4,15 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class AppSharedPreferences {
     private static final String LOGIN_PREF = "login_status";
     private static final String STATUS_PREF = "user_status";
     private static final String FCM_PREF = "fcm_id";
+
+    private static final String KERANJANG_PREF = "list_keranjang";
 
     private static SharedPreferences getPreferences(Context context){
         return PreferenceManager.getDefaultSharedPreferences(context);
@@ -31,6 +36,16 @@ public class AppSharedPreferences {
         SharedPreferences.Editor editor = getPreferences(context).edit();
         editor.putBoolean(LOGIN_PREF, login);
         editor.apply();
+    }
+
+    public static void setUnupdatedKeranjang(Context context, Set<String> listKeranjang){
+        SharedPreferences.Editor editor = getPreferences(context).edit();
+        editor.putStringSet(KERANJANG_PREF, listKeranjang);
+        editor.apply();
+    }
+
+    public static Set<String> getUnupdatedKeranjang(Context context){
+       return getPreferences(context).getStringSet(KERANJANG_PREF, new HashSet<String>());
     }
 
     public static void setStatusPref(Context context, boolean penjual){
